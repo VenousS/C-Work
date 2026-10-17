@@ -835,4 +835,391 @@ async function run(){
   let worst=0,fail=null,failCtx=null;
   for(const t of ts){
     const ctx={log:[],steps:0};
-    try{const 
+    try{const r=once(code,n,L.lim,t,ctx);
+      if(r!==t){fail=`Клад был в доме ${t}, а твоя функция вернула ${r}.`;failCtx={ctx,t};break;}
+      worst=Math.max(worst,ctx.steps);
+    }catch(e){fail=e.message+` (клад был в доме ${t}).`;failCtx={ctx,t};break;}
+  }
+  if(fail){
+    await animate(failCtx.ctx.log,failCtx.t,n,false);
+    out.className='res bad';out.textContent=' '+fail+' Попробуй ещё!';
+  }else{
+    const t=ts[ts.length-1],ctx={log:[],steps:0};once(code,n,L.lim,t,ctx);
+    await animate(ctx.log,t,n,true);
+    const kind=worst>=n*0.7?'O(n)':'O(log n)';
+    out.className='res ok';
+    out.innerHTML=` Все ${ts.length} проверок пройдены! Больше всего шагов: <b>${worst}</b> из ${n} домиков. Твоя сложность: <b>${kind}</b>.`+
+      (cur<LV.length-1?` <button onclick="loadLv(${cur+1})">Дальше </button>`:'  Ты прошёл все уровни!');
+  }
+  busy=false;$('run').disabled=false;
+}
+$('run').onclick=run;
+$('hint').onclick=()=>$('hbox').textContent=' '+LV[cur].hint;
+$('rst').onclick=()=>$('src').value=LV[cur].start;
+$('src').addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();const s=e.target,p=s.selectionStart;s.setRangeText('    ',p,s.selectionEnd,'end');}});
+load(0);
+
+window.loadLv=load;
+})();
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id),sleep=ms=>new Promise(r=>setTimeout(r,ms)),rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const times=n=>n+' '+((n%10>=2&&n%10<=4&&(n%100<10||n%100>=20))?'раза':'раз');
+const shuf=a=>a.slice().sort(()=>Math.random()-.5);
+/* ---- range demo */
+const lane=$('pyLane');
+for(let i=0;i<30;i++){const c=document.createElement('div');c.className='cell';c.id='pl'+i;c.textContent=i;lane.appendChild(c);}
+function rcode(){const a=+$('rs').value,b=+$('re').value,c=+$('rp').value;
+  $('rsv').textContent=a;$('rev').textContent=b;$('rpv').textContent=c;
+  $('rcode').textContent='for i in range('+a+', '+b+', '+c+'):\n    print(i)';}
+['rs','re','rp'].forEach(i=>$(i).oninput=rcode);rcode();
+let rbusy=false;
+$('rrun').onclick=async()=>{
+  if(rbusy)return;rbusy=true;$('rrun').disabled=true;
+  const a=+$('rs').value,b=+$('re').value,c=+$('rp').value,out=[];
+  for(let i=0;i<30;i++){const e=$('pl'+i);e.className='cell';e.textContent=i;}
+  $('rout').textContent='';$('rnote').textContent='';
+  for(let i=a;i<b;i+=c){const e=$('pl'+i);e.className='cell cur';e.textContent='🐸';await sleep(260);
+    e.className='cell vis';e.textContent=i;out.push(i);$('rout').textContent=out.join(' ');}
+  $('rnote').textContent=out.length?'Цикл сделал '+times(out.length)+'. Число '+b+' не попало в список, потому что stop не берётся.':'Цикл не сделал ни одного шага: start уже не меньше stop.';
+  rbusy=false;$('rrun').disabled=false;
+};
+/* ---- predict game */
+let q,qs=0;
+function qnew(){const a=rnd(0,5),c=rnd(1,4),b=a+rnd(3,18),seq=[];for(let i=a;i<b;i+=c)seq.push(i);
+  q={seq};$('qcode').textContent='for i in range('+a+', '+b+', '+c+'):\n    print(i)';
+  $('qans').value='';$('qmsg').textContent='';$('qmsg').className='res';}
+$('qchk').onclick=()=>{const v=$('qans').value.trim();if(v==='')return;const last=q.seq[q.seq.length-1],m=$('qmsg');
+  if(+v===last){qs++;m.className='res ok';m.textContent='Верно. Последнее число: '+last+'.';}
+  else{qs=0;m.className='res bad';m.textContent='Не так. Цикл напечатает: '+q.seq.join(' ')+'. Последнее число: '+last+'.';}
+  $('qscore').textContent='Верных ответов подряд: '+qs;};
+$('qnext').onclick=qnew;qnew();
+/* ---- while demo */
+function wcode(){const g=+$('wg').value,d=+$('wd').value,f=$('wf').checked;
+  $('wgv').textContent=g;$('wdv').textContent=d;
+  $('wcode').textContent='money = 0\ndays = 0\nwhile money < '+g+':\n'+(f?'':'    money += '+d+'\n')+'    days += 1\nprint(days)';}
+['wg','wd','wf'].forEach(i=>$(i).oninput=wcode);wcode();
+let wbusy=false;
+$('wrun').onclick=async()=>{
+  if(wbusy)return;wbusy=true;$('wrun').disabled=true;
+  const g=+$('wg').value,d=+$('wd').value,f=$('wf').checked;let money=0,days=0,log='';
+  const fill=$('pyFill');fill.style.width='0%';$('wlog').textContent='';$('wnote').textContent='';
+  const delay=Math.min(350,3000/Math.ceil(g/d));
+  const upd=()=>{log+='день '+days+': в копилке '+money+'\n';$('wlog').textContent=log;fill.style.width=Math.min(100,money/g*100)+'%';};
+  if(!f){while(money<g){money+=d;days++;upd();await sleep(delay);}
+    $('wnote').textContent='Цель достигнута за '+days+' дней. print(days) выведет '+days+'.';}
+  else{for(let k=0;k<8;k++){days++;upd();await sleep(300);}
+    $('wnote').textContent='Деньги не растут, условие money < '+g+' всегда верно. Такой цикл никогда не закончится. Мы остановили показ сами.';}
+  wbusy=false;$('wrun').disabled=false;
+};
+/* ---- code puzzle */
+const PZ=[
+{lines:['n = 1','while n <= 3:','    print(n)','    n += 1'],out:'1 2 3'},
+{lines:['total = 0','for i in range(1, 5):','    total += i','print(total)'],out:'10'},
+{lines:['word = "ура"','for i in range(3):','    print(word)'],out:'ура ура ура'},
+{lines:['x = 10','while x > 0:','    x -= 4','print(x)'],out:'-2'}];
+let pi=-1,pool=[],ans=[];
+function prender(){
+  const mk=(arr,id)=>{const box=$(id);box.innerHTML='';arr.forEach((o,k)=>{const b=document.createElement('button');b.className='sec pz';b.textContent=o.t;
+    b.onclick=()=>{if(id==='pzPool')ans.push(pool.splice(k,1)[0]);else pool.push(ans.splice(k,1)[0]);prender();};box.appendChild(b);});};
+  mk(pool,'pzPool');mk(ans,'pzAns');}
+function pnew(){pi=(pi+1)%PZ.length;pool=PZ[pi].lines.map((t,i)=>({t,i}));
+  do{pool=shuf(pool);}while(pool.every((x,k)=>x.i===k));
+  ans=[];$('pzMsg').textContent='';$('pzMsg').className='res';prender();}
+$('pzChk').onclick=()=>{const p=PZ[pi],m=$('pzMsg');
+  if(pool.length){m.className='res bad';m.textContent='Сначала поставь все строки.';return;}
+  if(ans.map(o=>o.t).join('\n')===p.lines.join('\n')){m.className='res ok';m.textContent='Верно. Программа напечатает: '+p.out;}
+  else{m.className='res bad';m.textContent='Не получилось. Проверь порядок строк и отступы.';}};
+$('pzNext').onclick=pnew;pnew();
+
+/* ---- backpack */
+let bag=['меч','щит','карта'];const hist=[];
+const rep=a=>'['+a.map(x=>'"'+x+'"').join(', ')+']';
+function cmd(c){hist.push(c);if(hist.length>6)hist.shift();$('blog').textContent=hist.join('\n');}
+function bdraw(f){const box=$('bag');box.innerHTML='';
+  bag.forEach((t,i)=>{const d=document.createElement('div');d.className='item click'+(i===f?' flash':'');
+    const a=document.createElement('span');a.className='ix';a.textContent=i;
+    const b=document.createElement('span');b.textContent=t;d.append(a,b);d.title='нажми, чтобы убрать';
+    d.onclick=()=>{cmd('bag.remove("'+t+'")');bag.splice(bag.indexOf(t),1);$('bmsg').textContent='';bdraw();};box.appendChild(d);});
+  if(!bag.length)box.innerHTML='<span class="mut">[] список пуст</span>';
+  $('brepr').textContent='bag = '+rep(bag)+'\nlen(bag) = '+bag.length;}
+const bname=()=>$('bi').value.trim()||'предмет';
+function full(){if(bag.length>=10){$('bmsg').textContent='В рюкзаке нет места: максимум 10 предметов.';return true;}$('bmsg').textContent='';return false;}
+$('badd').onclick=()=>{if(full())return;const n=bname();cmd('bag.append("'+n+'")');bag.push(n);bdraw(bag.length-1);};
+$('bins').onclick=()=>{if(full())return;const n=bname();cmd('bag.insert(0, "'+n+'")');bag.unshift(n);bdraw(0);};
+$('bpop').onclick=()=>{if(!bag.length){cmd('bag.pop()   # ошибка');$('bmsg').textContent='IndexError: pop from empty list. Из пустого списка нечего доставать.';return;}
+  $('bmsg').textContent='';const x=bag.pop();cmd('bag.pop()   # вернул "'+x+'"');bdraw();};
+$('bclr').onclick=()=>{$('bmsg').textContent='';cmd('bag.clear()');bag=[];bdraw();};
+bdraw();
+/* ---- index game */
+const POOL=['кот','пёс','лиса','ёж','сова','заяц','волк','мышь','утка','лось'];
+let ig,lock=false,good=0,tries=0;
+function inew(){lock=false;const w=shuf(POOL).slice(0,5),k=rnd(-5,4);ig={w,k,a:(k+5)%5};
+  $('icode').textContent='animals = ['+w.map(x=>'"'+x+'"').join(', ')+']\nprint(animals['+k+'])';
+  const box=$('ibox');box.innerHTML='';
+  w.forEach((t,i)=>{const d=document.createElement('div');d.className='item click';d.id='ib'+i;
+    const x=document.createElement('span');x.className='ix';x.textContent=i;
+    const y=document.createElement('span');y.textContent=t;
+    const z=document.createElement('span');z.className='ng';z.textContent=i-5;
+    d.append(x,y,z);d.onclick=()=>ipick(i);box.appendChild(d);});
+  $('imsg').textContent='';$('imsg').className='res';}
+function ipick(i){if(lock)return;lock=true;tries++;const m=$('imsg'),w=ig.w[ig.a];
+  $('ib'+ig.a).classList.add('cur');
+  if(i===ig.a){good++;m.className='res ok';m.textContent='Верно. animals['+ig.k+'] это "'+w+'".';}
+  else{m.className='res bad';m.textContent='Нет. animals['+ig.k+'] это "'+w+'", он стоит под номером '+ig.a+'.';}
+  $('iscore').textContent='Верных ответов: '+good+' из '+tries;}
+$('inext').onclick=inew;inew();
+/* ---- for over list */
+const OPS={
+sum:{n:'total',code:l=>'total = 0\nfor x in '+l+':\n    total += x\nprint(total)',init:a=>0,step:(s,x)=>s+x},
+max:{n:'best',code:l=>'best = '+l+'[0]\nfor x in '+l+':\n    if x > best:\n        best = x\nprint(best)',init:a=>a[0],step:(s,x)=>x>s?x:s},
+even:{n:'count',code:l=>'count = 0\nfor x in '+l+':\n    if x % 2 == 0:\n        count += 1\nprint(count)',init:a=>0,step:(s,x)=>x%2===0?s+1:s}};
+const nums=()=>$('lin').value.split(',').map(s=>s.trim()).filter(s=>s!=='').map(Number).filter(Number.isFinite).slice(0,8);
+function ldraw(a,cur){const box=$('lbox');box.innerHTML='';
+  a.forEach((v,k)=>{const d=document.createElement('div');d.className='item'+(k===cur?' cur':'');
+    const x=document.createElement('span');x.className='ix';x.textContent=k;
+    const y=document.createElement('span');y.textContent=v;d.append(x,y);box.appendChild(d);});}
+function lupd(){const a=nums();ldraw(a);$('lcode').textContent='numbers = ['+a.join(', ')+']\n'+OPS[$('lop').value].code('numbers');
+  $('lstate').textContent='';$('lres').textContent='';}
+$('lin').oninput=lupd;$('lop').onchange=lupd;lupd();
+let lbusy=false;
+$('lrun').onclick=async()=>{
+  const a=nums();if(lbusy)return;
+  if(!a.length){$('lres').className='res bad';$('lres').textContent='Впиши хотя бы одно число.';return;}
+  lbusy=true;$('lrun').disabled=true;const op=OPS[$('lop').value];let st=op.init(a);$('lres').textContent='';
+  for(let k=0;k<a.length;k++){ldraw(a,k);st=op.step(st,a[k]);$('lstate').textContent='x = '+a[k]+',   '+op.n+' = '+st;await sleep(650);}
+  ldraw(a);$('lres').className='res ok';$('lres').textContent='print выведет: '+st;
+  lbusy=false;$('lrun').disabled=false;
+};
+})();
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id),sleep=ms=>new Promise(r=>setTimeout(r,ms)),rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),shuf=a=>a.slice().sort(()=>Math.random()-.5);
+const fmt=a=>'['+a.join(', ')+']';
+const CODE={
+bubble:`void bubbleSort(int a[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - 1 - i; j++) {
+            if (a[j] > a[j + 1]) {
+                swap(a[j], a[j + 1]);
+            }
+        }
+    }
+}`,
+selection:`void selectionSort(int a[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        int mn = i;
+        for (int j = i + 1; j < n; j++) {
+            if (a[j] < a[mn]) mn = j;
+        }
+        swap(a[i], a[mn]);
+    }
+}`,
+insertion:`void insertionSort(int a[], int n) {
+    for (int i = 1; i < n; i++) {
+        int key = a[i];
+        int j = i - 1;
+        while (j >= 0 && a[j] > key) {
+            a[j + 1] = a[j];
+            j--;
+        }
+        a[j + 1] = key;
+    }
+}`,
+quick:`void quickSort(int a[], int l, int r) {
+    if (l >= r) return;
+    int pivot = a[r];
+    int i = l;
+    for (int j = l; j < r; j++) {
+        if (a[j] < pivot) {
+            swap(a[i], a[j]);
+            i++;
+        }
+    }
+    swap(a[i], a[r]);
+    quickSort(a, l, i - 1);
+    quickSort(a, i + 1, r);
+}`};
+document.querySelectorAll('[data-code]').forEach(p=>p.textContent=CODE[p.dataset.code]);
+
+/* ---- visualizer */
+function* gBubble(a){for(let i=0;i<a.length-1;i++)for(let j=0;j<a.length-1-i;j++){yield ['c',j,j+1];if(a[j]>a[j+1]){[a[j],a[j+1]]=[a[j+1],a[j]];yield ['m',j,j+1];}}}
+function* gSelection(a){for(let i=0;i<a.length-1;i++){let mn=i;for(let j=i+1;j<a.length;j++){yield ['c',j,mn];if(a[j]<a[mn])mn=j;}if(mn!==i){[a[i],a[mn]]=[a[mn],a[i]];yield ['m',i,mn];}}}
+function* gInsertion(a){for(let i=1;i<a.length;i++){const k=a[i];let j=i-1;
+  while(j>=0){yield ['c',j,j+1];if(a[j]>k){a[j+1]=a[j];yield ['m',j,j+1];j--;}else break;}
+  a[j+1]=k;yield ['p',j+1];}}
+function* gQuick(a,l,r){if(l>=r)return;const p=a[r];let i=l;
+  for(let j=l;j<r;j++){yield ['c',j,r];if(a[j]<p){if(i!==j){[a[i],a[j]]=[a[j],a[i]];yield ['m',i,j];}i++;}}
+  if(i!==r){[a[i],a[r]]=[a[r],a[i]];yield ['m',i,r];}
+  yield* gQuick(a,l,i-1);yield* gQuick(a,i+1,r);}
+const NAMES={bubble:'Пузырьком',selection:'Выбором',insertion:'Вставками',quick:'Быстрая'};
+const mkGen=(k,a)=>k==='bubble'?gBubble(a):k==='selection'?gSelection(a):k==='insertion'?gInsertion(a):gQuick(a,0,a.length-1);
+let alg='bubble',base=[],arr=[],vbusy=false;
+function vbars(hi,cls){const n=arr.length;
+  $('vbars').innerHTML=arr.map((v,i)=>'<div class="bar '+(hi&&hi.includes(i)?cls:'')+'" style="height:'+(v/n*100)+'%">'+(n<=16?v:'')+'</div>').join('');}
+function vsel(){document.querySelectorAll('#vtabs button').forEach(b=>b.className=b.dataset.a===alg?'on':'sec');$('vcode').textContent=CODE[alg];}
+document.querySelectorAll('#vtabs button').forEach(b=>b.onclick=()=>{if(vbusy)return;alg=b.dataset.a;vsel();});
+function vnew(){const n=+$('vn').value;$('vnv').textContent=n;$('vsv').textContent=$('vs').value;
+  base=shuf(Array.from({length:n},(_,i)=>i+1));arr=base.slice();vbars();$('vc').textContent=0;$('vm').textContent=0;$('vstep').textContent='';}
+$('vn').oninput=()=>{if(!vbusy)vnew();};$('vs').oninput=()=>{$('vsv').textContent=$('vs').value;};$('vnew').onclick=()=>{if(!vbusy)vnew();};
+function lock(b){vbusy=b;['vrun','vall','vnew','vn'].forEach(i=>$(i).disabled=b);}
+async function vrun(k,fast){
+  arr=base.slice();let c=0,m=0;vbars();
+  for(const e of mkGen(k,arr)){
+    if(e[0]==='c')c++;else if(e[0]==='m')m++;
+    $('vc').textContent=c;$('vm').textContent=m;
+    if(e[0]==='c'){vbars([e[1],e[2]],'hi');$('vstep').textContent='Сравниваем '+arr[e[1]]+' и '+arr[e[2]];}
+    else if(e[0]==='m'){vbars([e[1],e[2]],'mv');$('vstep').textContent='Переставляем элементы на местах '+e[1]+' и '+e[2];}
+    else{vbars([e[1]],'mv');$('vstep').textContent='Ставим элемент на своё место';}
+    await sleep(fast?6:+$('vs').value);
+  }
+  vbars(arr.map((_,i)=>i),'fin');$('vstep').textContent='Готово.';
+  const t=$('vhist'),r=t.insertRow(1);r.innerHTML='<td>'+NAMES[k]+'</td><td>'+arr.length+'</td><td>'+c+'</td><td>'+m+'</td>';
+  while(t.rows.length>9)t.deleteRow(t.rows.length-1);
+}
+$('vrun').onclick=async()=>{if(vbusy)return;lock(true);await vrun(alg,false);lock(false);};
+$('vall').onclick=async()=>{if(vbusy)return;lock(true);for(const k of ['bubble','selection','insertion','quick'])await vrun(k,true);
+  $('vstep').textContent='Все четыре готовы. Сравни цифры в таблице.';lock(false);};
+vsel();vnew();
+
+/* ---- manual sorting game */
+let ma=[],msel=-1,mmoves=0,mdone=false,mbest=0;
+function mnew(){const n=7;ma=shuf(Array.from({length:n},(_,i)=>i+1));msel=-1;mmoves=0;mdone=false;
+  const t=ma.slice();mbest=0;for(let i=0;i<n-1;i++){let mn=i;for(let j=i+1;j<n;j++)if(t[j]<t[mn])mn=j;if(mn!==i){[t[i],t[mn]]=[t[mn],t[i]];mbest++;}}
+  $('mmsg').textContent='';$('mmsg').className='res';mdraw();}
+function mdraw(){const box=$('mbars');box.innerHTML='';
+  ma.forEach((v,i)=>{const d=document.createElement('div');d.className='bar'+(i===msel?' sel':'');d.style.height=(v/ma.length*100)+'%';d.textContent=v;d.onclick=()=>mclick(i);box.appendChild(d);});
+  $('mcount').textContent=mmoves;}
+function mclick(i){if(mdone)return;
+  if(msel<0)msel=i;else if(msel===i)msel=-1;
+  else{[ma[msel],ma[i]]=[ma[i],ma[msel]];mmoves++;msel=-1;
+    if(ma.every((v,k)=>v===k+1)){mdone=true;const m=$('mmsg');m.className='res ok';
+      m.textContent='Готово за '+mmoves+' обменов. Сортировка выбором сделала бы '+mbest+'. '+(mmoves<mbest?'Ты справился лучше алгоритма.':mmoves===mbest?'Столько же, сколько алгоритм.':'Алгоритм справился бы быстрее. Попробуй ещё раз.');}}
+  mdraw();}
+$('mnewb').onclick=mnew;mnew();
+
+/* ---- predict the state */
+function passState(al,a,k){const t=a.slice(),n=t.length;
+  if(al==='bubble'){for(let p=0;p<k;p++)for(let j=0;j<n-1-p;j++)if(t[j]>t[j+1])[t[j],t[j+1]]=[t[j+1],t[j]];}
+  else if(al==='selection'){for(let i=0;i<k;i++){let mn=i;for(let j=i+1;j<n;j++)if(t[j]<t[mn])mn=j;[t[i],t[mn]]=[t[mn],t[i]];}}
+  else{for(let i=1;i<=k;i++){const key=t[i];let j=i-1;while(j>=0&&t[j]>key){t[j+1]=t[j];j--;}t[j+1]=key;}}
+  return t;}
+const PEX={bubble:'Пузырёк за проход сравнивает соседей и выносит самое большое число в конец.',
+ selection:'Выбором на первое место ставится самое маленькое число, на второе самое маленькое из оставшихся, и так далее.',
+ insertion:'Вставками на каждом шаге берётся следующий элемент и вставляется на своё место среди уже отсортированных слева. Правая часть пока не тронута.'};
+const PNAME={bubble:'пузырьком',selection:'выбором',insertion:'вставками'};
+let pg,pgood=0,ptries=0,plock=false;
+function pnew(){plock=false;const al=['bubble','selection','insertion'][rnd(0,2)],k=rnd(1,2),a=shuf([1,2,3,4,5,6,7,8,9]).slice(0,6);
+  const right=passState(al,a,k),set=[fmt(right)];
+  for(const o of ['bubble','selection','insertion'])if(o!==al){const x=fmt(passState(o,a,k));if(!set.includes(x))set.push(x);}
+  let g=0;while(set.length<3&&g++<50){const t=a.slice(),i=rnd(0,5),j=rnd(0,5);[t[i],t[j]]=[t[j],t[i]];const x=fmt(t);if(!set.includes(x))set.push(x);}
+  if(set.length>3)set.length=3;
+  pg={al,right:fmt(right)};
+  $('pq').textContent='Массив: '+fmt(a)+'\nСортировка '+PNAME[al]+'\nВопрос: каким станет массив после '+(k===1?'первого':'второго')+' шага внешнего цикла?';
+  const box=$('popts');box.innerHTML='';
+  shuf(set).slice(0,3).forEach(x=>{const b=document.createElement('button');b.className='sec pz opt';b.textContent=x;b.onclick=()=>ppick(b,x);box.appendChild(b);});
+  $('pmsg').textContent='';$('pmsg').className='res';}
+function ppick(b,x){if(plock)return;plock=true;ptries++;const m=$('pmsg');
+  document.querySelectorAll('#popts button').forEach(o=>{if(o.textContent===pg.right)o.classList.add('good');});
+  if(x===pg.right){pgood++;m.className='res ok';m.textContent='Верно. '+PEX[pg.al];}
+  else{b.classList.add('wrong');m.className='res bad';m.textContent='Не так. Правильный ответ подсвечен. '+PEX[pg.al];}
+  $('pscore').textContent='Верных ответов: '+pgood+' из '+ptries;}
+$('pnext').onclick=pnew;pnew();
+
+/* ---- choose the code */
+const QZ=[
+{q:'Нужно поменять местами a[i] и a[j]. Какой код правильный?',o:['a[i] = a[j];\na[j] = a[i];','int t = a[i];\na[i] = a[j];\na[j] = t;','a[i] = a[j];\nint t = a[i];\na[j] = t;'],ok:1,
+ ex:'Старое значение a[i] надо сохранить в t до того, как оно затрётся. В остальных вариантах оно теряется, и оба элемента становятся одинаковыми.'},
+{q:'Пузырёк. Какое условие нужно, чтобы сортировать по возрастанию?',o:['if (a[j] > a[j + 1]) swap(a[j], a[j + 1]);','if (a[j] < a[j + 1]) swap(a[j], a[j + 1]);','if (a[j] == a[j + 1]) swap(a[j], a[j + 1]);'],ok:0,
+ ex:'Если левый больше правого, они стоят неправильно, и их надо поменять. Со знаком «меньше» получится сортировка по убыванию.'},
+{q:'Сортировка выбором. Как искать место минимума?',o:['if (a[j] < mn) mn = j;','if (a[j] > a[mn]) mn = j;','if (a[j] < a[mn]) mn = j;'],ok:2,
+ ex:'В mn лежит номер, поэтому сравнивать надо a[j] с a[mn]. В первом варианте значение сравнивается с номером, а во втором ищется максимум.'},
+{q:'Сортировка вставками. Какое условие у while?',o:['while (a[j] > key)','while (j > 0 && a[j] > key)','while (j >= 0 && a[j] > key)'],ok:2,
+ ex:'Нужно проверять и границу, и сравнение. Без j >= 0 мы выйдем за начало массива. С j > 0 нулевой элемент никогда не сдвинется.'}];
+let qi=-1,cgood=0,ctries=0,clock=false;
+function cnew(){qi=(qi+1)%QZ.length;clock=false;const Q=QZ[qi];$('cq').textContent=Q.q;
+  const box=$('copts');box.innerHTML='';
+  shuf(Q.o.map((t,i)=>({t,i}))).forEach(o=>{const b=document.createElement('button');b.className='sec pz';b.textContent=o.t;
+    b.onclick=()=>{if(clock)return;clock=true;ctries++;const m=$('cmsg');
+      [...box.children].forEach((x,k)=>{});
+      if(o.i===Q.ok){cgood++;b.classList.add('good');m.className='res ok';m.textContent='Верно. '+Q.ex;}
+      else{b.classList.add('wrong');[...box.children].forEach(x=>{if(x.textContent===Q.o[Q.ok])x.classList.add('good');});m.className='res bad';m.textContent='Не так. '+Q.ex;}
+      $('cscore').textContent='Верных ответов: '+cgood+' из '+ctries;};box.appendChild(b);});
+  $('cmsg').textContent='';$('cmsg').className='res';}
+$('cnext').onclick=cnew;cnew();
+
+/* ---- write the code */
+const rarr=n=>Array.from({length:n},()=>rnd(1,20));
+const sortG=[()=>rarr(6),()=>rarr(9),()=>[1,2,3,4,5],()=>[5,4,3,2,1],()=>[3,1,3,1,2],()=>[7]];
+function sortT(g){const o=g();return{label:fmt(o),args:()=>{const a=o.slice();return [a,a.length];},
+  check:(r,ar)=>{const e=o.slice().sort((x,y)=>x-y);return ar[0].join()===e.join()?'':'для массива '+fmt(o)+' получилось '+fmt(ar[0])+', а должно быть '+fmt(e);}};}
+function swapT(i,j){const o=rarr(6);i=i===undefined?rnd(0,5):i;j=j===undefined?rnd(0,5):j;const e=o.slice();[e[i],e[j]]=[e[j],e[i]];
+  return{label:fmt(o)+', i='+i+', j='+j,args:()=>{const a=o.slice();return [a,i,j];},check:(r,ar)=>ar[0].join()===e.join()?'':'для '+fmt(o)+' и i='+i+', j='+j+' получилось '+fmt(ar[0])+', а должно быть '+fmt(e)};}
+function minT(){const o=rarr(7),mn=Math.min(...o);return{label:fmt(o),args:()=>[o.slice(),o.length],
+  check:r=>(typeof r==='number'&&o[r]===mn)?'':'для '+fmt(o)+' функция вернула '+r+', а минимум стоит на месте '+o.indexOf(mn)};}
+const TASKS=[
+{d:'<b>Задача 1. Обмен.</b> Напиши функцию swapTwo, которая меняет местами элементы a[i] и a[j]. Ничего возвращать не нужно.',fn:'swapTwo',
+ start:'void swapTwo(int a[], int i, int j) {\n    // твой код\n}',hint:'Сохрани a[i] во временную переменную t. Потом запиши в a[i] значение a[j]. Потом запиши в a[j] значение t.',
+ tests:[()=>swapT(),()=>swapT(),()=>swapT(0,5),()=>swapT(2,2)]},
+{d:'<b>Задача 2. Минимум.</b> Напиши функцию minIndex, которая возвращает номер самого маленького элемента массива. Это главный кусок сортировки выбором.',fn:'minIndex',
+ start:'int minIndex(int a[], int n) {\n    // твой код\n}',hint:'Заведи переменную mn = 0. Пройди по массиву и если a[j] меньше a[mn], запомни mn = j. В конце верни mn.',
+ tests:[minT,minT,minT]},
+{d:'<b>Задача 3. Пузырёк.</b> Напиши bubbleSort, которая сортирует массив по возрастанию.',fn:'bubbleSort',
+ start:'void bubbleSort(int a[], int n) {\n    // твой код\n}',hint:'Два цикла друг в друге. Во внутреннем сравнивай a[j] и a[j + 1] и меняй их, если левый больше. Внутренний цикл можно делать до n - 1 - i.',
+ tests:sortG.map(g=>()=>sortT(g))},
+{d:'<b>Задача 4. Вставки.</b> Напиши insertionSort, которая сортирует массив по возрастанию.',fn:'insertionSort',
+ start:'void insertionSort(int a[], int n) {\n    // твой код\n}',hint:'Внешний цикл идёт с i = 1. Запомни key = a[i], возьми j = i - 1. Пока j >= 0 и a[j] > key, сдвигай a[j] на место j + 1 и уменьшай j. В конце запиши key в a[j + 1].',
+ tests:sortG.map(g=>()=>sortT(g))}];
+function tr(src){let c=src.replace(/\/\/.*$/gm,'');
+  c=c.replace(/\b(?:void|int)\s+(\w+)\s*\(([^)]*)\)\s*\{/,(m,n,p)=>'function '+n+'('+p.split(',').map(x=>x.replace(/\bint\b|\[\s*\]|&/g,'').trim()).filter(Boolean).join(',')+'){');
+  c=c.replace(/\bswap\s*\(\s*(\w+)\[([^\]]+)\]\s*,\s*(\w+)\[([^\]]+)\]\s*\)/g,'__sw($1,$2,$3,$4)');
+  c=c.replace(/\b(\w+)\s*=\s*([^;=]*\/[^;=]*);/g,'$1 = Math.trunc($2);');
+  c=c.replace(/for\s*\(([^;]*);([^;]*);([^)]*)\)/g,(m,a,b,d)=>'for('+a+';__g()&&('+(b.trim()||'true')+');'+d+')');
+  c=c.replace(/\b(int|long|bool|auto)\s+/g,'let ');
+  c=c.replace(/while\s*\(([^)]*)\)/g,'while(__g()&&($1))');
+  return c;}
+let wt=0;
+function wload(i){wt=i;const T=TASKS[i],tb=$('cwtabs');tb.innerHTML='';
+  TASKS.forEach((x,k)=>{const b=document.createElement('button');b.className=k===i?'on':'sec';b.textContent='Задача '+(k+1);b.onclick=()=>wload(k);tb.appendChild(b);});
+  $('cwdesc').innerHTML=T.d;$('cwsrc').value=T.start;$('cwhint').textContent='';$('cwres').textContent='';$('cwres').className='res';}
+$('cwrst').onclick=()=>{$('cwsrc').value=TASKS[wt].start;};
+$('cwhintb').onclick=()=>{$('cwhint').textContent='Подсказка: '+TASKS[wt].hint;};
+$('cwrun').onclick=()=>{
+  const T=TASKS[wt],res=$('cwres');res.className='res bad';
+  let code;try{code=tr($('cwsrc').value);new Function('__g','__sw',code+'\nreturn '+T.fn+';');}
+  catch(e){res.textContent=e instanceof ReferenceError?'Не нашёл функцию '+T.fn+'. Проверь название.':'Ошибка в коде: '+e.message;return;}
+  let g=0;const __g=()=>{if(++g>200000)throw new Error('цикл никогда не заканчивается');return true;};
+  const __sw=(A,i,B,j)=>{const t=A[i];A[i]=B[j];B[j]=t;};
+  let n=0;
+  for(const mk of T.tests){const t=mk();g=0;const ar=t.args();
+    try{const f=new Function('__g','__sw',code+'\nreturn '+T.fn+';')(__g,__sw);const r=f(...ar);const err=t.check(r,ar);
+      if(err){res.textContent='Тест не пройден: '+err+'.';return;}n++;}
+    catch(e){res.textContent='Ошибка при запуске на '+t.label+': '+e.message;return;}}
+  res.className='res ok';res.textContent='Все тесты пройдены: '+n+' из '+n+'.'+(wt<TASKS.length-1?' Можно переходить к следующей задаче.':' Это была последняя задача.');};
+$('cwsrc').addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();const t=e.target;t.setRangeText('    ',t.selectionStart,t.selectionEnd,'end');}});
+wload(0);
+})();
+</script>
+<script>
+(function(){
+  const V={home:'v-home',cpp:'v-cpp',python:'v-python',bigo:'v-bigo',loops:'v-loops',lists:'v-lists',sorting:'v-sorting'};
+  const H={home:'',bigo:'cpp/bigo',loops:'python/loops',lists:'python/lists',sorting:'cpp/sorting'};
+  const R={'cpp/bigo':'bigo','python/loops':'loops','python/lists':'lists','cpp/sorting':'sorting'};
+  function show(n){
+    const id=V[n]||V.home;
+    document.querySelectorAll('.view').forEach(v=>v.hidden=v.id!==id);
+    window.scrollTo(0,0);
+  }
+  window.navTo=function(n){try{location.hash='#/'+(n in H?H[n]:n);}catch(e){}show(n);};
+  function fromHash(){
+    const h=location.hash.replace(/^#\/?/,'');
+    show(R[h]||h||'home');
+  }
+  addEventListener('hashchange',fromHash);
+  fromHash();
+})();
+</script>
+</body>
+</html>
