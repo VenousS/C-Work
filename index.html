@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Big O: учим алгоритмы</title>
+<title>Учим программирование</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
@@ -55,10 +55,244 @@ input[type=range]{width:100%;accent-color:var(--acc)}
 textarea{width:100%;height:230px;font:14px/1.6 var(--mono);background:var(--code);color:var(--codeink);border:1px solid var(--line);border-left:3px solid var(--acc);border-radius:2px;padding:12px 14px;resize:vertical;tab-size:4;box-sizing:border-box;caret-color:var(--acc)}
 .res{font:600 14px/1.6 var(--mono);margin:10px 0}.res.ok{color:var(--ok)}.res.bad{color:var(--bad)}
 #log{font:12px/1.6 var(--mono);max-height:140px;overflow:auto;color:var(--mut)}
+
+.view[hidden]{display:none}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin:24px 0}
+.tile{display:block;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-top:2px solid var(--t,var(--acc));border-radius:6px;padding:20px;transition:.15s;cursor:pointer}
+.tile:hover{border-color:var(--t,var(--acc));box-shadow:0 0 14px rgba(86,156,214,.2)}
+.tile .big{font:700 28px/1.2 var(--mono);color:var(--t,var(--acc));margin-bottom:8px}
+.tile .nm{font:600 16px var(--mono);margin-bottom:6px}
+.tile .ft{font:12px var(--mono);color:var(--mut);margin-top:12px}
+.tile p{color:var(--mut);margin:4px 0}
+.lesson{display:flex;gap:16px;align-items:flex-start;margin:16px 0}
+.lesson .num{font:700 24px var(--mono);color:var(--t,var(--acc))}
+.back{font:13px var(--mono);color:var(--mut);text-decoration:none;cursor:pointer}.back:hover{color:var(--acc)}
+
+.pbar{height:18px;border:1px solid var(--line);background:var(--code);border-radius:2px;overflow:hidden;margin:10px 0}
+.pbar>div{height:100%;width:0;background:var(--ok);transition:width .25s}
+.item{display:flex;flex-direction:column;align-items:center;min-width:64px;padding:6px 10px;border:1px solid var(--line);background:var(--cell);border-radius:2px;font:14px var(--mono)}
+.item .ix{font-size:11px;color:var(--acc)}.item .ng{font-size:11px;color:var(--str)}
+.item.cur{background:var(--acc);color:var(--accfg)}.item.cur .ix,.item.cur .ng{color:var(--accfg)}
+.item.click{cursor:pointer}.item.click:hover{border-color:var(--acc)}
+.item.flash{animation:fl .7s}@keyframes fl{from{background:var(--ok)}}
+.pz{white-space:pre;text-align:left;display:block;width:100%;margin:4px 0;font-weight:400}
+.pzbox{min-height:44px;border:1px dashed var(--line);padding:6px;border-radius:2px;margin:8px 0}
+input[type=text],input[type=number],select{font:14px var(--mono);background:var(--code);color:var(--ink);border:1px solid var(--line);border-radius:2px;padding:6px 8px}
+.ctl{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:8px 0}
+.bag{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0;min-height:56px;align-items:center}
 </style>
 </head>
 <body>
 <main>
+<div class="view" id="v-home">
+<h1>Учим программирование</h1>
+<p class="mut">Выбери язык, а потом урок. Каждый урок можно запускать и пробовать прямо на странице.</p>
+<div class="tiles">
+  <a class="tile" style="--t:#569cd6" href="#/cpp" onclick="navTo('cpp');return false">
+    <div class="big">{ } C++</div>
+    <p>Алгоритмы, сложность, структуры данных. Пишем код и смотрим, как он работает.</p>
+    <div class="ft">уроков: 1</div>
+  </a>
+  <a class="tile" style="--t:#dcdcaa" href="#/python" onclick="navTo('python');return false">
+    <div class="big">&gt;&gt;&gt; Python</div>
+    <p>Первые шаги в программировании на простом и понятном языке.</p>
+    <div class="ft">уроков: 2</div>
+  </a>
+</div>
+</div>
+
+<div class="view" id="v-cpp" hidden>
+<a class="back" href="#/" onclick="navTo('home');return false">&lt; на главную</a>
+<h1>C++</h1>
+<p class="mut">Выбери урок.</p>
+<a class="tile lesson" style="--t:#569cd6" href="#/cpp/bigo" onclick="navTo('bigo');return false">
+  <div class="num">01</div>
+  <div>
+    <div class="nm">Сложность алгоритмов: Big O</div>
+    <p>Что такое Big O, как работают поиск и сортировка, и практика: напиши алгоритм поиска сам.</p>
+    <div class="ft">поиск, сортировка, практика</div>
+  </div>
+</a>
+</div>
+
+<div class="view" id="v-python" hidden>
+<a class="back" href="#/" onclick="navTo('home');return false">&lt; на главную</a>
+<h1>Python</h1>
+<p class="mut">Выбери урок.</p>
+<a class="tile lesson" style="--t:#dcdcaa" href="#/python/loops" onclick="navTo('loops');return false">
+  <div class="num">01</div>
+  <div><div class="nm">Циклы: for и while</div>
+  <p>Как заставить программу повторять действия. Лягушка, копилка и сборка программы из строк.</p>
+  <div class="ft">for, range, while, отступы</div></div>
+</a>
+<a class="tile lesson" style="--t:#dcdcaa" href="#/python/lists" onclick="navTo('lists');return false">
+  <div class="num">02</div>
+  <div><div class="nm">Списки</div>
+  <p>Как хранить много значений в одной переменной. Рюкзак, игра с номерами и обход списка циклом.</p>
+  <div class="ft">индексы, append, pop, for по списку</div></div>
+</a>
+</div>
+
+<div class="view" id="v-loops" hidden>
+<a class="back" href="#/python" onclick="navTo('python');return false">&lt; к урокам Python</a>
+<h1>Циклы: for и while</h1>
+<p class="mut">Цикл повторяет кусок кода столько раз, сколько нужно. Не надо писать одно и то же вручную.</p>
+
+<div class="card">
+<h2>Зачем нужен цикл</h2>
+<p>Допустим, надо пять раз вывести слово «привет». Можно написать print пять раз подряд. А если сто раз? Или тысячу? Писать это руками долго и скучно. Цикл сделает это за тебя:</p>
+<pre>for i in range(5):
+    print("привет")</pre>
+<p>Читается так: «для каждого i из пяти чисел напечатай привет». Переменная i по очереди становится 0, 1, 2, 3, 4. Значений пять, значит, и повторов пять.</p>
+<p>Перед print стоит отступ из четырёх пробелов. Всё, что с отступом под for, входит в цикл. Если отступ забыть, Python покажет ошибку.</p>
+</div>
+
+<div class="card">
+<h2>for и range</h2>
+<p>range(start, stop, step) выдаёт числа. <b>start</b> — с какого числа начать. <b>stop</b> — на каком остановиться, но само это число не берётся. <b>step</b> — на сколько прибавлять каждый раз. Если start и step не писать, start будет 0, а step будет 1.</p>
+<p>Подвигай ползунки и нажми «Запустить». Лягушка прыгает по тем числам, которые выдал range.</p>
+<div class="ctl"><label>start: <b id="rsv">0</b></label><input type="range" id="rs" min="0" max="10" value="0"></div>
+<div class="ctl"><label>stop: <b id="rev">12</b></label><input type="range" id="re" min="1" max="30" value="12"></div>
+<div class="ctl"><label>step: <b id="rpv">3</b></label><input type="range" id="rp" min="1" max="5" value="3"></div>
+<pre id="rcode"></pre>
+<div class="row" id="pyLane"></div>
+<button id="rrun">Запустить</button>
+<pre id="rout" style="min-height:24px"></pre>
+<div class="mut" id="rnote"></div>
+</div>
+
+<div class="card">
+<h2>Игра: что напечатает цикл</h2>
+<p>Посмотри на цикл и скажи, какое число напечатается последним. Подсказка: stop в список не попадает.</p>
+<pre id="qcode"></pre>
+<div class="ctl"><input type="number" id="qans" placeholder="твой ответ"><button id="qchk">Проверить</button><button class="sec" id="qnext">Другой пример</button></div>
+<div class="res" id="qmsg"></div>
+<div class="mut" id="qscore">Верных ответов подряд: 0</div>
+</div>
+
+<div class="card">
+<h2>Цикл while</h2>
+<p>Слово while значит «пока». Цикл повторяется, пока условие верно. Как только условие стало неверным, цикл заканчивается. Его берут, когда заранее не знаешь, сколько будет повторов. Например, копишь деньги на игру: откладываешь каждый день и каждый раз смотришь, хватает ли уже.</p>
+<p>Поменяй цель и сумму в день, потом запусти.</p>
+<div class="ctl"><label>цель: <b id="wgv">100</b></label><input type="range" id="wg" min="20" max="200" step="10" value="100"></div>
+<div class="ctl"><label>в день: <b id="wdv">15</b></label><input type="range" id="wd" min="5" max="50" step="5" value="15"></div>
+<label><input type="checkbox" id="wf"> забыть прибавлять деньги</label>
+<pre id="wcode"></pre>
+<div class="pbar"><div id="pyFill"></div></div>
+<button id="wrun">Запустить</button>
+<pre id="wlog" style="min-height:24px"></pre>
+<div class="mut" id="wnote"></div>
+<p>Внутри while что-то обязательно должно меняться. Если деньги не прибавляются, условие всегда остаётся верным, и цикл никогда не закончится. Это называется бесконечный цикл. Поставь галочку и посмотри, что будет.</p>
+</div>
+
+<div class="card">
+<h2>Игра: собери программу</h2>
+<p>Строки перемешаны. Нажимай на строки внизу, чтобы поставить их в программу по порядку. Нажми на строку в программе, чтобы убрать её обратно. Следи за отступами: они часть кода.</p>
+<div class="mut">Программа:</div>
+<div class="pzbox" id="pzAns"></div>
+<div class="mut">Строки:</div>
+<div class="pzbox" id="pzPool"></div>
+<button id="pzChk">Проверить</button><button class="sec" id="pzNext">Другая задача</button>
+<div class="res" id="pzMsg"></div>
+</div>
+
+<div class="card">
+<h2>Частые ошибки</h2>
+<ul>
+<li>Забыл двоеточие в конце строки с for или while.</li>
+<li>Забыл отступ у строк внутри цикла.</li>
+<li>В while ничего не меняется, и цикл не заканчивается. Остановить программу можно кнопкой Stop или клавишами Ctrl+C.</li>
+<li>Думаешь, что range(5) даст 1, 2, 3, 4, 5. На самом деле он даст 0, 1, 2, 3, 4.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>Урок пройден</h2>
+<p class="mut">Выбери, что делать дальше.</p>
+<button onclick="navTo('python')">К урокам Python</button>
+<button onclick="navTo('lists')">Следующий урок: Списки</button>
+<button class="sec" onclick="navTo('home')">На главную</button>
+</div>
+</div>
+
+<div class="view" id="v-lists" hidden>
+<a class="back" href="#/python" onclick="navTo('python');return false">&lt; к урокам Python</a>
+<h1>Списки</h1>
+<p class="mut">Список хранит много значений под одним именем.</p>
+
+<div class="card">
+<h2>Что такое список</h2>
+<p>Представь полку с пронумерованными ячейками. В каждой лежит один предмет. Вся полка — это список.</p>
+<pre>fruits = ["яблоко", "груша", "слива"]</pre>
+<p>Номера ячеек начинаются с нуля, а не с единицы. Поэтому первый элемент — fruits[0], второй — fruits[1]. Последний можно взять с конца: fruits[-1]. Сколько в списке элементов, скажет len(fruits).</p>
+<pre>fruits[0]     # "яблоко"
+fruits[2]     # "слива"
+fruits[-1]    # "слива"
+len(fruits)   # 3</pre>
+</div>
+
+<div class="card">
+<h2>Рюкзак</h2>
+<p>Напиши название предмета и нажми кнопку. Внизу видно, какую команду выполнил Python. Чтобы убрать конкретный предмет, нажми на него. Над предметом написан его номер.</p>
+<div class="ctl"><input type="text" id="bi" value="зелье" maxlength="14">
+<button id="badd">append</button><button id="bins">insert в начало</button><button class="sec" id="bpop">pop()</button><button class="sec" id="bclr">clear()</button></div>
+<div class="bag" id="bag"></div>
+<pre id="brepr"></pre>
+<div class="res bad" id="bmsg"></div>
+<div class="mut">Команды, которые уже выполнены:</div>
+<pre id="blog" style="min-height:24px"></pre>
+<ul>
+<li><b>append(x)</b> добавляет в конец.</li>
+<li><b>insert(0, x)</b> ставит x на место с номером 0, остальные сдвигаются вправо.</li>
+<li><b>pop()</b> убирает последний элемент и отдаёт его.</li>
+<li><b>remove(x)</b> убирает первый элемент, равный x.</li>
+<li><b>clear()</b> очищает список.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>Игра: достань элемент</h2>
+<p>Нажми на ячейку, которую выведет print. Сверху у ячейки обычный номер, снизу номер с конца. Бывают и отрицательные номера, будь внимателен.</p>
+<pre id="icode"></pre>
+<div class="bag" id="ibox"></div>
+<div class="res" id="imsg"></div>
+<button id="inext">Следующий вопрос</button>
+<div class="mut" id="iscore">Верных ответов: 0 из 0</div>
+</div>
+
+<div class="card">
+<h2>Цикл for по списку</h2>
+<p>Цикл for умеет сам идти по списку. Не нужны ни range, ни номера: переменная x по очереди становится каждым элементом.</p>
+<p>Впиши свои числа через запятую (не больше восьми), выбери, что считать, и запусти.</p>
+<div class="ctl"><input type="text" id="lin" value="3, 7, 2, 9, 4">
+<select id="lop"><option value="sum">сумма</option><option value="max">максимум</option><option value="even">сколько чётных</option></select></div>
+<pre id="lcode"></pre>
+<div class="bag" id="lbox"></div>
+<button id="lrun">Запустить</button>
+<pre id="lstate" style="min-height:24px"></pre>
+<div class="res" id="lres"></div>
+</div>
+
+<div class="card">
+<h2>Частые ошибки</h2>
+<ul>
+<li>Счёт идёт с нуля. У списка из трёх элементов номера 0, 1, 2.</li>
+<li>Если взять номер, которого нет, будет ошибка IndexError. Например, у списка из трёх элементов нет numbers[3].</li>
+<li>pop() у пустого списка тоже даёт IndexError. Попробуй в рюкзаке.</li>
+<li>remove(x) даёт ошибку ValueError, если такого элемента в списке нет.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>Урок пройден</h2>
+<p class="mut">Выбери, что делать дальше.</p>
+<button onclick="navTo('python')">К урокам Python</button>
+<button disabled>Следующий урок (скоро)</button>
+<button class="sec" onclick="navTo('home')">На главную</button>
+</div>
+</div>
+
+<div class="view" id="v-bigo" hidden>
 <h1>Big O: учим алгоритмы</h1>
 <p class="mut">План урока: сначала разберёмся, что такое Big O, потом посмотрим, как работают поиск и сортировка, а в конце ты напишешь алгоритм сам.</p>
 <div class="card">
@@ -184,6 +418,14 @@ for (int i = 0; i &lt; n; i++)
   <div class="row" id="row"></div>
   <div id="log"></div>
   <div class="res" id="out"></div>
+</div>
+<div class="card">
+  <h2>Урок пройден</h2>
+  <p class="mut">Выбери, что делать дальше.</p>
+  <button onclick="navTo('cpp')">К урокам C++</button>
+  <button id="nextLesson" disabled>Следующий урок (скоро)</button>
+  <button class="sec" onclick="navTo('home')">На главную</button>
+</div>
 </div>
 </main>
 
@@ -462,6 +704,157 @@ $('src').addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();con
 load(0);
 
 window.loadLv=load;
+})();
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id),sleep=ms=>new Promise(r=>setTimeout(r,ms)),rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const times=n=>n+' '+((n%10>=2&&n%10<=4&&(n%100<10||n%100>=20))?'раза':'раз');
+const shuf=a=>a.slice().sort(()=>Math.random()-.5);
+/* ---- range demo */
+const lane=$('pyLane');
+for(let i=0;i<30;i++){const c=document.createElement('div');c.className='cell';c.id='pl'+i;c.textContent=i;lane.appendChild(c);}
+function rcode(){const a=+$('rs').value,b=+$('re').value,c=+$('rp').value;
+  $('rsv').textContent=a;$('rev').textContent=b;$('rpv').textContent=c;
+  $('rcode').textContent='for i in range('+a+', '+b+', '+c+'):\n    print(i)';}
+['rs','re','rp'].forEach(i=>$(i).oninput=rcode);rcode();
+let rbusy=false;
+$('rrun').onclick=async()=>{
+  if(rbusy)return;rbusy=true;$('rrun').disabled=true;
+  const a=+$('rs').value,b=+$('re').value,c=+$('rp').value,out=[];
+  for(let i=0;i<30;i++){const e=$('pl'+i);e.className='cell';e.textContent=i;}
+  $('rout').textContent='';$('rnote').textContent='';
+  for(let i=a;i<b;i+=c){const e=$('pl'+i);e.className='cell cur';e.textContent='🐸';await sleep(260);
+    e.className='cell vis';e.textContent=i;out.push(i);$('rout').textContent=out.join(' ');}
+  $('rnote').textContent=out.length?'Цикл сделал '+times(out.length)+'. Число '+b+' не попало в список, потому что stop не берётся.':'Цикл не сделал ни одного шага: start уже не меньше stop.';
+  rbusy=false;$('rrun').disabled=false;
+};
+/* ---- predict game */
+let q,qs=0;
+function qnew(){const a=rnd(0,5),c=rnd(1,4),b=a+rnd(3,18),seq=[];for(let i=a;i<b;i+=c)seq.push(i);
+  q={seq};$('qcode').textContent='for i in range('+a+', '+b+', '+c+'):\n    print(i)';
+  $('qans').value='';$('qmsg').textContent='';$('qmsg').className='res';}
+$('qchk').onclick=()=>{const v=$('qans').value.trim();if(v==='')return;const last=q.seq[q.seq.length-1],m=$('qmsg');
+  if(+v===last){qs++;m.className='res ok';m.textContent='Верно. Последнее число: '+last+'.';}
+  else{qs=0;m.className='res bad';m.textContent='Не так. Цикл напечатает: '+q.seq.join(' ')+'. Последнее число: '+last+'.';}
+  $('qscore').textContent='Верных ответов подряд: '+qs;};
+$('qnext').onclick=qnew;qnew();
+/* ---- while demo */
+function wcode(){const g=+$('wg').value,d=+$('wd').value,f=$('wf').checked;
+  $('wgv').textContent=g;$('wdv').textContent=d;
+  $('wcode').textContent='money = 0\ndays = 0\nwhile money < '+g+':\n'+(f?'':'    money += '+d+'\n')+'    days += 1\nprint(days)';}
+['wg','wd','wf'].forEach(i=>$(i).oninput=wcode);wcode();
+let wbusy=false;
+$('wrun').onclick=async()=>{
+  if(wbusy)return;wbusy=true;$('wrun').disabled=true;
+  const g=+$('wg').value,d=+$('wd').value,f=$('wf').checked;let money=0,days=0,log='';
+  const fill=$('pyFill');fill.style.width='0%';$('wlog').textContent='';$('wnote').textContent='';
+  const delay=Math.min(350,3000/Math.ceil(g/d));
+  const upd=()=>{log+='день '+days+': в копилке '+money+'\n';$('wlog').textContent=log;fill.style.width=Math.min(100,money/g*100)+'%';};
+  if(!f){while(money<g){money+=d;days++;upd();await sleep(delay);}
+    $('wnote').textContent='Цель достигнута за '+days+' дней. print(days) выведет '+days+'.';}
+  else{for(let k=0;k<8;k++){days++;upd();await sleep(300);}
+    $('wnote').textContent='Деньги не растут, условие money < '+g+' всегда верно. Такой цикл никогда не закончится. Мы остановили показ сами.';}
+  wbusy=false;$('wrun').disabled=false;
+};
+/* ---- code puzzle */
+const PZ=[
+{lines:['n = 1','while n <= 3:','    print(n)','    n += 1'],out:'1 2 3'},
+{lines:['total = 0','for i in range(1, 5):','    total += i','print(total)'],out:'10'},
+{lines:['word = "ура"','for i in range(3):','    print(word)'],out:'ура ура ура'},
+{lines:['x = 10','while x > 0:','    x -= 4','print(x)'],out:'-2'}];
+let pi=-1,pool=[],ans=[];
+function prender(){
+  const mk=(arr,id)=>{const box=$(id);box.innerHTML='';arr.forEach((o,k)=>{const b=document.createElement('button');b.className='sec pz';b.textContent=o.t;
+    b.onclick=()=>{if(id==='pzPool')ans.push(pool.splice(k,1)[0]);else pool.push(ans.splice(k,1)[0]);prender();};box.appendChild(b);});};
+  mk(pool,'pzPool');mk(ans,'pzAns');}
+function pnew(){pi=(pi+1)%PZ.length;pool=PZ[pi].lines.map((t,i)=>({t,i}));
+  do{pool=shuf(pool);}while(pool.every((x,k)=>x.i===k));
+  ans=[];$('pzMsg').textContent='';$('pzMsg').className='res';prender();}
+$('pzChk').onclick=()=>{const p=PZ[pi],m=$('pzMsg');
+  if(pool.length){m.className='res bad';m.textContent='Сначала поставь все строки.';return;}
+  if(ans.map(o=>o.t).join('\n')===p.lines.join('\n')){m.className='res ok';m.textContent='Верно. Программа напечатает: '+p.out;}
+  else{m.className='res bad';m.textContent='Не получилось. Проверь порядок строк и отступы.';}};
+$('pzNext').onclick=pnew;pnew();
+
+/* ---- backpack */
+let bag=['меч','щит','карта'];const hist=[];
+const rep=a=>'['+a.map(x=>'"'+x+'"').join(', ')+']';
+function cmd(c){hist.push(c);if(hist.length>6)hist.shift();$('blog').textContent=hist.join('\n');}
+function bdraw(f){const box=$('bag');box.innerHTML='';
+  bag.forEach((t,i)=>{const d=document.createElement('div');d.className='item click'+(i===f?' flash':'');
+    const a=document.createElement('span');a.className='ix';a.textContent=i;
+    const b=document.createElement('span');b.textContent=t;d.append(a,b);d.title='нажми, чтобы убрать';
+    d.onclick=()=>{cmd('bag.remove("'+t+'")');bag.splice(bag.indexOf(t),1);$('bmsg').textContent='';bdraw();};box.appendChild(d);});
+  if(!bag.length)box.innerHTML='<span class="mut">[] список пуст</span>';
+  $('brepr').textContent='bag = '+rep(bag)+'\nlen(bag) = '+bag.length;}
+const bname=()=>$('bi').value.trim()||'предмет';
+function full(){if(bag.length>=10){$('bmsg').textContent='В рюкзаке нет места: максимум 10 предметов.';return true;}$('bmsg').textContent='';return false;}
+$('badd').onclick=()=>{if(full())return;const n=bname();cmd('bag.append("'+n+'")');bag.push(n);bdraw(bag.length-1);};
+$('bins').onclick=()=>{if(full())return;const n=bname();cmd('bag.insert(0, "'+n+'")');bag.unshift(n);bdraw(0);};
+$('bpop').onclick=()=>{if(!bag.length){cmd('bag.pop()   # ошибка');$('bmsg').textContent='IndexError: pop from empty list. Из пустого списка нечего доставать.';return;}
+  $('bmsg').textContent='';const x=bag.pop();cmd('bag.pop()   # вернул "'+x+'"');bdraw();};
+$('bclr').onclick=()=>{$('bmsg').textContent='';cmd('bag.clear()');bag=[];bdraw();};
+bdraw();
+/* ---- index game */
+const POOL=['кот','пёс','лиса','ёж','сова','заяц','волк','мышь','утка','лось'];
+let ig,lock=false,good=0,tries=0;
+function inew(){lock=false;const w=shuf(POOL).slice(0,5),k=rnd(-5,4);ig={w,k,a:(k+5)%5};
+  $('icode').textContent='animals = ['+w.map(x=>'"'+x+'"').join(', ')+']\nprint(animals['+k+'])';
+  const box=$('ibox');box.innerHTML='';
+  w.forEach((t,i)=>{const d=document.createElement('div');d.className='item click';d.id='ib'+i;
+    const x=document.createElement('span');x.className='ix';x.textContent=i;
+    const y=document.createElement('span');y.textContent=t;
+    const z=document.createElement('span');z.className='ng';z.textContent=i-5;
+    d.append(x,y,z);d.onclick=()=>ipick(i);box.appendChild(d);});
+  $('imsg').textContent='';$('imsg').className='res';}
+function ipick(i){if(lock)return;lock=true;tries++;const m=$('imsg'),w=ig.w[ig.a];
+  $('ib'+ig.a).classList.add('cur');
+  if(i===ig.a){good++;m.className='res ok';m.textContent='Верно. animals['+ig.k+'] это "'+w+'".';}
+  else{m.className='res bad';m.textContent='Нет. animals['+ig.k+'] это "'+w+'", он стоит под номером '+ig.a+'.';}
+  $('iscore').textContent='Верных ответов: '+good+' из '+tries;}
+$('inext').onclick=inew;inew();
+/* ---- for over list */
+const OPS={
+sum:{n:'total',code:l=>'total = 0\nfor x in '+l+':\n    total += x\nprint(total)',init:a=>0,step:(s,x)=>s+x},
+max:{n:'best',code:l=>'best = '+l+'[0]\nfor x in '+l+':\n    if x > best:\n        best = x\nprint(best)',init:a=>a[0],step:(s,x)=>x>s?x:s},
+even:{n:'count',code:l=>'count = 0\nfor x in '+l+':\n    if x % 2 == 0:\n        count += 1\nprint(count)',init:a=>0,step:(s,x)=>x%2===0?s+1:s}};
+const nums=()=>$('lin').value.split(',').map(s=>s.trim()).filter(s=>s!=='').map(Number).filter(Number.isFinite).slice(0,8);
+function ldraw(a,cur){const box=$('lbox');box.innerHTML='';
+  a.forEach((v,k)=>{const d=document.createElement('div');d.className='item'+(k===cur?' cur':'');
+    const x=document.createElement('span');x.className='ix';x.textContent=k;
+    const y=document.createElement('span');y.textContent=v;d.append(x,y);box.appendChild(d);});}
+function lupd(){const a=nums();ldraw(a);$('lcode').textContent='numbers = ['+a.join(', ')+']\n'+OPS[$('lop').value].code('numbers');
+  $('lstate').textContent='';$('lres').textContent='';}
+$('lin').oninput=lupd;$('lop').onchange=lupd;lupd();
+let lbusy=false;
+$('lrun').onclick=async()=>{
+  const a=nums();if(lbusy)return;
+  if(!a.length){$('lres').className='res bad';$('lres').textContent='Впиши хотя бы одно число.';return;}
+  lbusy=true;$('lrun').disabled=true;const op=OPS[$('lop').value];let st=op.init(a);$('lres').textContent='';
+  for(let k=0;k<a.length;k++){ldraw(a,k);st=op.step(st,a[k]);$('lstate').textContent='x = '+a[k]+',   '+op.n+' = '+st;await sleep(650);}
+  ldraw(a);$('lres').className='res ok';$('lres').textContent='print выведет: '+st;
+  lbusy=false;$('lrun').disabled=false;
+};
+})();
+</script>
+<script>
+(function(){
+  const V={home:'v-home',cpp:'v-cpp',python:'v-python',bigo:'v-bigo',loops:'v-loops',lists:'v-lists'};
+  const H={home:'',bigo:'cpp/bigo',loops:'python/loops',lists:'python/lists'};
+  const R={'cpp/bigo':'bigo','python/loops':'loops','python/lists':'lists'};
+  function show(n){
+    const id=V[n]||V.home;
+    document.querySelectorAll('.view').forEach(v=>v.hidden=v.id!==id);
+    window.scrollTo(0,0);
+  }
+  window.navTo=function(n){try{location.hash='#/'+(n in H?H[n]:n);}catch(e){}show(n);};
+  function fromHash(){
+    const h=location.hash.replace(/^#\/?/,'');
+    show(R[h]||h||'home');
+  }
+  addEventListener('hashchange',fromHash);
+  fromHash();
 })();
 </script>
 </body>
