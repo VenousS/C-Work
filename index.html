@@ -1,432 +1,365 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Учим программирование</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#f4f6fc;--card:#fff;--ink:#1d2438;--muted:#626c84;
-  --accent:#6c5ce7;--accent-soft:#efeaff;--good:#00b894;--bad:#e17055;--warn:#f39c12;
-  --code:#141a2e;--code-ink:#e9edff;--line:#e5e8f4;--r:16px;
-  --mono:ui-monospace,'Cascadia Code','JetBrains Mono',Consolas,monospace;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:'Segoe UI',system-ui,Arial,sans-serif;line-height:1.6}
-.page{max-width:880px;margin:0 auto;padding:28px 18px 90px}
-a{color:var(--accent)}
-.back{display:inline-block;margin-bottom:18px;text-decoration:none;font-weight:600}
-.crumb{color:var(--muted);font-weight:700;text-transform:uppercase;font-size:13px;letter-spacing:.08em;margin:0 0 6px}
-h1{font-size:36px;margin:0 0 10px}
-h2{font-size:24px;margin:34px 0 10px;display:flex;align-items:center;gap:12px}
-h3{font-size:19px}
-.lead{font-size:18px;color:var(--muted);margin:0 0 8px}
-p{margin:10px 0}
-ul,ol{margin:8px 0;padding-left:24px}
-li{margin:6px 0}
-code{font-family:var(--mono);background:#eef1fb;border-radius:6px;padding:1px 6px;font-size:.95em}
-.view{display:none}
-.view.on{display:block}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;margin:16px 0;box-shadow:0 3px 14px rgba(25,35,80,.06)}
-pre.code{background:var(--code);color:var(--code-ink);padding:16px 18px;border-radius:12px;overflow-x:auto;font-family:var(--mono);font-size:14px;line-height:1.65;margin:12px 0;white-space:pre}
-.tag{display:inline-block;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:2px 10px;font-size:13px;font-weight:700;margin:2px 4px 2px 0}
-.btn{display:inline-block;border:0;cursor:pointer;background:var(--accent);color:#fff;font-weight:700;font-size:15px;padding:10px 18px;border-radius:12px;font-family:inherit;text-decoration:none;transition:transform .08s ease,opacity .15s}
-.btn:hover{opacity:.92}
-.btn:active{transform:scale(.97)}
-.btn.ghost{background:#fff;color:var(--accent);border:2px solid var(--accent)}
-.btn.tog{background:#fff;color:var(--muted);border:2px solid var(--line)}
-.btn.tog.active{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
-.btn:disabled{opacity:.45;cursor:default}
-.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:10px 0}
-.row label{display:inline-flex;align-items:center;gap:8px;font-size:14px}
-input[type=range]{accent-color:var(--accent);width:170px}
-input[type=number],input[type=text],select{padding:9px 12px;border-radius:10px;border:2px solid var(--line);font-size:15px;font-family:inherit;background:#fff}
-.msg{font-weight:700;margin:8px 0 0}
-.msg.good{color:var(--good)}
-.msg.bad{color:var(--bad)}
-.badge{font-weight:800;color:var(--accent)}
-.placeholder{color:#98a1b8;padding:6px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0}
-.opt{background:#fff;border:2px solid var(--line);border-radius:12px;padding:12px;font-family:var(--mono);font-size:14px;cursor:pointer;text-align:left;transition:border-color .12s}
-.opt:hover{border-color:var(--accent)}
-.opt.ok{border-color:var(--good);background:#e8faf4}
-.opt.bad{border-color:var(--bad);background:#fdeee9}
-.opt:disabled{cursor:default}
-.tbl{width:100%;border-collapse:collapse;font-size:14px;margin:12px 0}
-.tbl th,.tbl td{border:1px solid var(--line);padding:8px 10px;text-align:left}
-.tbl th{background:#f0f2fb}
-.log{background:#0e1322;color:#c9ffdd;font-family:var(--mono);font-size:14px;border-radius:12px;padding:12px 14px;min-height:56px;white-space:pre-wrap;max-height:220px;overflow:auto}
-.h-ico{width:36px;height:36px;border-radius:11px;display:inline-flex;align-items:center;justify-content:center;flex:none;background:linear-gradient(135deg,#6c5ce7,#9b8cff);box-shadow:0 5px 12px rgba(108,92,231,.28)}
-.h-ico svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.h-ico.v2{background:linear-gradient(135deg,#00b894,#3ddbc0)}
-.h-ico.v3{background:linear-gradient(135deg,#ff9f43,#ffc048)}
-.h-ico.v4{background:linear-gradient(135deg,#4d96ff,#6cb2ff)}
-.h-ico.v5{background:linear-gradient(135deg,#5f27cd,#8854e0)}
-.h-ico.v6{background:linear-gradient(135deg,#f368e0,#ff8ff0)}
-.h-ico.v7{background:linear-gradient(135deg,#ff6b6b,#ff9c9c)}
-/* главная и списки */
-.lang-logo{font-family:var(--mono);font-size:30px;font-weight:800;margin-bottom:6px}
-.lang-logo.cpp{color:#6cb2ff}
-.lang-logo.py{color:#ffd43b}
-.lang-card{display:block;text-decoration:none;color:inherit;transition:transform .12s,border-color .12s}
-.lang-card:hover{transform:translateY(-3px);border-color:var(--accent)}
-.lesson-card{display:block;text-decoration:none;color:inherit;transition:transform .12s,border-color .12s}
-.lesson-card:hover{transform:translateY(-3px);border-color:var(--accent)}
-.lesson-num{display:inline-block;font-family:var(--mono);font-weight:800;color:var(--accent);background:var(--accent-soft);border-radius:8px;padding:2px 10px;margin-bottom:8px}
-/* лягушка */
-.track{display:flex;gap:4px;flex-wrap:wrap;position:relative;padding-top:46px;min-height:96px}
-.tile{width:34px;height:34px;border-radius:9px;background:#e9edfa;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
-.tile.hit{background:#b2f2bb;color:#087f23;font-weight:700}
-.frog{width:34px;height:26px;background:#4caf50;border-radius:50% 50% 45% 45%;position:absolute;top:8px;left:2px;transition:left .35s ease}
-.frog::before,.frog::after{content:'';position:absolute;top:-5px;width:10px;height:10px;background:#4caf50;border-radius:50%}
-.frog::before{left:4px}.frog::after{right:4px}
-/* копилка */
-.pbar{height:16px;background:#eef1fb;border-radius:99px;overflow:hidden;margin:10px 0}
-.pbar i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#ffd43b,#ff9f43);transition:width .15s}
-.chk{display:inline-flex;gap:6px;align-items:center;font-size:14px;cursor:pointer}
-/* конструктор */
-.build-area{border:2px dashed #cfd5ea;border-radius:12px;padding:10px;min-height:66px;background:#fbfcff;margin:8px 0}
-.line-btn{display:block;width:100%;text-align:left;font-family:var(--mono);font-size:14px;white-space:pre;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:7px 10px;margin:5px 0;cursor:pointer}
-.line-btn:hover{border-color:var(--accent)}
-/* рюкзак и ячейки */
-.shelf{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;min-height:56px}
-.chip{display:inline-flex;flex-direction:column;align-items:center;background:#f0f2fb;border:2px solid transparent;border-radius:10px;padding:6px 12px;cursor:pointer;transition:border-color .12s}
-.chip:hover{border-color:var(--bad)}
-.chip-i{font-size:11px;color:var(--muted);font-family:var(--mono)}
-.chip-v{font-weight:600}
-.cell{display:flex;flex-direction:column;align-items:center;padding:8px 12px;border:2px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;font-family:inherit;transition:border-color .12s}
-.cell:hover{border-color:var(--accent)}
-.cell-idx{font-size:11px;color:var(--muted);font-family:var(--mono)}
-.cell-neg{font-size:11px;color:#9b8cff;font-family:var(--mono)}
-.cell-val{font-weight:600;margin:2px 0}
-.cell.ok{border-color:var(--good);background:#e8faf4}
-.cell.bad{border-color:var(--bad);background:#fdeee9}
-.cell.done{border-color:var(--good);background:#b2f2bb}
-.cell.cur{border-color:var(--warn);background:#fff3bf}
-/* домики и столбики */
-.houses{display:flex;gap:5px;flex-wrap:wrap;margin:12px 0}
-.house{width:32px;height:32px;border-radius:8px;background:#e9edfa;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);font-family:var(--mono);border:0;cursor:pointer;padding:0}
-.house.cur{background:#ffe066;color:#5f4b00;font-weight:700}
-.house.visited{background:#dfe3f2}
-.house.dead{opacity:.3}
-.house.found{background:var(--good);color:#fff;font-weight:700}
-.house.less{background:#ffd6d6}
-.house.more{background:#d6e9ff}
-.bars{display:flex;align-items:flex-end;gap:4px;height:210px;padding:26px 10px 8px;background:#fff;border:1px solid var(--line);border-radius:12px;margin:12px 0}
-.bar{flex:1;min-width:8px;background:linear-gradient(180deg,#9b8cff,#6c5ce7);border-radius:4px 4px 0 0;position:relative;transition:height .12s}
-.bar .bar-n{position:absolute;top:-17px;left:0;right:0;text-align:center;font-size:10px;color:var(--muted);font-family:var(--mono)}
-.bar.cmp{background:#4d96ff}
-.bar.swap{background:#ff9f43}
-.bar.done{background:#00b894}
-.bar.sel{outline:3px solid var(--accent)}
-/* функции: фрукты и стаканы */
-.fdot{display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:8px;vertical-align:-2px;background:radial-gradient(circle at 32% 30%,rgba(255,255,255,.85),rgba(255,255,255,0) 45%),var(--fc);box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
-.fruit-btn{display:inline-flex;align-items:center;font-size:15px;padding:8px 14px;border-radius:12px;border:2px solid var(--line);background:#fff;cursor:pointer;font-family:inherit}
-.fruit-btn.active{border-color:var(--accent);background:var(--accent-soft)}
-.cups{min-height:52px;padding-top:8px}
-.cup{position:relative;display:inline-block;width:30px;height:40px;margin:2px 12px 2px 0;vertical-align:bottom;animation:pop .4s ease}
-.cup::before{content:'';position:absolute;inset:5px 0 0;background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(255,255,255,0) 45%),var(--fc);clip-path:polygon(4% 0,96% 0,80% 100%,20% 100%)}
-.cup::after{content:'';position:absolute;top:-6px;left:17px;width:4px;height:20px;border-radius:3px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.1);transform:rotate(16deg)}
-@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
-@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
-.shake{animation:shake .3s}
-.tries{font-family:var(--mono);font-size:14px;background:#f0f2fb;border-radius:12px;padding:10px 14px;min-height:48px;max-height:150px;overflow:auto}
-.tries div{padding:2px 0;border-bottom:1px dashed #dfe3f2}
-.codepad{width:100%;min-height:190px;font-family:var(--mono);font-size:14px;line-height:1.6;background:var(--code);color:var(--code-ink);border-radius:12px;border:0;padding:14px;resize:vertical}
-.done{background:linear-gradient(135deg,#6c5ce7,#00b894);color:#fff;border-radius:var(--r);padding:26px;margin-top:36px;text-align:center}
-.done h2{margin:0 0 6px;color:#fff;justify-content:center}
-.done p{opacity:.9;margin:0 0 16px}
-.done .btn{background:#fff;color:var(--accent);margin:4px}
-.done .btn:disabled{background:rgba(255,255,255,.35);color:#fff}
-@media(max-width:640px){.grid2{grid-template-columns:1fr}h1{font-size:28px}}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark;
+--bg:#0d1117;--card:#161b22;--ink:#e6edf3;--mut:#8b949e;--line:#30363d;--acc:#569cd6;--accfg:#0d1117;--str:#ce9178;--fn:#dcdcaa;
+--ok:#3fb950;--bad:#f85149;--cell:#21262d;--vis:#4a3a1f;--dead:#12161c;--code:#0d1117;--codeink:#c9d1d9;
+--mono:"JetBrains Mono","Fira Code",Consolas,ui-monospace,monospace;--sans:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 var(--sans);-webkit-font-smoothing:antialiased}
+main{max-width:800px;margin:0 auto;padding:24px 16px 48px}
+h1{font:700 26px/1.3 var(--mono);margin:8px 0 12px;letter-spacing:-.5px}
+h1::before{content:">_ ";color:var(--ok)}
+h2{font:600 18px/1.4 var(--mono);margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+h2::before{content:"// ";color:var(--mut)}
+h3{font:600 14px/1.4 var(--mono);color:var(--str);margin:20px 0 6px}
+h3::before{content:"{ } ";color:var(--mut)}
+p{margin:8px 0}ul{margin:6px 0;padding-left:22px}li{margin:3px 0}
+b{color:#fff;font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-top:2px solid var(--acc);border-radius:6px;padding:18px 20px;margin:24px 0}
+.mut{color:var(--mut)}
+button{font:600 13px var(--mono);border:1px solid var(--acc);border-radius:2px;padding:8px 14px;background:rgba(86,156,214,.12);color:var(--acc);cursor:pointer;margin:4px 6px 4px 0;transition:.15s}
+button:hover:not(:disabled){background:rgba(86,156,214,.25);box-shadow:0 0 10px rgba(86,156,214,.35)}
+button.sec{background:transparent;border-color:var(--line);color:var(--mut)}
+button.sec:hover:not(:disabled){border-color:var(--acc);color:var(--acc);box-shadow:none}
+button.on{background:var(--acc);color:var(--accfg);border-color:var(--acc)}
+button:disabled{opacity:.35;cursor:default}
+button:focus-visible,textarea:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+label{font:13px var(--mono);color:var(--mut)}
+.row{display:flex;flex-wrap:wrap;gap:3px;margin:14px 0}
+.cell{min-width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:2px;border:1px solid var(--line);background:var(--cell);font:12px var(--mono);color:var(--mut);flex:0 0 auto;transition:.15s}
+.cell.vis{background:var(--vis);border-color:var(--str);color:var(--str)}
+.cell.dead{background:var(--dead);opacity:.45}
+.cell.cur{background:var(--acc);border-color:var(--acc);color:var(--accfg);font-size:20px;transform:scale(1.15);box-shadow:0 0 12px rgba(86,156,214,.6)}
+.cell.win{background:var(--ok);border-color:var(--ok);color:var(--accfg);font-size:20px;box-shadow:0 0 12px rgba(63,185,80,.5)}
+.stat{font:600 15px var(--mono);color:var(--fn);margin:8px 0}
+pre{background:var(--code);color:var(--codeink);border:1px solid var(--line);border-left:3px solid var(--acc);padding:12px 14px;border-radius:2px;overflow-x:auto;font:13px/1.6 var(--mono);margin:12px 0}
+table{border-collapse:collapse;width:100%;font:13px var(--mono);margin:12px 0}
+td,th{padding:7px 10px;border-bottom:1px solid var(--line);text-align:right}
+th{color:var(--mut);font-weight:600;border-bottom:1px solid var(--acc);text-transform:uppercase;font-size:11px;letter-spacing:.5px}
+th:first-child,td:first-child{text-align:left}
+table.l td,table.l th{text-align:left}table.l td{font-family:var(--sans);font-size:14px}table.l td:first-child{font-family:var(--mono);color:var(--str)}
+.gbtn{min-width:44px;padding:7px 0;margin:2px;text-align:center}
+.msg{font:600 15px var(--mono);min-height:30px;color:var(--fn)}
+input[type=range]{width:100%;accent-color:var(--acc)}
+#bars{display:flex;align-items:flex-end;gap:3px;height:150px;margin:14px 0;padding:8px 8px 0;background:var(--code);border:1px solid var(--line);border-radius:2px}
+.bar{flex:1;background:var(--cell);border:1px solid var(--line);border-bottom:0;transition:height .1s}
+.bar.hi{background:var(--acc);border-color:var(--acc)}.bar.fin{background:var(--ok);border-color:var(--ok)}
+textarea{width:100%;height:230px;font:14px/1.6 var(--mono);background:var(--code);color:var(--codeink);border:1px solid var(--line);border-left:3px solid var(--acc);border-radius:2px;padding:12px 14px;resize:vertical;tab-size:4;box-sizing:border-box;caret-color:var(--acc)}
+.res{font:600 14px/1.6 var(--mono);margin:10px 0}.res.ok{color:var(--ok)}.res.bad{color:var(--bad)}
+#log{font:12px/1.6 var(--mono);max-height:140px;overflow:auto;color:var(--mut)}
+
+.view[hidden]{display:none}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin:24px 0}
+.tile{display:block;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-top:2px solid var(--t,var(--acc));border-radius:6px;padding:20px;transition:.15s;cursor:pointer}
+.tile:hover{border-color:var(--t,var(--acc));box-shadow:0 0 14px rgba(86,156,214,.2)}
+.tile .big{font:700 28px/1.2 var(--mono);color:var(--t,var(--acc));margin-bottom:8px}
+.tile .nm{font:600 16px var(--mono);margin-bottom:6px}
+.tile .ft{font:12px var(--mono);color:var(--mut);margin-top:12px}
+.tile p{color:var(--mut);margin:4px 0}
+.lesson{display:flex;gap:16px;align-items:flex-start;margin:16px 0}
+.lesson .num{font:700 24px var(--mono);color:var(--t,var(--acc))}
+.back{font:13px var(--mono);color:var(--mut);text-decoration:none;cursor:pointer}.back:hover{color:var(--acc)}
+
+.pbar{height:18px;border:1px solid var(--line);background:var(--code);border-radius:2px;overflow:hidden;margin:10px 0}
+.pbar>div{height:100%;width:0;background:var(--ok);transition:width .25s}
+.item{display:flex;flex-direction:column;align-items:center;min-width:64px;padding:6px 10px;border:1px solid var(--line);background:var(--cell);border-radius:2px;font:14px var(--mono)}
+.item .ix{font-size:11px;color:var(--acc)}.item .ng{font-size:11px;color:var(--str)}
+.item.cur{background:var(--acc);color:var(--accfg)}.item.cur .ix,.item.cur .ng{color:var(--accfg)}
+.item.click{cursor:pointer}.item.click:hover{border-color:var(--acc)}
+.item.flash{animation:fl .7s}@keyframes fl{from{background:var(--ok)}}
+.pz{white-space:pre;text-align:left;display:block;width:100%;margin:4px 0;font-weight:400}
+.pzbox{min-height:44px;border:1px dashed var(--line);padding:6px;border-radius:2px;margin:8px 0}
+input[type=text],input[type=number],select{font:14px var(--mono);background:var(--code);color:var(--ink);border:1px solid var(--line);border-radius:2px;padding:6px 8px}
+.ctl{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:8px 0}
+.bag{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0;min-height:56px;align-items:center}
+
+.bars2{display:flex;align-items:flex-end;gap:3px;height:160px;margin:14px 0;padding:8px 8px 0;background:var(--code);border:1px solid var(--line);border-radius:2px}
+.bars2 .bar{flex:1;display:flex;align-items:flex-end;justify-content:center;font:11px var(--mono);color:var(--mut);background:var(--cell);border:1px solid var(--line);border-bottom:0;transition:height .1s}
+.bar.mv{background:var(--str);border-color:var(--str);color:var(--accfg)}
+.bar.sel{outline:2px solid var(--fn);outline-offset:1px}
+.bars2.pick .bar{cursor:pointer}
+.pz.good{border-color:var(--ok);color:var(--ok)}.pz.wrong{border-color:var(--bad);color:var(--bad)}
+.opt{font-family:var(--mono)}
+
+/* --- Functions: fruits & cups --- */
+.fdot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)}
+.glass{display:inline-block;width:22px;height:32px;border:2px solid var(--line);border-top:none;border-radius:0 0 4px 4px;background:linear-gradient(to bottom,transparent 18%,var(--c) 18%);position:relative;margin:0 4px 4px;vertical-align:bottom;animation:glassIn .35s ease}
+.glass::after{content:'';position:absolute;top:-8px;left:12px;width:3px;height:14px;background:var(--mut);transform:rotate(25deg);border-radius:2px}
+@keyframes glassIn{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
 </style>
 </head>
 <body>
-<div class="page">
+<main>
+<div class="view" id="v-home">
+<h1>Учим программирование</h1>
+<p class="mut">Выбери язык, а потом урок. Каждый урок можно запускать и пробовать прямо на странице.</p>
+<div class="tiles">
+  <a class="tile" style="--t:#569cd6" href="#/cpp" onclick="navTo('cpp');return false">
+    <div class="big">{ } C++</div>
+    <p>Алгоритмы, сложность, структуры данных. Пишем код и смотрим, как он работает.</p>
+    <div class="ft">уроков: 2</div>
+  </a>
+  <a class="tile" style="--t:#dcdcaa" href="#/python" onclick="navTo('python');return false">
+    <div class="big">&gt;&gt;&gt; Python</div>
+    <p>Первые шаги в программировании на простом и понятном языке.</p>
+    <div class="ft">уроков: 3</div>
+  </a>
+</div>
+</div>
 
-<!-- ================= ГЛАВНАЯ ================= -->
-<section class="view on" id="view-home">
-  <header>
-    <h1>Учим программирование</h1>
-    <p class="lead">Выбери язык, а потом урок. Каждый урок можно запускать и пробовать прямо на странице.</p>
-  </header>
-  <div class="grid2">
-    <a class="card lang-card" href="#/cpp">
-      <div class="lang-logo cpp">{ }</div>
-      <h3>C++</h3>
-      <p>Алгоритмы, сложность, структуры данных. Пишем код и смотрим, как он работает.</p>
-      <span class="tag">уроков: 2</span>
-    </a>
-    <a class="card lang-card" href="#/python">
-      <div class="lang-logo py">&gt;&gt;&gt;</div>
-      <h3>Python</h3>
-      <p>Первые шаги в программировании на простом и понятном языке.</p>
-      <span class="tag">уроков: 3</span>
-    </a>
-  </div>
-</section>
-
-<!-- ================= СПИСОК C++ ================= -->
-<section class="view" id="view-cpp">
-  <a class="back" href="#/">[&lt; на главную]</a>
-  <h1>C++</h1>
-  <p class="lead">Выбери урок.</p>
-  <a class="card lesson-card" href="#/cpp/bigo">
-    <span class="lesson-num">01</span>
-    <h3 style="margin:4px 0">Сложность алгоритмов: Big O</h3>
+<div class="view" id="v-cpp" hidden>
+<a class="back" href="#/" onclick="navTo('home');return false">&lt; на главную</a>
+<h1>C++</h1>
+<p class="mut">Выбери урок.</p>
+<a class="tile lesson" style="--t:#569cd6" href="#/cpp/bigo" onclick="navTo('bigo');return false">
+  <div class="num">01</div>
+  <div>
+    <div class="nm">Сложность алгоритмов: Big O</div>
     <p>Что такое Big O, как работают поиск и сортировка, и практика: напиши алгоритм поиска сам.</p>
-    <p><span class="tag">поиск</span><span class="tag">сортировка</span><span class="tag">практика</span></p>
-  </a>
-  <a class="card lesson-card" href="#/cpp/sorting">
-    <span class="lesson-num">02</span>
-    <h3 style="margin:4px 0">Сортировка массивов</h3>
+    <div class="ft">поиск, сортировка, практика</div>
+  </div>
+</a>
+<a class="tile lesson" style="--t:#569cd6" href="#/cpp/sorting" onclick="navTo('sorting');return false">
+  <div class="num">02</div>
+  <div>
+    <div class="nm">Сортировка массивов</div>
     <p>Четыре способа сортировки: пузырьком, выбором, вставками и быстрая. Разбираем, играем и пишем код.</p>
-    <p><span class="tag">bubble</span><span class="tag">selection</span><span class="tag">insertion</span><span class="tag">quick</span></p>
-  </a>
-</section>
+    <div class="ft">bubble, selection, insertion, quick</div>
+  </div>
+</a>
+</div>
 
-<!-- ================= СПИСОК PYTHON ================= -->
-<section class="view" id="view-python">
-  <a class="back" href="#/">[&lt; на главную]</a>
-  <h1>Python</h1>
-  <p class="lead">Выбери урок.</p>
-  <a class="card lesson-card" href="#/python/loops">
-    <span class="lesson-num">01</span>
-    <h3 style="margin:4px 0">Циклы: for и while</h3>
-    <p>Как заставить программу повторять действия. Лягушка, копилка и сборка программы из строк.</p>
-    <p><span class="tag">for</span><span class="tag">range</span><span class="tag">while</span><span class="tag">отступы</span></p>
-  </a>
-  <a class="card lesson-card" href="#/python/lists">
-    <span class="lesson-num">02</span>
-    <h3 style="margin:4px 0">Списки</h3>
-    <p>Как хранить много значений в одной переменной. Рюкзак, игра с номерами и обход списка циклом.</p>
-    <p><span class="tag">индексы</span><span class="tag">append</span><span class="tag">pop</span><span class="tag">for по списку</span></p>
-  </a>
-  <a class="card lesson-card" href="#/python/functions">
-    <span class="lesson-num">03</span>
-    <h3 style="margin:4px 0">Функции</h3>
-    <p>Кусочек программы с именем: соковыжималка, чёрный ящик и конструктор кода. Учимся создавать и вызывать функции.</p>
-    <p><span class="tag">def</span><span class="tag">return</span><span class="tag">параметры</span><span class="tag">область видимости</span></p>
-  </a>
-</section>
+<div class="view" id="v-python" hidden>
+<a class="back" href="#/" onclick="navTo('home');return false">&lt; на главную</a>
+<h1>Python</h1>
+<p class="mut">Выбери урок.</p>
+<a class="tile lesson" style="--t:#dcdcaa" href="#/python/loops" onclick="navTo('loops');return false">
+  <div class="num">01</div>
+  <div><div class="nm">Циклы: for и while</div>
+  <p>Как заставить программу повторять действия. Лягушка, копилка и сборка программы из строк.</p>
+  <div class="ft">for, range, while, отступы</div></div>
+</a>
+<a class="tile lesson" style="--t:#dcdcaa" href="#/python/lists" onclick="navTo('lists');return false">
+  <div class="num">02</div>
+  <div><div class="nm">Списки</div>
+  <p>Как хранить много значений в одной переменной. Рюкзак, игра с номерами и обход списка циклом.</p>
+  <div class="ft">индексы, append, pop, for по списку</div></div>
+</a>
+<a class="tile lesson" style="--t:#dcdcaa" href="#/python/functions" onclick="navTo('functions');return false">
+  <div class="num">03</div>
+  <div><div class="nm">Функции</div>
+  <p>Кусочек программы с именем: соковыжималка, чёрный ящик и конструктор кода. Учимся создавать и вызывать функции.</p>
+  <div class="ft">def, return, параметры, область видимости</div></div>
+</a>
+</div>
 
-<!-- ================= PYTHON 01: ЦИКЛЫ ================= -->
-<section class="view" id="view-py-loops">
-  <a class="back" href="#/python">[&lt; к урокам Python]</a>
-  <p class="crumb">Python · Урок 1</p>
-  <h1>Циклы: for и while</h1>
-  <p class="lead">Цикл повторяет кусок кода столько раз, сколько нужно. Не надо писать одно и то же вручную.</p>
+<div class="view" id="v-loops" hidden>
+<a class="back" href="#/python" onclick="navTo('python');return false">&lt; к урокам Python</a>
+<h1>Циклы: for и while</h1>
+<p class="mut">Цикл повторяет кусок кода столько раз, сколько нужно. Не надо писать одно и то же вручную.</p>
 
-  <h2>Зачем нужен цикл</h2>
-  <p>Допустим, надо пять раз вывести слово «привет». Можно написать <code>print</code> пять раз подряд. А если сто раз? Или тысячу? Писать это руками долго и скучно. Цикл сделает это за тебя:</p>
-  <pre class="code">for i in range(5):
+<div class="card">
+<h2>Зачем нужен цикл</h2>
+<p>Допустим, надо пять раз вывести слово «привет». Можно написать print пять раз подряд. А если сто раз? Или тысячу? Писать это руками долго и скучно. Цикл сделает это за тебя:</p>
+<pre>for i in range(5):
     print("привет")</pre>
-  <p>Читается так: «для каждого <code>i</code> из пяти чисел напечатай привет». Переменная <code>i</code> по очереди становится 0, 1, 2, 3, 4. Значений пять, значит, и повторов пять.</p>
-  <p>Перед <code>print</code> стоит отступ из четырёх пробелов. Всё, что с отступом под <code>for</code>, входит в цикл. Если отступ забыть, Python покажет ошибку.</p>
+<p>Читается так: «для каждого i из пяти чисел напечатай привет». Переменная i по очереди становится 0, 1, 2, 3, 4. Значений пять, значит, и повторов пять.</p>
+<p>Перед print стоит отступ из четырёх пробелов. Всё, что с отступом под for, входит в цикл. Если отступ забыть, Python покажет ошибку.</p>
+</div>
 
-  <h2><span class="h-ico"><svg viewBox="0 0 24 24"><polygon points="7 4 20 12 7 20" fill="#fff" stroke="none"/></svg></span>for и range</h2>
-  <p><code>range(start, stop, step)</code> выдаёт числа. <code>start</code> — с какого числа начать. <code>stop</code> — на каком остановиться, но само это число не берётся. <code>step</code> — на сколько прибавлять каждый раз. Если <code>start</code> и <code>step</code> не писать, <code>start</code> будет 0, а <code>step</code> будет 1.</p>
-  <div class="card">
-    <p>Подвигай ползунки и нажми «Запустить». Лягушка прыгает по тем числам, которые выдал <code>range</code>.</p>
-    <div class="row">
-      <label>start: <b id="lpStartV">0</b><input type="range" id="lpStart" min="0" max="10" value="0"/></label>
-      <label>stop: <b id="lpStopV">12</b><input type="range" id="lpStop" min="1" max="20" value="12"/></label>
-      <label>step: <b id="lpStepV">3</b><input type="range" id="lpStep" min="1" max="5" value="3"/></label>
-      <button class="btn" id="lpRun">Запустить</button>
-    </div>
-    <div class="track" id="lpTrack"><div class="frog" id="lpFrog"></div></div>
-    <p class="msg" id="lpMsg"></p>
-  </div>
+<div class="card">
+<h2>for и range</h2>
+<p>range(start, stop, step) выдаёт числа. <b>start</b> — с какого числа начать. <b>stop</b> — на каком остановиться, но само это число не берётся. <b>step</b> — на сколько прибавлять каждый раз. Если start и step не писать, start будет 0, а step будет 1.</p>
+<p>Подвигай ползунки и нажми «Запустить». Лягушка прыгает по тем числам, которые выдал range.</p>
+<div class="ctl"><label>start: <b id="rsv">0</b></label><input type="range" id="rs" min="0" max="10" value="0"></div>
+<div class="ctl"><label>stop: <b id="rev">12</b></label><input type="range" id="re" min="1" max="30" value="12"></div>
+<div class="ctl"><label>step: <b id="rpv">3</b></label><input type="range" id="rp" min="1" max="5" value="3"></div>
+<pre id="rcode"></pre>
+<div class="row" id="pyLane"></div>
+<button id="rrun">Запустить</button>
+<pre id="rout" style="min-height:24px"></pre>
+<div class="mut" id="rnote"></div>
+</div>
 
-  <h2><span class="h-ico v3"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="11" rx="5.5"/><path d="M6.5 11v3M5 12.5h3"/><circle cx="15.5" cy="14" r="1" fill="#fff" stroke="none"/><circle cx="18" cy="11.5" r="1" fill="#fff" stroke="none"/></svg></span>Игра: что напечатает цикл</h2>
-  <div class="card">
-    <p>Посмотри на цикл и скажи, какое число напечатается последним. Подсказка: <code>stop</code> в список не попадает.</p>
-    <pre class="code" id="lpQuizCode"></pre>
-    <div class="row">
-      <input type="number" id="lpQuizIn" style="width:110px" placeholder="число"/>
-      <button class="btn" id="lpQuizCheck">Проверить</button>
-      <button class="btn ghost" id="lpQuizNext">Другой пример</button>
-      <span>Верных ответов подряд: <span class="badge" id="lpQuizStreak">0</span></span>
-    </div>
-    <p class="msg" id="lpQuizMsg"></p>
-  </div>
+<div class="card">
+<h2>Игра: что напечатает цикл</h2>
+<p>Посмотри на цикл и скажи, какое число напечатается последним. Подсказка: stop в список не попадает.</p>
+<pre id="qcode"></pre>
+<div class="ctl"><input type="number" id="qans" placeholder="твой ответ"><button id="qchk">Проверить</button><button class="sec" id="qnext">Другой пример</button></div>
+<div class="res" id="qmsg"></div>
+<div class="mut" id="qscore">Верных ответов подряд: 0</div>
+</div>
 
-  <h2>Цикл while</h2>
-  <p>Слово <code>while</code> значит «пока». Цикл повторяется, пока условие верно. Как только условие стало неверным, цикл заканчивается. Его берут, когда заранее не знаешь, сколько будет повторов. Например, копишь деньги на игру: откладываешь каждый день и каждый раз смотришь, хватает ли уже.</p>
-  <div class="card">
-    <p>Поменяй цель и сумму в день, потом запусти.</p>
-    <div class="row">
-      <label>цель: <b id="lpGoalV">100</b><input type="range" id="lpGoal" min="50" max="500" step="10" value="100"/></label>
-      <label>в день: <b id="lpDayV">15</b><input type="range" id="lpDay" min="5" max="50" value="15"/></label>
-      <label class="chk"><input type="checkbox" id="lpForget"/> забыть прибавлять деньги</label>
-      <button class="btn" id="lpPigRun">Запустить</button>
-      <button class="btn ghost" id="lpPigStop" style="display:none">Stop</button>
-    </div>
-    <div class="pbar"><i id="lpPigBar"></i></div>
-    <div class="log" id="lpPigLog">Нажми «Запустить»...</div>
-    <p>Внутри <code>while</code> что-то обязательно должно меняться. Если деньги не прибавляются, условие всегда остаётся верным, и цикл никогда не закончится. Это называется <b>бесконечный цикл</b>. Поставь галочку и посмотри, что будет.</p>
-  </div>
+<div class="card">
+<h2>Цикл while</h2>
+<p>Слово while значит «пока». Цикл повторяется, пока условие верно. Как только условие стало неверным, цикл заканчивается. Его берут, когда заранее не знаешь, сколько будет повторов. Например, копишь деньги на игру: откладываешь каждый день и каждый раз смотришь, хватает ли уже.</p>
+<p>Поменяй цель и сумму в день, потом запусти.</p>
+<div class="ctl"><label>цель: <b id="wgv">100</b></label><input type="range" id="wg" min="20" max="200" step="10" value="100"></div>
+<div class="ctl"><label>в день: <b id="wdv">15</b></label><input type="range" id="wd" min="5" max="50" step="5" value="15"></div>
+<label><input type="checkbox" id="wf"> забыть прибавлять деньги</label>
+<pre id="wcode"></pre>
+<div class="pbar"><div id="pyFill"></div></div>
+<button id="wrun">Запустить</button>
+<pre id="wlog" style="min-height:24px"></pre>
+<div class="mut" id="wnote"></div>
+<p>Внутри while что-то обязательно должно меняться. Если деньги не прибавляются, условие всегда остаётся верным, и цикл никогда не закончится. Это называется бесконечный цикл. Поставь галочку и посмотри, что будет.</p>
+</div>
 
-  <h2><span class="h-ico v6"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>Игра: собери программу</h2>
-  <div class="card">
-    <p>Строки перемешаны. Нажимай на строки внизу, чтобы поставить их в программу по порядку. Нажми на строку в программе, чтобы убрать её обратно. Следи за отступами: они часть кода.</p>
-    <p><b id="lpBuildTitle"></b></p>
-    <p style="color:var(--muted);margin:0 0 4px">Программа:</p>
-    <div class="build-area" id="lpBuildProg"></div>
-    <p style="color:var(--muted);margin:0 0 4px">Строки:</p>
-    <div class="build-area" id="lpBuildBank"></div>
-    <div class="row">
-      <button class="btn" id="lpBuildCheck">Проверить</button>
-      <button class="btn ghost" id="lpBuildReset">Сначала</button>
-      <button class="btn ghost" id="lpBuildNext">Другая задача</button>
-    </div>
-    <p class="msg" id="lpBuildMsg"></p>
-    <div class="log" id="lpBuildResult" style="display:none"></div>
-  </div>
+<div class="card">
+<h2>Игра: собери программу</h2>
+<p>Строки перемешаны. Нажимай на строки внизу, чтобы поставить их в программу по порядку. Нажми на строку в программе, чтобы убрать её обратно. Следи за отступами: они часть кода.</p>
+<div class="mut">Программа:</div>
+<div class="pzbox" id="pzAns"></div>
+<div class="mut">Строки:</div>
+<div class="pzbox" id="pzPool"></div>
+<button id="pzChk">Проверить</button><button class="sec" id="pzNext">Другая задача</button>
+<div class="res" id="pzMsg"></div>
+</div>
 
-  <h2><span class="h-ico v7"><svg viewBox="0 0 24 24"><path d="M12 3L2 20h20L12 3z"/><path d="M12 9.5V14"/><circle cx="12" cy="17" r=".7" fill="#fff" stroke="none"/></svg></span>Частые ошибки</h2>
-  <ul>
-    <li>Забыл двоеточие в конце строки с <code>for</code> или <code>while</code>.</li>
-    <li>Забыл отступ у строк внутри цикла.</li>
-    <li>В <code>while</code> ничего не меняется, и цикл не заканчивается. Остановить программу можно кнопкой Stop или клавишами Ctrl+C.</li>
-    <li>Думаешь, что <code>range(5)</code> даст 1, 2, 3, 4, 5. На самом деле он даст 0, 1, 2, 3, 4.</li>
-  </ul>
+<div class="card">
+<h2>Частые ошибки</h2>
+<ul>
+<li>Забыл двоеточие в конце строки с for или while.</li>
+<li>Забыл отступ у строк внутри цикла.</li>
+<li>В while ничего не меняется, и цикл не заканчивается. Остановить программу можно кнопкой Stop или клавишами Ctrl+C.</li>
+<li>Думаешь, что range(5) даст 1, 2, 3, 4, 5. На самом деле он даст 0, 1, 2, 3, 4.</li>
+</ul>
+</div>
 
-  <div class="done">
-    <h2>Урок пройден</h2>
-    <p>Выбери, что делать дальше.</p>
-    <a class="btn" href="#/python">К урокам Python</a>
-    <a class="btn" href="#/python/lists">Следующий урок: Списки</a>
-    <a class="btn" href="#/">На главную</a>
-  </div>
-</section>
+<div class="card">
+<h2>Урок пройден</h2>
+<p class="mut">Выбери, что делать дальше.</p>
+<button onclick="navTo('python')">К урокам Python</button>
+<button onclick="navTo('lists')">Следующий урок: Списки</button>
+<button class="sec" onclick="navTo('home')">На главную</button>
+</div>
+</div>
 
-<!-- ================= PYTHON 02: СПИСКИ ================= -->
-<section class="view" id="view-py-lists">
-  <a class="back" href="#/python">[&lt; к урокам Python]</a>
-  <p class="crumb">Python · Урок 2</p>
-  <h1>Списки</h1>
-  <p class="lead">Список хранит много значений под одним именем.</p>
+<div class="view" id="v-lists" hidden>
+<a class="back" href="#/python" onclick="navTo('python');return false">&lt; к урокам Python</a>
+<h1>Списки</h1>
+<p class="mut">Список хранит много значений под одним именем.</p>
 
-  <h2>Что такое список</h2>
-  <p>Представь полку с пронумерованными ячейками. В каждой лежит один предмет. Вся полка — это список.</p>
-  <pre class="code">fruits = ["яблоко", "груша", "слива"]</pre>
-  <p>Номера ячеек начинаются с нуля, а не с единицы. Поэтому первый элемент — <code>fruits[0]</code>, второй — <code>fruits[1]</code>. Последний можно взять с конца: <code>fruits[-1]</code>. Сколько в списке элементов, скажет <code>len(fruits)</code>.</p>
-  <pre class="code">fruits[0]     # "яблоко"
+<div class="card">
+<h2>Что такое список</h2>
+<p>Представь полку с пронумерованными ячейками. В каждой лежит один предмет. Вся полка — это список.</p>
+<pre>fruits = ["яблоко", "груша", "слива"]</pre>
+<p>Номера ячеек начинаются с нуля, а не с единицы. Поэтому первый элемент — fruits[0], второй — fruits[1]. Последний можно взять с конца: fruits[-1]. Сколько в списке элементов, скажет len(fruits).</p>
+<pre>fruits[0]     # "яблоко"
 fruits[2]     # "слива"
 fruits[-1]    # "слива"
 len(fruits)   # 3</pre>
+</div>
 
-  <h2><span class="h-ico"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M1 12h5M18 12h5M20.5 9.5L23 12l-2.5 2.5"/></svg></span>Рюкзак</h2>
-  <div class="card">
-    <p>Напиши название предмета и нажми кнопку. Внизу видно, какую команду выполнил Python. Чтобы убрать конкретный предмет, нажми на него. Над предметом написан его номер.</p>
-    <div class="row">
-      <input type="text" id="lsItem" placeholder="название предмета"/>
-      <button class="btn" id="lsAppend">append</button>
-      <button class="btn" id="lsInsert">insert в начало</button>
-      <button class="btn ghost" id="lsPop">pop()</button>
-      <button class="btn ghost" id="lsClear">clear()</button>
-    </div>
-    <div class="shelf" id="lsShelf"></div>
-    <p><b>Команды, которые уже выполнены:</b></p>
-    <div class="log" id="lsLog"></div>
-  </div>
-  <ul>
-    <li><code>append(x)</code> добавляет в конец.</li>
-    <li><code>insert(0, x)</code> ставит <code>x</code> на место с номером 0, остальные сдвигаются вправо.</li>
-    <li><code>pop()</code> убирает последний элемент и отдаёт его.</li>
-    <li><code>remove(x)</code> убирает первый элемент, равный <code>x</code>.</li>
-    <li><code>clear()</code> очищает список.</li>
-  </ul>
+<div class="card">
+<h2>Рюкзак</h2>
+<p>Напиши название предмета и нажми кнопку. Внизу видно, какую команду выполнил Python. Чтобы убрать конкретный предмет, нажми на него. Над предметом написан его номер.</p>
+<div class="ctl"><input type="text" id="bi" value="зелье" maxlength="14">
+<button id="badd">append</button><button id="bins">insert в начало</button><button class="sec" id="bpop">pop()</button><button class="sec" id="bclr">clear()</button></div>
+<div class="bag" id="bag"></div>
+<pre id="brepr"></pre>
+<div class="res bad" id="bmsg"></div>
+<div class="mut">Команды, которые уже выполнены:</div>
+<pre id="blog" style="min-height:24px"></pre>
+<ul>
+<li><b>append(x)</b> добавляет в конец.</li>
+<li><b>insert(0, x)</b> ставит x на место с номером 0, остальные сдвигаются вправо.</li>
+<li><b>pop()</b> убирает последний элемент и отдаёт его.</li>
+<li><b>remove(x)</b> убирает первый элемент, равный x.</li>
+<li><b>clear()</b> очищает список.</li>
+</ul>
+</div>
 
-  <h2><span class="h-ico v3"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="11" rx="5.5"/><path d="M6.5 11v3M5 12.5h3"/><circle cx="15.5" cy="14" r="1" fill="#fff" stroke="none"/><circle cx="18" cy="11.5" r="1" fill="#fff" stroke="none"/></svg></span>Игра: достань элемент</h2>
-  <div class="card">
-    <p>Нажми на ячейку, которую выведет <code>print</code>. Сверху у ячейки обычный номер, снизу — номер с конца. Бывают и отрицательные номера, будь внимателен.</p>
-    <pre class="code" id="lsGetQ"></pre>
-    <div class="shelf" id="lsGetCells"></div>
-    <div class="row">
-      <button class="btn ghost" id="lsGetNext">Следующий вопрос</button>
-      <span>Верных ответов: <span class="badge" id="lsGetScore">0 из 0</span></span>
-    </div>
-    <p class="msg" id="lsGetMsg"></p>
-  </div>
+<div class="card">
+<h2>Игра: достань элемент</h2>
+<p>Нажми на ячейку, которую выведет print. Сверху у ячейки обычный номер, снизу номер с конца. Бывают и отрицательные номера, будь внимателен.</p>
+<pre id="icode"></pre>
+<div class="bag" id="ibox"></div>
+<div class="res" id="imsg"></div>
+<button id="inext">Следующий вопрос</button>
+<div class="mut" id="iscore">Верных ответов: 0 из 0</div>
+</div>
 
-  <h2><span class="h-ico v2"><svg viewBox="0 0 24 24"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></span>Цикл for по списку</h2>
-  <p>Цикл <code>for</code> умеет сам идти по списку. Не нужны ни <code>range</code>, ни номера: переменная <code>x</code> по очереди становится каждым элементом.</p>
-  <div class="card">
-    <p>Впиши свои числа через запятую (не больше восьми), выбери, что считать, и запусти.</p>
-    <div class="row">
-      <input type="text" id="lsNums" placeholder="например: 4, 7, 2, 9" style="width:240px"/>
-      <select id="lsOp">
-        <option value="sum">сумма</option>
-        <option value="max">максимум</option>
-        <option value="even">сколько чётных</option>
-      </select>
-      <button class="btn" id="lsForRun">Запустить</button>
-    </div>
-    <pre class="code" id="lsForCode"># здесь появится код</pre>
-    <div class="shelf" id="lsForCells"></div>
-    <div class="log" id="lsForStatus">Нажми «Запустить»...</div>
-  </div>
+<div class="card">
+<h2>Цикл for по списку</h2>
+<p>Цикл for умеет сам идти по списку. Не нужны ни range, ни номера: переменная x по очереди становится каждым элементом.</p>
+<p>Впиши свои числа через запятую (не больше восьми), выбери, что считать, и запусти.</p>
+<div class="ctl"><input type="text" id="lin" value="3, 7, 2, 9, 4">
+<select id="lop"><option value="sum">сумма</option><option value="max">максимум</option><option value="even">сколько чётных</option></select></div>
+<pre id="lcode"></pre>
+<div class="bag" id="lbox"></div>
+<button id="lrun">Запустить</button>
+<pre id="lstate" style="min-height:24px"></pre>
+<div class="res" id="lres"></div>
+</div>
 
-  <h2><span class="h-ico v7"><svg viewBox="0 0 24 24"><path d="M12 3L2 20h20L12 3z"/><path d="M12 9.5V14"/><circle cx="12" cy="17" r=".7" fill="#fff" stroke="none"/></svg></span>Частые ошибки</h2>
-  <ul>
-    <li>Счёт идёт с нуля. У списка из трёх элементов номера 0, 1, 2.</li>
-    <li>Если взять номер, которого нет, будет ошибка <code>IndexError</code>. Например, у списка из трёх элементов нет <code>numbers[3]</code>.</li>
-    <li><code>pop()</code> у пустого списка тоже даёт <code>IndexError</code>. Попробуй в рюкзаке.</li>
-    <li><code>remove(x)</code> даёт ошибку <code>ValueError</code>, если такого элемента в списке нет.</li>
-  </ul>
+<div class="card">
+<h2>Частые ошибки</h2>
+<ul>
+<li>Счёт идёт с нуля. У списка из трёх элементов номера 0, 1, 2.</li>
+<li>Если взять номер, которого нет, будет ошибка IndexError. Например, у списка из трёх элементов нет numbers[3].</li>
+<li>pop() у пустого списка тоже даёт IndexError. Попробуй в рюкзаке.</li>
+<li>remove(x) даёт ошибку ValueError, если такого элемента в списке нет.</li>
+</ul>
+</div>
 
-  <div class="done">
-    <h2>Урок пройден</h2>
-    <p>Выбери, что делать дальше.</p>
-    <a class="btn" href="#/python">К урокам Python</a>
-    <a class="btn" href="#/python/functions">Следующий урок: Функции</a>
-    <a class="btn" href="#/">На главную</a>
-  </div>
-</section>
+<div class="card">
+<h2>Урок пройден</h2>
+<p class="mut">Выбери, что делать дальше.</p>
+<button onclick="navTo('python')">К урокам Python</button>
+<button onclick="navTo('functions')">Следующий урок: Функции</button>
+<button class="sec" onclick="navTo('home')">На главную</button>
+</div>
+</div>
 
-<!-- ================= PYTHON 03: ФУНКЦИИ ================= -->
-<section class="view" id="view-py-func">
-  <a class="back" href="#/python">[&lt; к урокам Python]</a>
-  <p class="crumb">Python · Урок 3</p>
-  <h1>Функции</h1>
-  <p class="lead">Функция — это кусочек программы с именем, который можно вызывать сколько угодно раз. Соковыжималка, чёрный ящик и конструктор кода ждут.</p>
-  <p><span class="tag">def</span><span class="tag">return</span><span class="tag">параметры</span><span class="tag">область видимости</span></p>
+<div class="view" id="v-functions" hidden>
+<a class="back" href="#/python" onclick="navTo('python');return false">&lt; к урокам Python</a>
+<h1>Функции</h1>
+<p class="mut">Функция — это кусочек программы с именем, который можно вызывать сколько угодно раз. Соковыжималка, чёрный ящик и конструктор кода ждут.</p>
+<p><span style="font:600 12px var(--mono);color:var(--acc)">def</span> <span style="font:600 12px var(--mono);color:var(--acc)">return</span> <span style="font:600 12px var(--mono);color:var(--acc)">параметры</span> <span style="font:600 12px var(--mono);color:var(--acc)">область видимости</span></p>
 
-  <h2><span class="h-ico"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M1 12h5M18 12h5M20.5 9.5L23 12l-2.5 2.5"/></svg></span>Что такое функция</h2>
-  <p>Представь блендер. Кладёшь банан, нажимаешь кнопку — получаешь смузи. Кладёшь яблоко — получаешь яблочный сок. Блендеру всё равно, что внутрь положили: он знает свою работу и отдаёт результат.</p>
-  <p>Функция в Python — такой же «блендер» внутри программы. Ты даёшь ей данные, она что-то делает и возвращает результат. А главное — один раз написал, сколько угодно раз вызвал. Код не нужно переписывать.</p>
-  <pre class="code">def make_juice(fruit, count):      # def = «создать функцию»
+<div class="card">
+<h2>Что такое функция</h2>
+<p>Представь блендер. Кладёшь банан, нажимаешь кнопку — получаешь смузи. Кладёшь яблоко — получаешь яблочный сок. Блендеру всё равно, что внутрь положили: он знает свою работу и отдаёт результат.</p>
+<p>Функция в Python — такой же «блендер» внутри программы. Ты даёшь ей данные, она что-то делает и возвращает результат. А главное — один раз написал, сколько угодно раз вызвал. Код не нужно переписывать.</p>
+<pre>def make_juice(fruit, count):      # def = «создать функцию»
     print(f"Выжимаю {fruit}...")   # тело функции — всё с отступом
     return count                   # return отдаёт результат наружу
 
 cups = make_juice("яблоко", 3)     # вызов: вместо параметров встали значения
 print(f"Получилось {cups} стакана сока!")</pre>
-  <ul>
-    <li><b>def</b> — слово, которое говорит Пайтону: «сейчас будет функция».</li>
-    <li><b>make_juice</b> — имя. По нему функцию вызывают: <code>make_juice(...)</code>.</li>
-    <li><b>fruit, count</b> — параметры. Пустые места, куда при вызове встанут значения.</li>
-    <li><b>return</b> — отдаёт результат тому, кто вызвал функцию.</li>
-  </ul>
+<ul>
+<li><b>def</b> — слово, которое говорит Пайтону: «сейчас будет функция».</li>
+<li><b>make_juice</b> — имя. По нему функцию вызывают: <code>make_juice(...)</code>.</li>
+<li><b>fruit, count</b> — параметры. Пустые места, куда при вызове встанут значения.</li>
+<li><b>return</b> — отдаёт результат тому, кто вызвал функцию.</li>
+</ul>
+</div>
 
-  <div class="card">
-    <h3 style="margin-top:0">Интерактив: соковыжималка <span class="tag">живой пример</span></h3>
-    <p>Выбери фрукт и количество, нажми «Выжать». Код обновляется вживую — это тот самый код, который «работает».</p>
-    <div class="row" id="fnFruitRow"></div>
-    <div class="row">
-      <label>Сколько стаканов: <b id="fnCountLabel">3</b><input type="range" id="fnCount" min="1" max="6" value="3"/></label>
-      <button class="btn" id="fnRun">Выжать сок</button>
-    </div>
-    <pre class="code" id="fnCode"></pre>
-    <div class="cups" id="fnCups"></div>
-    <div class="log" id="fnLog">Нажми «Выжать сок»...</div>
-  </div>
+<div class="card">
+<h2>Интерактив: соковыжималка</h2>
+<p>Выбери фрукт и количество, нажми «Выжать». Код обновляется вживую — это тот самый код, который «работает».</p>
+<div class="row" id="fFruits"></div>
+<div class="ctl"><label>Сколько стаканов: <b id="fcV">3</b></label><input type="range" id="fc" min="1" max="6" value="3"></div>
+<button id="fRun">Выжать сок</button>
+<pre id="fCode"></pre>
+<div class="bag" id="fCups"></div>
+<pre id="fLog" style="min-height:24px"></pre>
+</div>
 
-  <h2><span class="h-ico v2"><svg viewBox="0 0 24 24"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></span>print и return — не одно и то же</h2>
-  <p>Самая частая путаница новичка. <b>print</b> просто показывает текст на экране. <b>return</b> отдаёт значение обратно в программу — его можно сохранить в переменную и использовать дальше.</p>
-  <p>Кассир может сказать вслух «спасибо за покупку» — это <code>print</code>. А реально протянуть тебе чек — это <code>return</code>.</p>
-  <pre class="code">def say_hi():
+<div class="card">
+<h2>print и return — не одно и то же</h2>
+<p>Самая частая путаница новичка. <b>print</b> просто показывает текст на экране. <b>return</b> отдаёт значение обратно в программу — его можно сохранить в переменную и использовать дальше.</p>
+<p>Кассир может сказать вслух «спасибо за покупку» — это <code>print</code>. А реально протянуть тебе чек — это <code>return</code>.</p>
+<pre>def say_hi():
     print("привет")     # просто крикнули на весь экран
 
 def give_hi():
@@ -434,32 +367,29 @@ def give_hi():
 
 x = say_hi()    # на экране «привет», но внутри x — None
 y = give_hi()   # на экране ничего, зато внутри y — «привет»</pre>
-  <div class="card">
-    <p><b>Проверь сам:</b></p>
-    <div class="row">
-      <button class="btn ghost" id="fnDemoSay">x = say_hi()</button>
-      <button class="btn ghost" id="fnDemoGive">y = give_hi()</button>
-    </div>
-    <div class="log" id="fnDemoLog">Нажми одну из кнопок</div>
-    <p>Если у функции вообще нет <code>return</code>, она молча возвращает <code>None</code> — пустоту.</p>
-  </div>
+<div class="row">
+<button id="fDemoSay">x = say_hi()</button>
+<button id="fDemoGive">y = give_hi()</button>
+</div>
+<pre id="fDemoLog" style="min-height:24px"></pre>
+<p class="mut">Если у функции вообще нет <code>return</code>, она молча возвращает <code>None</code> — пустоту.</p>
+</div>
 
-  <h2><span class="h-ico v3"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="11" rx="5.5"/><path d="M6.5 11v3M5 12.5h3"/><circle cx="15.5" cy="14" r="1" fill="#fff" stroke="none"/><circle cx="18" cy="11.5" r="1" fill="#fff" stroke="none"/></svg></span>Игра: что вернёт функция?</h2>
-  <div class="card">
-    <p>Посмотри на код и выбери, что напечатается. Осторожно: некоторые функции ничего не возвращают, а некоторые строки вообще не выполняются!</p>
-    <pre class="code" id="fnQuizCode"></pre>
-    <div class="grid2" id="fnQuizOpts"></div>
-    <div class="row">
-      <button class="btn" id="fnQuizNext">Другой пример</button>
-      <span>Верных ответов подряд: <span class="badge" id="fnQuizStreak">0</span></span>
-    </div>
-    <p class="msg" id="fnQuizMsg"></p>
-  </div>
+<div class="card">
+<h2>Игра: что вернёт функция?</h2>
+<p>Посмотри на код и выбери, что напечатается. Осторожно: некоторые функции ничего не возвращают, а некоторые строки вообще не выполняются!</p>
+<pre id="fQCode"></pre>
+<div id="fQOpts"></div>
+<div class="res" id="fQMsg"></div>
+<div class="row"><button id="fQNext">Другой пример</button></div>
+<div class="mut" id="fQScore">Верных ответов подряд: 0</div>
+</div>
 
-  <h2><span class="h-ico v4"><svg viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></span>Область видимости</h2>
-  <p>Переменные, которые родились внутри функции, живут только внутри неё. Как вещи в рюкзаке: снаружи их не видно, пока не достанешь (через <code>return</code>).</p>
-  <p>Две функции могут завести себе по переменной <code>x</code>, и они не подерутся:</p>
-  <pre class="code">def apple():
+<div class="card">
+<h2>Область видимости</h2>
+<p>Переменные, которые родились внутри функции, живут только внутри неё. Как вещи в рюкзаке: снаружи их не видно, пока не достанешь (через <code>return</code>).</p>
+<p>Две функции могут завести себе по переменной <code>x</code>, и они не подерутся:</p>
+<pre>def apple():
     x = 5        # это «яблочный» x
     return x
 
@@ -468,1540 +398,1186 @@ def banana():
     return x
 
 print(apple() + banana())   # 105</pre>
+</div>
 
-  <h2><span class="h-ico v5"><svg viewBox="0 0 24 24"><path d="M21 8L12 3 3 8v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg></span>Игра: чёрный ящик</h2>
-  <div class="card">
-    <p>В коробке спрятана секретная функция. Отправляй ей числа и смотри, что она возвращает. Проведи эксперименты и угадай правило!</p>
-    <div class="row">
-      <input type="number" id="fnBoxIn" style="width:90px" placeholder="число"/>
-      <button class="btn" id="fnBoxSend">Отправить в коробку</button>
-      <span>Разгадано: <span class="badge" id="fnBoxSolved">0</span></span>
-    </div>
-    <p style="color:var(--muted);font-size:14px">Подсказка: попробуй 0, 1, 10 и число побольше — так правило видно быстрее.</p>
-    <div class="tries" id="fnBoxTries" data-empty="1"></div>
-    <p><b>Какое правило внутри?</b></p>
-    <div class="grid2" id="fnBoxOpts"></div>
-    <p class="msg" id="fnBoxMsg"></p>
-    <pre class="code" id="fnBoxCode" style="display:none"></pre>
-    <button class="btn" id="fnBoxNext" style="display:none">Новая коробка</button>
+<div class="card">
+<h2>Игра: чёрный ящик</h2>
+<p>В коробке спрятана секретная функция. Отправляй ей числа и смотри, что она возвращает. Проведи эксперименты и угадай правило!</p>
+<div class="ctl"><input type="number" id="fBoxIn" placeholder="число" value="0">
+<button id="fBoxSend">Отправить</button>
+<button class="sec" id="fBoxNext">Новая коробка</button></div>
+<p class="mut">Подсказка: попробуй 0, 1, 10 и число побольше — так правило видно быстрее.</p>
+<pre id="fBoxLog" style="min-height:48px"></pre>
+<p><b>Какое правило внутри?</b></p>
+<div id="fBoxOpts"></div>
+<div class="res" id="fBoxMsg"></div>
+<pre id="fBoxCode" style="display:none"></pre>
+<div class="mut" id="fBoxScore">Разгадано: 0</div>
+</div>
+
+<div class="card">
+<h2>Игра: собери функцию</h2>
+<p>Строки перемешаны. Нажимай на строки внизу, чтобы поставить их в программу по порядку. Нажми на строку в программе, чтобы убрать обратно. Следи за отступами — они часть кода!</p>
+<div class="mut">Программа:</div>
+<div class="pzbox" id="fPzAns"></div>
+<div class="mut">Строки:</div>
+<div class="pzbox" id="fPzPool"></div>
+<button id="fPzChk">Проверить</button><button class="sec" id="fPzNext">Другая задача</button>
+<div class="res" id="fPzMsg"></div>
+</div>
+
+<div class="card">
+<h2>Частые ошибки</h2>
+<ul>
+<li>Забыл двоеточие после <code>def имя(...)</code>.</li>
+<li>Тело функции без отступа — будет ошибка <code>IndentationError</code>.</li>
+<li>Спутал <code>print</code> и <code>return</code>: функция показала ответ на экране, но вернула <code>None</code>.</li>
+<li>Написал имя функции без скобок: <code>make_juice</code> вместо <code>make_juice()</code>. Без скобок вызова не будет.</li>
+<li>Код после <code>return</code> не выполняется — функция уже закончилась.</li>
+<li>Попытался достать локальную переменную снаружи функции — будет <code>NameError</code>.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>Урок пройден</h2>
+<p class="mut">Выбери, что делать дальше.</p>
+<button onclick="navTo('python')">К урокам Python</button>
+<button disabled>Следующий урок (скоро)</button>
+<button class="sec" onclick="navTo('home')">На главную</button>
+</div>
+</div>
+
+<div class="view" id="v-sorting" hidden>
+<a class="back" href="#/cpp" onclick="navTo('cpp');return false">&lt; к урокам C++</a>
+<h1>Сортировка массивов</h1>
+<p class="mut">Четыре способа расставить числа по порядку, и чем они отличаются.</p>
+
+<div class="card">
+<h2>Зачем сортировать</h2>
+<p>Сортировка — это расстановка элементов по порядку: от меньшего к большему или наоборот. Книги на полке, фамилии в журнале, цены в магазине. Там, где всё стоит по порядку, искать проще. Бинарный поиск из прошлого урока тоже работает только на отсортированных данных.</p>
+<p>Способов сортировки много. Они отличаются скоростью, расходом памяти и тем, насколько просто их написать. В C++ уже есть готовая функция std::sort, но полезно понимать, что происходит внутри. Мы разберём четыре способа: пузырьком, выбором, вставками и быструю.</p>
+<p>Все они сортируют по возрастанию и работают «на месте»: не заводят второй массив, а переставляют элементы в том же.</p>
+</div>
+
+<div class="card">
+<h2>1. Пузырьковая сортировка</h2>
+<p><b>Аналогия.</b> В стакане с газировкой лёгкие пузырьки поднимаются вверх. Здесь самые большие числа «всплывают» в конец массива.</p>
+<ul>
+<li>Сравни два соседних элемента.</li>
+<li>Если левый больше правого, поменяй их местами.</li>
+<li>Дойди до конца. Самое большое число теперь стоит последним.</li>
+<li>Повтори всё для оставшихся элементов. Последний уже на месте, его не трогаем.</li>
+</ul>
+<pre data-code="bubble"></pre>
+<p class="mut">Время: O(n²). Память: O(1). Устойчивая: да. Плюс: очень простая. Минус: медленная, делает много лишних сравнений.</p>
+</div>
+
+<div class="card">
+<h2>2. Сортировка выбором</h2>
+<p><b>Аналогия.</b> Учитель строит класс по росту. Находит самого низкого и ставит на первое место. Потом находит самого низкого из оставшихся и ставит на второе. И так до конца.</p>
+<ul>
+<li>Найди самый маленький элемент среди тех, что ещё не расставлены.</li>
+<li>Поменяй его местами с первым из нерасставленных.</li>
+<li>Граница между готовой и неготовой частью сдвигается на один вправо.</li>
+<li>Повторяй, пока не дойдёшь до конца.</li>
+</ul>
+<pre data-code="selection"></pre>
+<p class="mut">Время: O(n²) всегда, даже если массив уже отсортирован. Память: O(1). Устойчивая: нет. Плюс: делает мало обменов, не больше n − 1. Минус: сравнений всегда много.</p>
+</div>
+
+<div class="card">
+<h2>3. Сортировка вставками</h2>
+<p><b>Аналогия.</b> Карты в руке. Берёшь новую карту и вставляешь её на нужное место среди тех, что уже лежат по порядку. Остальные карты чуть раздвигаются.</p>
+<ul>
+<li>Слева лежит отсортированная часть. Сначала это один элемент.</li>
+<li>Возьми следующий элемент и запомни его в переменной key.</li>
+<li>Сдвигай элементы слева на одно место вправо, пока они больше key.</li>
+<li>Поставь key в освободившееся место.</li>
+</ul>
+<pre data-code="insertion"></pre>
+<p class="mut">Время: O(n²) в среднем и худшем случае, но O(n), если массив почти отсортирован. Память: O(1). Устойчивая: да. Плюс: быстро работает на маленьких и почти готовых массивах. Минус: на больших случайных медленная.</p>
+</div>
+
+<div class="card">
+<h2>4. Быстрая сортировка</h2>
+<p><b>Аналогия.</b> На физкультуре выбирают одного ученика, он будет опорным. Все, кто ниже его, встают слева, кто выше — справа. Опорный уже стоит на своём месте. Потом левую и правую группу делят точно так же, и так далее, пока группы не станут по одному человеку.</p>
+<ul>
+<li>Выбери опорный элемент (у нас последний).</li>
+<li>Разложи остальные: меньшие влево, большие вправо.</li>
+<li>Поставь опорный между ними. Он на месте навсегда.</li>
+<li>Сделай то же самое для левой и правой части. Это рекурсия: функция вызывает сама себя.</li>
+</ul>
+<pre data-code="quick"></pre>
+<p class="mut">Время: O(n log n) в среднем, O(n²) в худшем случае (если опорный всё время самый маленький или самый большой). Память: O(log n) на рекурсию. Устойчивая: нет. Плюс: на практике одна из самых быстрых. Минус: плохой случай.</p>
+</div>
+
+<div class="card">
+<h2>Запусти и сравни</h2>
+<p>Выбери сортировку и нажми «Запустить». Синий — сравнение, оранжевый — перестановка, зелёный — готово. Кнопка «Сравнить все» прогонит все четыре на одном и том же массиве, и ты увидишь разницу в цифрах.</p>
+<div id="vtabs"><button data-a="bubble">Пузырьком</button><button data-a="selection">Выбором</button><button data-a="insertion">Вставками</button><button data-a="quick">Быстрая</button></div>
+<div class="ctl"><label>Элементов: <b id="vnv">16</b></label><input type="range" id="vn" min="8" max="30" value="16">
+<label>Пауза: <b id="vsv">40</b> мс</label><input type="range" id="vs" min="5" max="150" value="40"></div>
+<div class="bars2" id="vbars"></div>
+<div class="stat">Сравнений: <span id="vc">0</span> &nbsp; Перестановок: <span id="vm">0</span></div>
+<div class="mut" id="vstep" style="min-height:24px"></div>
+<button id="vrun">Запустить</button><button id="vall">Сравнить все</button><button class="sec" id="vnew">Перемешать</button>
+<pre id="vcode"></pre>
+<table id="vhist"><tr><th>Сортировка</th><th>Элементов</th><th>Сравнений</th><th>Перестановок</th></tr></table>
+</div>
+
+<div class="card">
+<h2>Сравнение четырёх сортировок</h2>
+<table class="l">
+<tr><th>Сортировка</th><th>Лучший</th><th>Средний</th><th>Худший</th><th>Память</th><th>Устойчивая</th></tr>
+<tr><td>Пузырьком</td><td>O(n)*</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>да</td></tr>
+<tr><td>Выбором</td><td>O(n²)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>нет</td></tr>
+<tr><td>Вставками</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>да</td></tr>
+<tr><td>Быстрая</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n²)</td><td>O(log n)</td><td>нет</td></tr>
+</table>
+<p class="mut">* Если добавить проверку «за проход не было ни одного обмена, значит, всё готово». В коде выше её нет.</p>
+<p><b>Что значит «устойчивая».</b> Допустим, два ученика одного роста стоят в списке в каком-то порядке. Устойчивая сортировка не меняет их порядок между собой. Неустойчивая может поменять. Для обычных чисел это неважно, а для списка людей, отсортированного по росту, бывает важно.</p>
+</div>
+
+<div class="card">
+<h2>Игра: отсортируй сам</h2>
+<p>Нажми на один столбик, потом на другой, и они поменяются местами. Расставь столбики от меньшего к большему как можно за меньшее число обменов. Потом сравни себя с сортировкой выбором.</p>
+<div class="bars2 pick" id="mbars"></div>
+<div class="stat">Обменов: <span id="mcount">0</span></div>
+<div class="res" id="mmsg"></div>
+<button id="mnewb">Новый массив</button>
+</div>
+
+<div class="card">
+<h2>Игра: что будет после прохода</h2>
+<p>Тебе показывают массив и название сортировки. Выбери, как он будет выглядеть после первых шагов внешнего цикла. Тут нужно представить, как работает алгоритм.</p>
+<pre id="pq"></pre>
+<div id="popts"></div>
+<div class="res" id="pmsg"></div>
+<button id="pnext">Следующий вопрос</button>
+<div class="mut" id="pscore">Верных ответов: 0 из 0</div>
+</div>
+
+<div class="card">
+<h2>Задания: выбери правильный код</h2>
+<p>В каждом вопросе три кусочка кода. Только один из них правильный. Нажми на него.</p>
+<h3 id="cq"></h3>
+<div id="copts"></div>
+<div class="res" id="cmsg"></div>
+<button id="cnext">Следующий вопрос</button>
+<div class="mut" id="cscore">Верных ответов: 0 из 0</div>
+</div>
+
+<div class="card">
+<h2>Задания: напиши код</h2>
+<p>Напиши функцию на C++. Для проверки её запустят на нескольких массивах: случайных, уже отсортированных, перевёрнутых и с повторами. Работает упрощённый C++: переменные int, циклы, if, while, swap, обращение к элементам по номеру.</p>
+<div id="cwtabs"></div>
+<p id="cwdesc"></p>
+<textarea id="cwsrc" spellcheck="false"></textarea>
+<div><button id="cwrun">Запустить тесты</button><button class="sec" id="cwhintb">Подсказка</button><button class="sec" id="cwrst">Сначала</button></div>
+<div class="mut" id="cwhint"></div>
+<div class="res" id="cwres"></div>
+</div>
+
+<div class="card">
+<h2>Урок пройден</h2>
+<p class="mut">Выбери, что делать дальше.</p>
+<button onclick="navTo('cpp')">К урокам C++</button>
+<button disabled>Следующий урок (скоро)</button>
+<button class="sec" onclick="navTo('home')">На главную</button>
+</div>
+</div>
+
+<div class="view" id="v-bigo" hidden>
+<h1>Big O: учим алгоритмы</h1>
+<p class="mut">План урока: сначала разберёмся, что такое Big O, потом посмотрим, как работают поиск и сортировка, а в конце ты напишешь алгоритм сам.</p>
+<div class="card">
+<h2>Что такое Big O</h2>
+<p>Представь, что нужно найти слово в словаре. Можно листать с первой страницы, а можно открыть словарь посередине и сразу понять, в какой он половине. Оба способа найдут слово, но второй сделает гораздо меньше шагов.</p>
+<p><b>Big O</b> (читается «О большое») показывает, как быстро растёт число шагов алгоритма, когда растёт размер данных. Размер данных обозначают буквой <b>n</b>: это число домиков, элементов массива или слов в словаре.</p>
+<p>Есть три важных договорённости:</p>
+<ul>
+<li>Мы считаем <b>шаги</b>, а не секунды. Секунды зависят от компьютера, шаги не зависят.</li>
+<li>Мы смотрим на <b>худший случай</b>: клад оказался в самом последнем домике.</li>
+<li>Мелочи отбрасываем. Если алгоритм делает 3n шагов, мы всё равно пишем O(n), потому что важна форма роста, а не множитель.</li>
+</ul>
+<table class="l">
+<tr><th>Запись</th><th>Название</th><th>Пример</th><th>Шагов при n = 1000</th></tr>
+<tr><td>O(1)</td><td>константная</td><td>взять элемент массива по номеру</td><td>1</td></tr>
+<tr><td>O(log n)</td><td>логарифмическая</td><td>бинарный поиск</td><td>около 10</td></tr>
+<tr><td>O(n)</td><td>линейная</td><td>один цикл по всем элементам</td><td>1000</td></tr>
+<tr><td>O(n log n)</td><td>линеарифмическая</td><td>сортировка слиянием</td><td>около 10 000</td></tr>
+<tr><td>O(n²)</td><td>квадратичная</td><td>цикл в цикле, пузырьковая сортировка</td><td>1 000 000</td></tr>
+</table>
+<h3>Как оценить сложность по коду</h3>
+<ul>
+<li>Просто обратились к элементу по номеру: O(1).</li>
+<li>Один цикл от 1 до n: O(n).</li>
+<li>Цикл внутри цикла, оба до n: O(n²).</li>
+<li>На каждом шаге отбрасываем половину данных: O(log n).</li>
+</ul>
+</div>
+
+<div class="card">
+  <h2>Часть 1. Поиск: забег алгоритмов</h2>
+  <p class="mut">Клад спрятан в одном из домиков, они пронумерованы по порядку. Сколько шагов нужно герою, чтобы его найти?</p>
+  <label>Домиков: <b id="nv">16</b></label>
+  <input type="range" id="n" min="8" max="64" step="8" value="16">
+  <div class="row" id="row1"></div>
+  <div>
+    <button id="b1"> Телепорт O(1)</button>
+    <button id="b2"> По очереди O(n)</button>
+    <button id="b3"> Пополам O(log n)</button>
+    <button class="sec" id="bn"> Спрятать клад заново</button>
   </div>
+  <div class="stat">Шагов: <span id="steps">0</span></div>
+  <div class="mut" id="expl">Выбери алгоритм и смотри, как идёт герой </div>
+  <pre id="code">// код появится здесь</pre>
+  <table id="hist"><tr><th>Алгоритм</th><th>Домиков</th><th>Шагов</th></tr></table>
+</div>
 
-  <h2><span class="h-ico v6"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>Игра: собери функцию</h2>
-  <div class="card">
-    <p>Строки перемешаны. Нажимай на строки внизу, чтобы поставить их в программу по порядку. Нажми на строку в программе, чтобы убрать обратно. Следи за отступами — они часть кода!</p>
-    <p><b id="fnBuildTitle"></b></p>
-    <p style="color:var(--muted);margin:0 0 4px">Программа:</p>
-    <div class="build-area" id="fnBuildProg"></div>
-    <p style="color:var(--muted);margin:0 0 4px">Строки:</p>
-    <div class="build-area" id="fnBuildBank"></div>
-    <div class="row">
-      <button class="btn" id="fnBuildCheck">Проверить</button>
-      <button class="btn ghost" id="fnBuildReset">Сначала</button>
-      <button class="btn ghost" id="fnBuildNext">Другая задача</button>
-    </div>
-    <p class="msg" id="fnBuildMsg"></p>
-    <div class="log" id="fnBuildResult" style="display:none"></div>
-  </div>
+<div class="card">
+  <h2>Игра: ты против алгоритма</h2>
+  <p class="mut">Клад в одном из 32 домиков. Нажимай на номер, а я подскажу «больше» или «меньше». Попробуй уложиться в 5 попыток!</p>
+  <div id="game"></div>
+  <div class="msg" id="gmsg"></div>
+  <div class="stat">Попыток: <span id="att">0</span></div>
+  <button id="gnew"> Новая игра</button>
+  <p class="mut">Хитрость: всегда выбирай середину оставшихся домиков. Каждый раз половина отпадает. 32 → 16 → 8 → 4 → 2 → 1. Это и есть log₂(32) = 5.</p>
+</div>
 
-  <h2><span class="h-ico v7"><svg viewBox="0 0 24 24"><path d="M12 3L2 20h20L12 3z"/><path d="M12 9.5V14"/><circle cx="12" cy="17" r=".7" fill="#fff" stroke="none"/></svg></span>Частые ошибки</h2>
-  <ul>
-    <li>Забыл двоеточие после <code>def имя(...)</code>.</li>
-    <li>Тело функции без отступа — будет ошибка <code>IndentationError</code>.</li>
-    <li>Спутал <code>print</code> и <code>return</code>: функция показала ответ на экране, но вернула <code>None</code>.</li>
-    <li>Написал имя функции без скобок: <code>make_juice</code> вместо <code>make_juice()</code>. Без скобок вызова не будет.</li>
-    <li>Код после <code>return</code> не выполняется — функция уже закончилась.</li>
-    <li>Попытался достать локальную переменную снаружи функции — будет <code>NameError</code>.</li>
-  </ul>
-
-  <div class="done">
-    <h2>Урок пройден</h2>
-    <p>Выбери, что делать дальше.</p>
-    <a class="btn" href="#/python">К урокам Python</a>
-    <button class="btn" disabled>Следующий урок (скоро)</button>
-    <a class="btn" href="#/">На главную</a>
-  </div>
-</section>
-
-<!-- ================= C++ 01: BIG O ================= -->
-<section class="view" id="view-cpp-bigo">
-  <a class="back" href="#/cpp">[&lt; к урокам C++]</a>
-  <p class="crumb">C++ · Урок 1</p>
-  <h1>Big O: учим алгоритмы</h1>
-  <p class="lead">План урока: сначала разберёмся, что такое Big O, потом посмотрим, как работают поиск и сортировка, а в конце ты напишешь алгоритм сам.</p>
-
-  <h2>Что такое Big O</h2>
-  <p>Представь, что нужно найти слово в словаре. Можно листать с первой страницы, а можно открыть словарь посередине и сразу понять, в какой он половине. Оба способа найдут слово, но второй сделает гораздо меньше шагов.</p>
-  <p><b>Big O</b> (читается «О большое») показывает, как быстро растёт число шагов алгоритма, когда растёт размер данных. Размер данных обозначают буквой <b>n</b>: это число домиков, элементов массива или слов в словаре.</p>
-  <p>Есть три важных договорённости:</p>
-  <ul>
-    <li>Мы считаем <b>шаги</b>, а не секунды. Секунды зависят от компьютера, шаги — нет.</li>
-    <li>Мы смотрим на <b>худший случай</b>: клад оказался в самом последнем домике.</li>
-    <li><b>Мелочи отбрасываем</b>. Если алгоритм делает 3n шагов, мы всё равно пишем O(n), потому что важна форма роста, а не множитель.</li>
-  </ul>
-  <table class="tbl">
-    <thead><tr><th>Запись</th><th>Название</th><th>Пример</th><th>Шагов при n = 1000</th></tr></thead>
-    <tbody>
-      <tr><td>O(1)</td><td>константная</td><td>взять элемент массива по номеру</td><td>1</td></tr>
-      <tr><td>O(log n)</td><td>логарифмическая</td><td>бинарный поиск</td><td>около 10</td></tr>
-      <tr><td>O(n)</td><td>линейная</td><td>один цикл по всем элементам</td><td>1000</td></tr>
-      <tr><td>O(n log n)</td><td>линеарифмическая</td><td>сортировка слиянием</td><td>около 10 000</td></tr>
-      <tr><td>O(n²)</td><td>квадратичная</td><td>цикл в цикле, пузырьковая сортировка</td><td>1 000 000</td></tr>
-    </tbody>
-  </table>
-  <h3>Как оценить сложность по коду</h3>
-  <ul>
-    <li>Просто обратились к элементу по номеру: <b>O(1)</b>.</li>
-    <li>Один цикл от 1 до n: <b>O(n)</b>.</li>
-    <li>Цикл внутри цикла, оба до n: <b>O(n²)</b>.</li>
-    <li>На каждом шаге отбрасываем половину данных: <b>O(log n)</b>.</li>
-  </ul>
-
-  <h2><span class="h-ico v4"><svg viewBox="0 0 24 24"><path d="M4 21V4"/><path d="M4 4h13l-2 4 2 4H4"/></svg></span>Часть 1. Поиск: забег алгоритмов</h2>
-  <div class="card">
-    <p>Клад спрятан в одном из домиков, они пронумерованы по порядку. Сколько шагов нужно герою, чтобы его найти?</p>
-    <div class="row">
-      <label>Домиков:
-        <select id="boHousesSel">
-          <option value="8">8</option>
-          <option value="16" selected>16</option>
-          <option value="32">32</option>
-        </select>
-      </label>
-      <button class="btn tog" id="boTele">Телепорт O(1)</button>
-      <button class="btn tog active" id="boLin">По очереди O(n)</button>
-      <button class="btn tog" id="boBin">Пополам O(log n)</button>
-      <button class="btn ghost" id="boHide">Спрятать клад заново</button>
-    </div>
-    <p>Шагов: <span class="badge" id="boSteps">0</span></p>
-    <div class="houses" id="boTrack"></div>
-    <p style="color:var(--muted)" id="boHintLine">Выбери алгоритм и смотри, как идёт герой</p>
-    <pre class="code" id="boCode">// код появится здесь</pre>
-    <table class="tbl">
-      <thead><tr><th>Алгоритм</th><th>Домиков</th><th>Шагов</th></tr></thead>
-      <tbody id="boTableBody"></tbody>
-    </table>
-  </div>
-
-  <h2><span class="h-ico v3"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="11" rx="5.5"/><path d="M6.5 11v3M5 12.5h3"/><circle cx="15.5" cy="14" r="1" fill="#fff" stroke="none"/><circle cx="18" cy="11.5" r="1" fill="#fff" stroke="none"/></svg></span>Игра: ты против алгоритма</h2>
-  <div class="card">
-    <p>Клад в одном из 32 домиков. Нажимай на номер, а я подскажу «больше» или «меньше». Попробуй уложиться в 5 попыток!</p>
-    <p>Попыток: <span class="badge" id="bgTry">0</span> <button class="btn ghost" id="bgNew">Новая игра</button></p>
-    <div class="houses" id="bgGrid"></div>
-    <p class="msg" id="bgMsg"></p>
-    <p><b>Хитрость:</b> всегда выбирай середину оставшихся домиков. Каждый раз половина отпадает. 32 → 16 → 8 → 4 → 2 → 1. Это и есть log₂(32) = 5.</p>
-  </div>
-
-  <h2><span class="h-ico"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M2 20h20"/></svg></span>Часть 2. Сортировка: расставь по порядку</h2>
+<div class="card">
+  <h2>Часть 2. Сортировка: расставь по порядку</h2>
   <p>Сортировка — это расстановка элементов по порядку, например от меньшего к большему. Она нужна, чтобы работал бинарный поиск: он умеет искать только в упорядоченных данных. Способов сортировки много, мы разберём два.</p>
-  <h3>Пузырьковая сортировка</h3>
-  <p>Идём по массиву и сравниваем двух соседей. Если левый больше правого, меняем их местами. После первого прохода самый большой элемент оказывается в конце, как всплывший пузырёк. Повторяем проходы, пока всё не встанет по порядку.</p>
-  <pre class="code">[4, 2, 5, 1]   сравниваем 4 и 2, меняем   -&gt; [2, 4, 5, 1]
+<h3>Пузырьковая сортировка</h3>
+<p>Идём по массиву и сравниваем двух соседей. Если левый больше правого, меняем их местами. После первого прохода самый большой элемент оказывается в конце, как всплывший пузырёк. Повторяем проходы, пока всё не встанет по порядку.</p>
+<pre>[4, 2, 5, 1]   сравниваем 4 и 2, меняем   -> [2, 4, 5, 1]
 [2, 4, 5, 1]   сравниваем 4 и 5, не меняем
-[2, 4, 5, 1]   сравниваем 5 и 1, меняем   -&gt; [2, 4, 1, 5]
+[2, 4, 5, 1]   сравниваем 5 и 1, меняем   -> [2, 4, 1, 5]
 пятёрка встала на место, начинаем новый проход</pre>
-  <p>Нужно примерно n проходов, и в каждом около n сравнений. Поэтому сложность <b>O(n²)</b>.</p>
-  <h3>Сортировка слиянием</h3>
-  <p>Две уже отсортированные кучки легко слить в одну: смотрим на первые элементы кучек и каждый раз берём меньший.</p>
-  <pre class="code">[2, 4] и [1, 5]:  берём 1, потом 2, потом 4, потом 5  -&gt; [1, 2, 4, 5]</pre>
-  <p>Но откуда взять отсортированные кучки? Делим массив пополам и сортируем каждую половину тем же способом. Так делим, пока в куче не останется один элемент, а один элемент уже отсортирован. Деление пополам даёт log n уровней, а на каждом уровне слияние проходит по всем n элементам. Итого <b>O(n log n)</b>.</p>
-  <p>Для 24 столбиков разница небольшая. Но для 1000 элементов пузырёк сделает около миллиона сравнений, а слияние — около десяти тысяч.</p>
-  <div class="card">
-    <p>Запусти оба способа на одной и той же расстановке и сравни число сравнений.</p>
-    <div class="row">
-      <label>Столбиков: <b id="bsNVal">16</b><input type="range" id="bsN" min="8" max="32" value="16"/></label>
-      <button class="btn" id="bsBubble">Пузырьком O(n²)</button>
-      <button class="btn" id="bsMerge">Слиянием O(n log n)</button>
-      <button class="btn ghost" id="bsShuffle">Перемешать</button>
-    </div>
-    <div class="bars" id="bsBars"></div>
-    <p>Сравнений: <span class="badge" id="bsComp">0</span></p>
-    <p style="color:var(--muted)">Выбери сортировку и нажми кнопку.</p>
-    <pre class="code" id="bsCode">// код появится здесь</pre>
-    <table class="tbl">
-      <thead><tr><th>Сортировка</th><th>Столбиков</th><th>Сравнений</th></tr></thead>
-      <tbody id="bsTableBody"></tbody>
-    </table>
+<p>Нужно примерно n проходов, и в каждом около n сравнений. Поэтому сложность O(n²).</p>
+<h3>Сортировка слиянием</h3>
+<p>Две уже отсортированные кучки легко слить в одну: смотрим на первые элементы кучек и каждый раз берём меньший.</p>
+<pre>[2, 4] и [1, 5]:  берём 1, потом 2, потом 4, потом 5  -> [1, 2, 4, 5]</pre>
+<p>Но откуда взять отсортированные кучки? Делим массив пополам и сортируем каждую половину тем же способом. Так делим, пока в куче не останется один элемент, а один элемент уже отсортирован. Деление пополам даёт log n уровней, а на каждом уровне слияние проходит по всем n элементам. Итого O(n log n).</p>
+<p>Для 24 столбиков разница небольшая. Но для 1000 элементов пузырёк сделает около миллиона сравнений, а слияние около десяти тысяч.</p>
+<p class="mut">Запусти оба способа на одной и той же расстановке и сравни число сравнений.</p>
+  <label>Столбиков: <b id="sv">16</b></label>
+  <input type="range" id="sn" min="8" max="24" step="2" value="16">
+  <div id="bars"></div>
+  <div>
+    <button id="sb1"> Пузырьком O(n²)</button>
+    <button id="sb2"> Слиянием O(n log n)</button>
+    <button class="sec" id="sbm"> Перемешать</button>
   </div>
+  <div class="stat">Сравнений: <span id="scmp">0</span></div>
+  <div class="mut" id="sexpl">Выбери сортировку и нажми кнопку.</div>
+  <pre id="scode">// код появится здесь</pre>
+  <table id="shist"><tr><th>Сортировка</th><th>Столбиков</th><th>Сравнений</th></tr></table>
+</div>
 
+<div class="card">
   <h2>Почему Big O так важен?</h2>
-  <div class="card">
-    <div class="row">
-      <label>Сколько домиков: <b id="boNVal">100</b><input type="range" id="boNSlider" min="10" max="1000" step="10" value="100"/></label>
-    </div>
-    <table class="tbl">
-      <thead><tr><th>Сложность</th><th>Шагов в худшем случае</th></tr></thead>
-      <tbody>
-        <tr><td>O(1) телепорт</td><td>1</td></tr>
-        <tr><td>O(log n) пополам</td><td id="boTLog"></td></tr>
-        <tr><td>O(n) по очереди</td><td id="boTLin"></td></tr>
-        <tr><td>O(n log n) сортировка слиянием</td><td id="boTNLog"></td></tr>
-        <tr><td>O(n²) пузырёк, или все со всеми здороваются</td><td id="boTQuad"></td></tr>
-      </tbody>
-    </table>
-    <p>Подвигай ползунок: O(n²) растёт очень быстро, а O(log n) почти не меняется.</p>
-    <pre class="code">// O(n²): каждый здоровается с каждым
+  <label>Сколько домиков: <b id="mv">100</b></label>
+  <input type="range" id="m" min="1" max="1000" value="100">
+  <table>
+    <tr><th>Сложность</th><th>Шагов в худшем случае</th></tr>
+    <tr><td>O(1) телепорт</td><td id="t1">1</td></tr>
+    <tr><td>O(log n) пополам</td><td id="t2"></td></tr>
+    <tr><td>O(n) по очереди</td><td id="t3"></td></tr>
+    <tr><td>O(n log n) сортировка слиянием</td><td id="t5"></td></tr>
+    <tr><td>O(n²) пузырёк, или все со всеми здороваются </td><td id="t4"></td></tr>
+  </table>
+  <p class="mut">Подвигай ползунок: O(n²) растёт очень быстро, а O(log n) почти не меняется.</p>
+  <pre>// O(n²): каждый здоровается с каждым
 for (int i = 0; i &lt; n; i++)
     for (int j = 0; j &lt; n; j++)
         cout &lt;&lt; i &lt;&lt; " жмёт руку " &lt;&lt; j &lt;&lt; "\n";</pre>
-  </div>
-
-  <h2><span class="h-ico v2"><svg viewBox="0 0 24 24"><polyline points="8 6 3 12 8 18"/><polyline points="16 6 21 12 16 18"/></svg></span>Часть 3. Теперь ты программист!</h2>
-  <div class="card">
-    <p>Ты уже видел, как работают поиски. Теперь напиши алгоритм сам: герой пойдёт ровно так, как скажет твой код. Пиши на упрощённом C++ (переменные int, циклы, if, while). Клад спрятан среди <b>n = 100</b> домиков.</p>
-    <pre class="code">check(i) возвращает:
+</div>
+<h2 style="margin-top:28px">Часть 3. Теперь ты программист!</h2>
+<p class="mut">Ты уже видел, как работают поиски. Теперь напиши алгоритм сам: герой пойдёт ровно так, как скажет твой код.</p>
+<div class="card">
+  <div id="tabs"></div>
+  <h3 id="title"></h3>
+  <div id="task"></div>
+  <pre>check(i) возвращает:
   0  — клад в доме i, ты его нашёл!
   1  — клад в доме с БОЛЬШИМ номером (правее)
  -1  — клад в доме с МЕНЬШИМ номером (левее)</pre>
-    <textarea class="codepad" id="beCode">// напиши алгоритм поиска здесь
-// пример:
-// int r = check(50);
-</textarea>
-    <div class="row">
-      <button class="btn" id="beRun">Запустить</button>
-      <button class="btn ghost" id="beHint">Подсказка</button>
-      <button class="btn ghost" id="beReset">Сначала</button>
-    </div>
-    <div class="log" id="beOut">Нажми «Запустить», чтобы проверить код.</div>
+  <textarea id="src" spellcheck="false"></textarea>
+  <div>
+    <button id="run">Запустить</button>
+    <button class="sec" id="hint"> Подсказка</button>
+    <button class="sec" id="rst"> Сначала</button>
   </div>
-
-  <div class="done">
-    <h2>Урок пройден</h2>
-    <p>Выбери, что делать дальше.</p>
-    <a class="btn" href="#/cpp">К урокам C++</a>
-    <a class="btn" href="#/cpp/sorting">Следующий урок: Сортировка</a>
-    <a class="btn" href="#/">На главную</a>
-  </div>
-</section>
-
-<!-- ================= C++ 02: СОРТИРОВКА ================= -->
-<section class="view" id="view-cpp-sorting">
-  <a class="back" href="#/cpp">[&lt; к урокам C++]</a>
-  <p class="crumb">C++ · Урок 2</p>
-  <h1>Сортировка массивов</h1>
-  <p class="lead">Четыре способа расставить числа по порядку, и чем они отличаются.</p>
-
-  <h2>Зачем сортировать</h2>
-  <p>Сортировка — это расстановка элементов по порядку: от меньшего к большему или наоборот. Книги на полке, фамилии в журнале, цены в магазине. Там, где всё стоит по порядку, искать проще. Бинарный поиск из прошлого урока тоже работает только на отсортированных данных.</p>
-  <p>Способов сортировки много. Они отличаются скоростью, расходом памяти и тем, насколько просто их написать. В C++ уже есть готовая функция <code>std::sort</code>, но полезно понимать, что происходит внутри. Мы разберём четыре способа: пузырьком, выбором, вставками и быструю.</p>
-  <p>Все они сортируют по возрастанию и работают «на месте»: не заводят второй массив, а переставляют элементы в том же.</p>
-
-  <h3>1. Пузырьковая сортировка</h3>
-  <p><b>Аналогия.</b> В стакане с газировкой лёгкие пузырьки поднимаются вверх. Здесь самые большие числа «всплывают» в конец массива.</p>
-  <ol>
-    <li>Сравни два соседних элемента.</li>
-    <li>Если левый больше правого, поменяй их местами.</li>
-    <li>Дойди до конца. Самое большое число теперь стоит последним.</li>
-    <li>Повтори всё для оставшихся элементов. Последний уже на месте, его не трогаем.</li>
-  </ol>
-  <p>Время: <b>O(n²)</b>. Память: O(1). Устойчивая: да. Плюс: очень простая. Минус: медленная, делает много лишних сравнений.</p>
-
-  <h3>2. Сортировка выбором</h3>
-  <p><b>Аналогия.</b> Учитель строит класс по росту. Находит самого низкого и ставит на первое место. Потом находит самого низкого из оставшихся и ставит на второе. И так до конца.</p>
-  <ol>
-    <li>Найди самый маленький элемент среди тех, что ещё не расставлены.</li>
-    <li>Поменяй его местами с первым из нерасставленных.</li>
-    <li>Граница между готовой и неготовой частью сдвигается на один вправо.</li>
-    <li>Повторяй, пока не дойдёшь до конца.</li>
-  </ol>
-  <p>Время: <b>O(n²)</b> всегда, даже если массив уже отсортирован. Память: O(1). Устойчивая: нет. Плюс: делает мало обменов, не больше n − 1. Минус: сравнений всегда много.</p>
-
-  <h3>3. Сортировка вставками</h3>
-  <p><b>Аналогия.</b> Карты в руке. Берёшь новую карту и вставляешь её на нужное место среди тех, что уже лежат по порядку. Остальные карты чуть раздвигаются.</p>
-  <ol>
-    <li>Слева лежит отсортированная часть. Сначала это один элемент.</li>
-    <li>Возьми следующий элемент и запомни его в переменной <code>key</code>.</li>
-    <li>Сдвигай элементы слева на одно место вправо, пока они больше <code>key</code>.</li>
-    <li>Поставь <code>key</code> в освободившееся место.</li>
-  </ol>
-  <p>Время: <b>O(n²)</b> в среднем и худшем случае, но <b>O(n)</b>, если массив почти отсортирован. Память: O(1). Устойчивая: да. Плюс: быстро работает на маленьких и почти готовых массивах. Минус: на больших случайных медленная.</p>
-
-  <h3>4. Быстрая сортировка</h3>
-  <p><b>Аналогия.</b> На физкультуре выбирают одного ученика, он будет опорным. Все, кто ниже его, встают слева, кто выше — справа. Опорный уже стоит на своём месте. Потом левую и правую группу делят точно так же, и так далее, пока группы не станут по одному человеку.</p>
-  <ol>
-    <li>Выбери опорный элемент (у нас последний).</li>
-    <li>Разложи остальные: меньшие влево, большие вправо.</li>
-    <li>Поставь опорный между ними. Он на месте навсегда.</li>
-    <li>Сделай то же самое для левой и правой части. Это рекурсия: функция вызывает сама себя.</li>
-  </ol>
-  <p>Время: <b>O(n log n)</b> в среднем, <b>O(n²)</b> в худшем случае (если опорный всё время самый маленький или самый большой). Память: O(log n) на рекурсию. Устойчивая: нет. Плюс: на практике одна из самых быстрых. Минус: плохой случай.</p>
-
-  <h2><span class="h-ico"><svg viewBox="0 0 24 24"><polygon points="7 4 20 12 7 20" fill="#fff" stroke="none"/></svg></span>Запусти и сравни</h2>
-  <div class="card">
-    <p>Выбери сортировку и нажми «Запустить». Синий — сравнение, оранжевый — перестановка, зелёный — готово. Кнопка «Сравнить все» прогонит все четыре на одном и том же массиве, и ты увидишь разницу в цифрах.</p>
-    <div class="row">
-      <button class="btn tog active" id="svBubble">Пузырьком</button>
-      <button class="btn tog" id="svSelection">Выбором</button>
-      <button class="btn tog" id="svInsertion">Вставками</button>
-      <button class="btn tog" id="svQuick">Быстрая</button>
-    </div>
-    <div class="row">
-      <label>Элементов: <b id="svNVal">16</b><input type="range" id="svN" min="8" max="32" value="16"/></label>
-      <label>Пауза: <b id="svPauseVal">40</b> мс<input type="range" id="svPause" min="10" max="200" step="10" value="40"/></label>
-    </div>
-    <div class="bars" id="svBars"></div>
-    <p>Сравнений: <span class="badge" id="svComp">0</span> &nbsp; Перестановок: <span class="badge" id="svSwap">0</span></p>
-    <div class="row">
-      <button class="btn" id="svRun">Запустить</button>
-      <button class="btn ghost" id="svAll">Сравнить все</button>
-      <button class="btn ghost" id="svShuffle">Перемешать</button>
-    </div>
-    <table class="tbl">
-      <thead><tr><th>Сортировка</th><th>Элементов</th><th>Сравнений</th><th>Перестановок</th></tr></thead>
-      <tbody id="svTableBody"></tbody>
-    </table>
-  </div>
-
-  <h3>Сравнение четырёх сортировок</h3>
-  <table class="tbl">
-    <thead><tr><th>Сортировка</th><th>Лучший</th><th>Средний</th><th>Худший</th><th>Память</th><th>Устойчивая</th></tr></thead>
-    <tbody>
-      <tr><td>Пузырьком</td><td>O(n)*</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>да</td></tr>
-      <tr><td>Выбором</td><td>O(n²)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>нет</td></tr>
-      <tr><td>Вставками</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>да</td></tr>
-      <tr><td>Быстрая</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n²)</td><td>O(log n)</td><td>нет</td></tr>
-    </tbody>
-  </table>
-  <p style="font-size:14px;color:var(--muted)">* Если добавить проверку «за проход не было ни одного обмена, значит, всё готово». В коде выше её нет.</p>
-  <p><b>Что значит «устойчивая».</b> Допустим, два ученика одного роста стоят в списке в каком-то порядке. Устойчивая сортировка не меняет их порядок между собой. Неустойчивая может поменять. Для обычных чисел это неважно, а для списка людей, отсортированного по росту, бывает важно.</p>
-
-  <h2><span class="h-ico v3"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="11" rx="5.5"/><path d="M6.5 11v3M5 12.5h3"/><circle cx="15.5" cy="14" r="1" fill="#fff" stroke="none"/><circle cx="18" cy="11.5" r="1" fill="#fff" stroke="none"/></svg></span>Игра: отсортируй сам</h2>
-  <div class="card">
-    <p>Нажми на один столбик, потом на другой, и они поменяются местами. Расставь столбики от меньшего к большему как можно за меньшее число обменов. Потом сравни себя с сортировкой выбором.</p>
-    <div class="bars" id="sgBars" style="cursor:pointer"></div>
-    <p>Обменов: <span class="badge" id="sgSwaps">0</span> <button class="btn ghost" id="sgNew">Новый массив</button></p>
-    <p class="msg" id="sgMsg"></p>
-  </div>
-
-  <h2><span class="h-ico v3"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="11" rx="5.5"/><path d="M6.5 11v3M5 12.5h3"/><circle cx="15.5" cy="14" r="1" fill="#fff" stroke="none"/><circle cx="18" cy="11.5" r="1" fill="#fff" stroke="none"/></svg></span>Игра: что будет после прохода</h2>
-  <div class="card">
-    <p>Тебе показывают массив и название сортировки. Выбери, как он будет выглядеть после первых шагов внешнего цикла. Тут нужно представить, как работает алгоритм.</p>
-    <p><b id="pqQ"></b></p>
-    <div class="grid2" id="pqOpts"></div>
-    <div class="row">
-      <button class="btn ghost" id="pqNext">Следующий вопрос</button>
-      <span>Верных ответов: <span class="badge" id="pqScore">0 из 0</span></span>
-    </div>
-    <p class="msg" id="pqMsg"></p>
-  </div>
-
-  <h2><span class="h-ico v4"><svg viewBox="0 0 24 24"><polyline points="8 6 3 12 8 18"/><polyline points="16 6 21 12 16 18"/></svg></span>Задания: выбери правильный код</h2>
-  <div class="card">
-    <p>В каждом вопросе три кусочка кода. Только один из них правильный. Нажми на него.</p>
-    <p><b id="cqQ"></b></p>
-    <div id="cqOpts"></div>
-    <div class="row">
-      <button class="btn ghost" id="cqNext">Следующий вопрос</button>
-      <span>Верных ответов: <span class="badge" id="cqScore">0 из 0</span></span>
-    </div>
-    <p class="msg" id="cqMsg"></p>
-  </div>
-
-  <h2><span class="h-ico v2"><svg viewBox="0 0 24 24"><polyline points="8 6 3 12 8 18"/><polyline points="16 6 21 12 16 18"/></svg></span>Задания: напиши код</h2>
-  <div class="card">
-    <p>Напиши функцию на C++. Для проверки её запустят на нескольких массивах: случайных, уже отсортированных, перевёрнутых и с повторами. Работает упрощённый C++: переменные <code>int</code>, циклы, <code>if</code>, <code>while</code>, <code>swap</code>, обращение к элементам по номеру.</p>
-    <textarea class="codepad" id="scCode">void sort(int a[], int n) {
-    // напиши сортировку здесь
-}
-</textarea>
-    <div class="row">
-      <button class="btn" id="scRun">Запустить тесты</button>
-      <button class="btn ghost" id="scHint">Подсказка</button>
-      <button class="btn ghost" id="scReset">Сначала</button>
-    </div>
-    <div class="log" id="scOut">Нажми «Запустить тесты», чтобы проверить код.</div>
-  </div>
-
-  <div class="done">
-    <h2>Урок пройден</h2>
-    <p>Выбери, что делать дальше.</p>
-    <a class="btn" href="#/cpp">К урокам C++</a>
-    <button class="btn" disabled>Следующий урок (скоро)</button>
-    <a class="btn" href="#/">На главную</a>
-  </div>
-</section>
-
+  <div class="mut" id="hbox"></div>
+  <div class="row" id="row"></div>
+  <div id="log"></div>
+  <div class="res" id="out"></div>
 </div>
+<div class="card">
+  <h2>Урок пройден</h2>
+  <p class="mut">Выбери, что делать дальше.</p>
+  <button onclick="navTo('cpp')">К урокам C++</button>
+  <button id="nextLesson" onclick="navTo('sorting')">Следующий урок: Сортировка</button>
+  <button class="sec" onclick="navTo('home')">На главную</button>
+</div>
+</div>
+</main>
 
 <script>
-/* ================= helpers ================= */
-const el=id=>document.getElementById(id);
+const $=id=>document.getElementById(id);
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
-function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const stripComments=s=>s.replace(/\/\/[^\n]*/g,'').replace(/\/\*[\s\S]*?\*\//g,'');
-function uniqOptions(correct,wrongs){
-  const set=[correct];
-  for(const w of wrongs){if(!set.includes(w))set.push(w)}
-  let guard=0;
-  while(set.length<4&&guard<80){const v=String(rnd(1,99));if(!set.includes(v))set.push(v);guard++}
-  return shuffle(set);
-}
-
-/* ================= router ================= */
-const routes={'#/':'view-home','#/cpp':'view-cpp','#/python':'view-python',
-  '#/cpp/bigo':'view-cpp-bigo','#/cpp/sorting':'view-cpp-sorting',
-  '#/python/loops':'view-py-loops','#/python/lists':'view-py-lists','#/python/functions':'view-py-func'};
-function route(){
-  const h=location.hash||'#/';
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
-  el(routes[h]||'view-home').classList.add('on');
-  window.scrollTo(0,0);
-}
-window.addEventListener('hashchange',route);
-
-/* ================= общий конструктор «собери программу» ================= */
-function makeBuilder(o){
-  let idx=0,prog=[];
-  const task=()=>o.tasks[idx%o.tasks.length];
-  function render(){
-    const t=task();
-    o.bank.innerHTML='';o.prog.innerHTML='';
-    t.lines.forEach((ln,i)=>{
-      if(prog.includes(i))return;
-      const b=document.createElement('button');
-      b.className='line-btn';b.textContent=ln;
-      b.onclick=()=>{prog.push(i);render()};
-      o.bank.appendChild(b);
-    });
-    if(!prog.length){o.prog.innerHTML='<div class="placeholder">Кликай по строкам внизу, чтобы собрать программу</div>';}
-    else prog.forEach((li,pos)=>{
-      const b=document.createElement('button');
-      b.className='line-btn';b.textContent=t.lines[li];
-      b.onclick=()=>{prog.splice(pos,1);render()};
-      o.prog.appendChild(b);
-    });
-  }
-  function check(){
-    const t=task();const got=prog.map(i=>t.lines[i]);
-    const ok=got.length===t.lines.length&&got.every((l,k)=>l===t.lines[k]);
-    if(ok){o.msg.textContent='Программа собрана правильно!';o.msg.className='msg good';
-      o.result.style.display='block';o.result.textContent='>>> Запускаем...\n'+t.result;}
-    else{o.msg.textContent=prog.length<t.lines.length?'Не все строки на месте.':'Пока неправильно. Проверь порядок строк и отступы.';
-      o.msg.className='msg bad';o.result.style.display='none';}
-  }
-  function next(){idx++;prog=[];o.msg.textContent='';o.result.style.display='none';o.title.textContent='Задача: '+task().title;render();}
-  function reset(){prog=[];o.msg.textContent='';o.result.style.display='none';render();}
-  o.title.textContent='Задача: '+task().title;
-  render();
-  return {check,next,reset};
-}
-
-/* ================= PYTHON 1: ЦИКЛЫ ================= */
-/* лягушка */
-let frogBusy=false;
-async function frogRun(){
-  if(frogBusy)return;
-  const start=+el('lpStart').value,stop=+el('lpStop').value,step=+el('lpStep').value;
-  const msg=el('lpMsg');
-  if(start>=stop){msg.textContent='range пуст: нужно, чтобы stop был больше start.';msg.className='msg bad';return;}
-  frogBusy=true;el('lpRun').disabled=true;
-  const track=el('lpTrack'),frog=el('lpFrog');
-  track.querySelectorAll('.tile').forEach(t=>t.remove());
-  const tiles=[];
-  for(let v=0;v<=stop;v++){const d=document.createElement('div');d.className='tile';d.textContent=v;track.appendChild(d);tiles.push({v,el:d});}
-  const posOf=v=>tiles.findIndex(t=>t.v===v);
-  frog.style.left=(posOf(start)*38+2)+'px';
-  msg.textContent='';msg.className='msg';
-  const vals=[];for(let v=start;v<stop;v+=step)vals.push(v);
-  await sleep(300);
-  for(const v of vals){
-    frog.style.left=(posOf(v)*38+2)+'px';
-    tiles[posOf(v)].el.classList.add('hit');
-    await sleep(380);
-  }
-  msg.textContent='range выдал: '+(vals.length?vals.join(' '):'ничего');
-  msg.className='msg good';
-  frogBusy=false;el('lpRun').disabled=false;
-}
-el('lpRun').onclick=frogRun;
-[['lpStart','lpStartV'],['lpStop','lpStopV'],['lpStep','lpStepV']].forEach(([a,b])=>{
-  el(a).oninput=()=>{el(b).textContent=el(a).value};
-});
-
-/* викторина про цикл */
-let lpqA=0,lpqB=0,lpqS=1,lpqAns=0,lpqStreak=0,lpqDone=false;
-function lpQuizNew(){
-  lpqA=rnd(0,4);lpqS=rnd(1,3);
-  lpqB=lpqA+rnd(3,7)*lpqS+rnd(0,lpqS-1);
-  lpqAns=lpqA+lpqS*Math.floor((lpqB-1-lpqA)/lpqS);
-  el('lpQuizCode').textContent='for i in range('+lpqA+', '+lpqB+', '+lpqS+'):\n    print(i)';
-  el('lpQuizIn').value='';el('lpQuizMsg').textContent='';el('lpQuizMsg').className='msg';lpqDone=false;
-}
-function lpQuizCheck(){
-  if(lpqDone)return;
-  const v=parseInt(el('lpQuizIn').value,10);
-  if(isNaN(v)){el('lpQuizMsg').textContent='Впиши число.';el('lpQuizMsg').className='msg bad';return;}
-  lpqDone=true;
-  if(v===lpqAns){lpqStreak++;el('lpQuizMsg').textContent='Верно! Последним напечатается '+lpqAns+'.';el('lpQuizMsg').className='msg good';}
-  else{lpqStreak=0;el('lpQuizMsg').textContent='Не-а. Последним напечатается '+lpqAns+'. Помни: стоп не входит, шаг '+lpqS+'.';el('lpQuizMsg').className='msg bad';}
-  el('lpQuizStreak').textContent=lpqStreak;
-}
-el('lpQuizCheck').onclick=lpQuizCheck;
-el('lpQuizNext').onclick=lpQuizNew;
-el('lpQuizIn').addEventListener('keydown',e=>{if(e.key==='Enter')lpQuizCheck()});
-
-/* копилка */
-let pigTimer=null;
-el('lpGoal').oninput=()=>{el('lpGoalV').textContent=el('lpGoal').value};
-el('lpDay').oninput=()=>{el('lpDayV').textContent=el('lpDay').value};
-function pigRun(){
-  if(pigTimer)return;
-  const goal=+el('lpGoal').value,per=+el('lpDay').value,forget=el('lpForget').checked;
-  const log=el('lpPigLog'),bar=el('lpPigBar');
-  log.textContent='';bar.style.width='0%';
-  let money=0,days=0;
-  el('lpPigRun').disabled=true;el('lpPigStop').style.display='inline-block';
-  const logAdd=t=>{const lines=log.textContent?log.textContent.split('\n'):[];lines.push(t);if(lines.length>8)lines.shift();log.textContent=lines.join('\n');};
-  const stop=msg=>{clearInterval(pigTimer);pigTimer=null;el('lpPigRun').disabled=false;el('lpPigStop').style.display='none';if(msg)logAdd(msg);};
-  pigTimer=setInterval(()=>{
-    days++;
-    if(!forget)money+=per;
-    bar.style.width=Math.min(100,money/goal*100)+'%';
-    if(!forget&&money>=goal){stop('День '+days+': всего '+money+'. Цель достигнута за '+days+' дней!');return;}
-    if(forget){
-      logAdd('День '+days+': всего '+money+', цель '+goal+' — копим дальше...');
-      if(days>=150)stop('Прошло '+days+' дней, а денег больше не стало. Это бесконечный цикл — остановили принудительно.');
-      return;
+let N=16,target=0,busy=false,cells=[];
+const CODE={
+ o1:`// O(1): сразу идём к нужному домику
+int найти(int номер) {
+    return номер;   // 1 шаг, сколько бы домиков ни было
+}`,
+ on:`// O(n): проверяем домики по очереди
+int найти(vector<int>& v, int x) {
+    for (int i = 0; i < v.size(); i++) {
+        if (v[i] == x) return i;
     }
-    logAdd('День '+days+': отложил '+per+', всего '+money);
-  },130);
+    return -1;
+}`,
+ ol:`// O(log n): бинарный поиск (домики по порядку!)
+int найти(vector<int>& v, int x) {
+    int l = 0, r = v.size() - 1;
+    while (l <= r) {
+        int mid = (l + r) / 2;
+        if (v[mid] == x) return mid;
+        if (v[mid] < x) l = mid + 1;
+        else r = mid - 1;
+    }
+    return -1;
+}`};
+function build(){
+  N=+$('n').value;$('nv').textContent=N;
+  target=Math.floor(Math.random()*N);
+  const r=$('row1');r.innerHTML='';cells=[];
+  for(let i=0;i<N;i++){const c=document.createElement('div');c.className='cell';c.textContent=i+1;r.appendChild(c);cells.push(c);}
+  $('steps').textContent=0;
 }
-el('lpPigRun').onclick=pigRun;
-el('lpPigStop').onclick=()=>{
-  if(!pigTimer)return;
-  clearInterval(pigTimer);pigTimer=null;
-  el('lpPigRun').disabled=false;el('lpPigStop').style.display='none';
-  el('lpPigLog').textContent+='\nТы нажал Stop. Так останавливают бесконечный цикл в реальной программе.';
-};
-
-/* собери программу (циклы) */
-const lpBuilder=makeBuilder({
-  bank:el('lpBuildBank'),prog:el('lpBuildProg'),msg:el('lpBuildMsg'),result:el('lpBuildResult'),title:el('lpBuildTitle'),
-  tasks:[
-    {title:'посчитать сумму чисел от 1 до 5',result:'15',lines:[
-      'total = 0','for i in range(1, 6):','    total = total + i','print(total)']},
-    {title:'копилка: за сколько дней накопится 100',result:'5',lines:[
-      'money = 0','days = 0','while money < 100:','    money = money + 20','    days = days + 1','print(days)']},
-    {title:'обратный отсчёт',result:'5\n4\n3\n2\n1\nстарт',lines:[
-      'for i in range(5, 0, -1):','    print(i)','print("старт")']}
-  ]
-});
-el('lpBuildCheck').onclick=lpBuilder.check;
-el('lpBuildNext').onclick=lpBuilder.next;
-el('lpBuildReset').onclick=lpBuilder.reset;
-
-/* ================= PYTHON 2: СПИСКИ ================= */
-let lsArr=['ручка','тетрадь','яблоко'];
-function lsRender(){
-  const shelf=el('lsShelf');shelf.innerHTML='';
-  if(!lsArr.length){shelf.innerHTML='<div class="placeholder">Список пуст</div>';return;}
-  lsArr.forEach((x,i)=>{
-    const d=document.createElement('div');
-    d.className='chip';
-    d.innerHTML='<span class="chip-i">'+i+'</span><span class="chip-v">'+esc(x)+'</span>';
-    d.onclick=()=>{const v=lsArr[i];lsArr.splice(i,1);lsCmd('backpack.remove("'+v+'")');lsRender();};
-    shelf.appendChild(d);
-  });
+function reset(){cells.forEach((c,i)=>{c.className='cell';c.textContent=i+1;});}
+function setBusy(b){busy=b;['b1','b2','b3','bn','n'].forEach(i=>$(i).disabled=b);}
+function addHist(name,steps){
+  const t=$('hist'),tr=t.insertRow(1);
+  tr.innerHTML=`<td>${name}</td><td>${N}</td><td>${steps}</td>`;
+  while(t.rows.length>7)t.deleteRow(t.rows.length-1);
 }
-function lsCmd(t){const d=document.createElement('div');d.textContent=t;el('lsLog').appendChild(d);el('lsLog').scrollTop=el('lsLog').scrollHeight;}
-function lsGetVal(){return el('lsItem').value.trim()}
-el('lsAppend').onclick=()=>{const v=lsGetVal();if(!v)return;if(lsArr.length>=10){lsCmd('# не больше 10 предметов');return}
-  lsArr.push(v);lsCmd('backpack.append("'+v+'")');el('lsItem').value='';lsRender();};
-el('lsInsert').onclick=()=>{const v=lsGetVal();if(!v)return;if(lsArr.length>=10){lsCmd('# не больше 10 предметов');return}
-  lsArr.unshift(v);lsCmd('backpack.insert(0, "'+v+'")');el('lsItem').value='';lsRender();};
-el('lsPop').onclick=()=>{
-  if(!lsArr.length){lsCmd('# IndexError: pop() из пустого списка');return;}
-  const x=lsArr.pop();lsCmd('backpack.pop()  # вернул "'+x+'"');lsRender();};
-el('lsClear').onclick=()=>{lsArr=[];lsCmd('backpack.clear()');lsRender();};
-
-/* игра: достань элемент */
-const LS_POOL=['ручка','блокнот','телефон','ключи','наушники','бутылка','фонарик','мяч','груша','книга'];
-let lsOk=0,lsTotal=0;
-function lsGameNew(){
-  const n=rnd(4,6);
-  const arr=shuffle(LS_POOL).slice(0,n);
-  const idx=Math.random()<0.4?-rnd(1,n):rnd(0,n-1);
-  const norm=idx<0?idx+n:idx;
-  el('lsGetQ').textContent='things = ["'+arr.join('", "')+'"]\nprint(things['+idx+'])';
-  const box=el('lsGetCells');box.innerHTML='';
-  el('lsGetMsg').textContent='';el('lsGetMsg').className='msg';
-  arr.forEach((x,i)=>{
-    const b=document.createElement('button');
-    b.className='cell';
-    b.innerHTML='<span class="cell-idx">'+i+'</span><span class="cell-val">'+esc(x)+'</span><span class="cell-neg">'+(i-n)+'</span>';
-    b.onclick=()=>{
-      if(b.dataset.done)return;
-      b.dataset.done='1';lsTotal++;
-      if(i===norm){b.classList.add('ok');lsOk++;el('lsGetMsg').textContent='Верно, это «'+x+'».';el('lsGetMsg').className='msg good';}
-      else{b.classList.add('bad');el('lsGetMsg').textContent='Не-а. Под номером '+idx+' лежит «'+arr[norm]+'».';el('lsGetMsg').className='msg bad';}
-      el('lsGetScore').textContent=lsOk+' из '+lsTotal;
-    };
-    box.appendChild(b);
-  });
-}
-el('lsGetNext').onclick=lsGameNew;
-
-/* for по списку */
-let lsBusy=false;
-async function lsForRun(){
-  if(lsBusy)return;
-  const raw=el('lsNums').value.split(/[,; ]+/).map(s=>parseInt(s,10)).filter(x=>!isNaN(x)).slice(0,8);
-  const status=el('lsForStatus');
-  if(raw.length<2){status.textContent='Нужно хотя бы два числа через запятую.';return;}
-  lsBusy=true;el('lsForRun').disabled=true;
-  const op=el('lsOp').value;
-  const numsStr='['+raw.join(', ')+']';
-  let code='',varName='';
-  if(op==='sum'){varName='total';code='nums = '+numsStr+'\ntotal = 0\nfor x in nums:\n    total = total + x\nprint(total)';}
-  if(op==='max'){varName='best';code='nums = '+numsStr+'\nbest = nums[0]\nfor x in nums:\n    if x > best:\n        best = x\nprint(best)';}
-  if(op==='even'){varName='count';code='nums = '+numsStr+'\ncount = 0\nfor x in nums:\n    if x % 2 == 0:\n        count = count + 1\nprint(count)';}
-  el('lsForCode').textContent=code;
-  const box=el('lsForCells');box.innerHTML='';
-  const cells=raw.map(v=>{
-    const b=document.createElement('button');b.className='cell';
-    b.innerHTML='<span class="cell-val">'+v+'</span>';
-    box.appendChild(b);return b;
-  });
-  let acc=op==='max'?raw[0]:0;
-  status.textContent='Запускаем цикл...';
-  for(let i=0;i<raw.length;i++){
-    cells.forEach(c=>c.classList.remove('cur','done'));
-    for(let k=0;k<i;k++)cells[k].classList.add('done');
-    cells[i].classList.add('cur');
-    const x=raw[i];
-    if(op==='sum')acc+=x;
-    if(op==='max'&&x>acc)acc=x;
-    if(op==='even'&&x%2===0)acc++;
-    status.textContent='x = '+x+'   '+varName+' = '+acc;
-    await sleep(500);
+function hero(i){cells[i].classList.add('cur');cells[i].textContent='🧒';}
+function unhero(i){cells[i].classList.remove('cur');cells[i].textContent=i+1;}
+function win(i){cells[i].className='cell win';cells[i].textContent='💰';}
+async function run(kind){
+  if(busy)return;setBusy(true);reset();
+  const x=target;let steps=0;const upd=()=>$('steps').textContent=steps;upd();
+  $('code').textContent=CODE[kind];
+  if(kind==='o1'){
+    steps=1;upd();hero(x);await sleep(500);win(x);
+    $('expl').textContent='Герой знает номер домика и сразу там. Всегда 1 шаг!';addHist('O(1)',1);
+  }else if(kind==='on'){
+    for(let i=0;i<N;i++){
+      hero(i);steps++;upd();await sleep(Math.max(40,500/N*4));
+      if(i===x){win(i);break;}
+      unhero(i);cells[i].classList.add('vis');
+    }
+    $('expl').textContent=`Герой проверял всё подряд: ${steps} шагов из ${N}. Чем больше домиков, тем дольше.`;addHist('O(n)',steps);
+  }else{
+    let l=0,r=N-1;
+    while(l<=r){
+      const m=(l+r)>>1;hero(m);steps++;upd();await sleep(700);
+      if(m===x){win(m);break;}
+      unhero(m);
+      if(m<x){for(let i=l;i<=m;i++)cells[i].classList.add('dead');l=m+1;}
+      else{for(let i=m;i<=r;i++)cells[i].classList.add('dead');r=m-1;}
+    }
+    $('expl').textContent=`Каждый шаг отбрасывал половину домиков. Всего ${steps} шагов из ${N}!`;addHist('O(log n)',steps);
   }
-  cells.forEach(c=>{c.classList.remove('cur');c.classList.add('done')});
-  status.textContent+='\nОтвет: '+acc;
-  lsBusy=false;el('lsForRun').disabled=false;
+  setBusy(false);
 }
-el('lsForRun').onclick=lsForRun;
+$('n').oninput=()=>{if(!busy)build();};
+$('bn').onclick=()=>{build();$('expl').textContent='Клад спрятан заново ';};
+$('b1').onclick=()=>run('o1');$('b2').onclick=()=>run('on');$('b3').onclick=()=>run('ol');
 
-/* ================= PYTHON 3: ФУНКЦИИ ================= */
+// Game
+let G=32,secret=0,att=0,glo=1,ghi=32,over=false;
+function gnew(){
+  secret=1+Math.floor(Math.random()*G);att=0;glo=1;ghi=G;over=false;
+  $('att').textContent=0;$('gmsg').textContent='Где клад? ';
+  const g=$('game');g.innerHTML='';
+  for(let i=1;i<=G;i++){const b=document.createElement('button');b.className='sec gbtn';b.textContent=i;b.id='g'+i;b.onclick=()=>guess(i);g.appendChild(b);}
+}
+function guess(i){
+  if(over)return;att++;$('att').textContent=att;
+  const b=$('g'+i);
+  if(i===secret){
+    over=true;b.style.background='var(--ok)';b.textContent='💰';
+    $('gmsg').textContent=att<=5?` Нашёл за ${att}! Как настоящий бинарный поиск!`:`Нашёл за ${att}. Алгоритм справился бы за 5. Попробуй ещё!`;
+    return;
+  }
+  b.disabled=true;
+  if(i<secret){for(let k=glo;k<=i;k++)$('g'+k).disabled=true;glo=Math.max(glo,i+1);$('gmsg').textContent=`${i}: клад дальше, число больше `;}
+  else{for(let k=i;k<=ghi;k++)$('g'+k).disabled=true;ghi=Math.min(ghi,i-1);$('gmsg').textContent=`${i}: клад ближе, число меньше `;}
+}
+$('gnew').onclick=gnew;
+
+// Growth
+function grow(){
+  const m=+$('m').value;$('mv').textContent=m;
+  $('t2').textContent=Math.ceil(Math.log2(m));$('t3').textContent=m.toLocaleString('ru');$('t4').textContent=(m*m).toLocaleString('ru');$('t5').textContent=Math.round(m*Math.log2(Math.max(m,1))).toLocaleString('ru');
+}
+$('m').oninput=grow;
+build();gnew();grow();
+
+// ---- Sorting
+let SB=[],SA=[],sbusy=false;
+const SCODE={
+b:`// Пузырьковая: большие "всплывают" вправо
+void bubble(vector<int>& a) {
+    for (int i = 0; i < a.size(); i++)
+        for (int j = 0; j + 1 < a.size() - i; j++)
+            if (a[j] > a[j+1]) swap(a[j], a[j+1]);
+}   // два цикла друг в друге -> O(n²)`,
+m:`// Слиянием: делим пополам, сортируем, сливаем
+void mergeSort(vector<int>& a, int l, int r) {
+    if (l >= r) return;
+    int m = (l + r) / 2;
+    mergeSort(a, l, m);
+    mergeSort(a, m + 1, r);
+    inplace_merge(a.begin()+l, a.begin()+m+1, a.begin()+r+1);
+}   // log n уровней деления, на каждом n работы -> O(n log n)`};
+function sdraw(hi,fin){
+  $('bars').innerHTML=SA.map((v,i)=>`<div class="bar ${fin?'fin':hi.includes(i)?'hi':''}" style="height:${v/SA.length*100}%"></div>`).join('');
+}
+function sshuffle(){
+  const n=+$('sn').value;$('sv').textContent=n;
+  SB=Array.from({length:n},(_,i)=>i+1);
+  for(let i=n-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[SB[i],SB[j]]=[SB[j],SB[i]];}
+  SA=SB.slice();$('scmp').textContent=0;sdraw([]);
+}
+function* sbubble(a){
+  for(let i=0;i<a.length;i++)for(let j=0;j+1<a.length-i;j++){yield [j,j+1];if(a[j]>a[j+1])[a[j],a[j+1]]=[a[j+1],a[j]];}
+}
+function* smerge(a,l,r){
+  if(l>=r)return;const m=(l+r)>>1;
+  yield* smerge(a,l,m);yield* smerge(a,m+1,r);
+  const t=[];let i=l,j=m+1;
+  while(i<=m&&j<=r){yield [i,j];t.push(a[i]<=a[j]?a[i++]:a[j++]);}
+  while(i<=m)t.push(a[i++]);while(j<=r)t.push(a[j++]);
+  for(let k=0;k<t.length;k++){a[l+k]=t[k];yield [l+k];}
+}
+async function srun(kind){
+  if(sbusy)return;sbusy=true;['sb1','sb2','sbm','sn'].forEach(i=>$(i).disabled=true);
+  SA=SB.slice();let cmp=0;$('scode').textContent=SCODE[kind];
+  for(const hi of (kind==='b'?sbubble(SA):smerge(SA,0,SA.length-1))){
+    if(hi.length===2)cmp++;$('scmp').textContent=cmp;sdraw(hi);await sleep(kind==='b'?25:45);
+  }
+  sdraw([],true);
+  const n=SA.length,name=kind==='b'?'Пузырёк O(n²)':'Слияние O(n log n)';
+  $('sexpl').innerHTML=kind==='b'
+   ?`Пузырёк сравнивал соседей <b>${cmp}</b> раз. Столбиков вдвое больше, значит сравнений примерно вчетверо больше: это O(n²).`
+   :`Слиянием хватило <b>${cmp}</b> сравнений. Делим пополам (log n раз), и на каждом уровне проходим по n элементам: O(n log n).`;
+  const tb=$('shist'),tr=tb.insertRow(1);tr.innerHTML=`<td>${name}</td><td>${n}</td><td>${cmp}</td>`;
+  while(tb.rows.length>7)tb.deleteRow(tb.rows.length-1);
+  ['sb1','sb2','sbm','sn'].forEach(i=>$(i).disabled=false);sbusy=false;
+}
+$('sb1').onclick=()=>srun('b');$('sb2').onclick=()=>srun('m');
+$('sbm').onclick=()=>{if(!sbusy)sshuffle();};$('sn').oninput=()=>{if(!sbusy)sshuffle();};
+sshuffle();
+(function(){
+
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const LV=[
+{n:10,lim:10,title:'Уровень 1. Иди по очереди',
+ task:'Домиков <b>n = 10</b>. Проверь их один за другим и верни номер дома с кладом. Лимит: 10 шагов.',
+ hint:'Внутри цикла вызови check(i). Если ответ 0, сделай return i.',
+ start:`int find(int n) {
+    for (int i = 1; i <= n; i++) {
+        // твой код: спроси check(i)
+        // если клад тут, верни i
+
+    }
+    return -1;
+}`},
+{n:100,lim:7,title:'Уровень 2. Домиков уже 100!',
+ task:'Теперь <b>n = 100</b>, а лимит всего <b>7 шагов</b>. По очереди не получится. Ходи умнее: спрашивай средний домик и отбрасывай половину.',
+ hint:'l и r — границы поиска. Возьми mid = (l + r) / 2 и спроси check(mid). Ответ 1: клад правее, значит l = mid + 1. Ответ -1: левее, значит r = mid - 1.',
+ start:`int find(int n) {
+    int l = 1, r = n;
+    while (l <= r) {
+        int mid = (l + r) / 2;
+        // твой код: спроси check(mid)
+        // 0 -> верни mid
+        // 1 -> сдвинь l
+        // -1 -> сдвинь r
+
+    }
+    return -1;
+}`},
+{n:1000,lim:10,title:'Уровень 3. Тысяча домиков!',
+ task:'<b>n = 1000</b>, лимит <b>10 шагов</b>. Твой алгоритм из уровня 2 должен справиться. Напиши его сам, без шпаргалки!',
+ hint:'Та же идея: делим пополам. 1000 → 500 → 250 → ... за 10 шагов остаётся один домик.',
+ start:`int find(int n) {
+    // напиши бинарный поиск сам
+
+    return -1;
+}`}];
+let cur=0,busy=false;
+function tr(src){
+  let c=src.replace(/\/\/.*$/gm,'');
+  c=c.replace(/\bint\s+find\s*\(\s*int\s+(\w+)\s*\)/,'function find($1)');
+  c=c.replace(/\b(\w+)\s*=\s*([^;=]*\/[^;=]*);/g,'$1 = Math.trunc($2);');
+  c=c.replace(/\b(int|long|bool|auto)\s+/g,'let ');
+  c=c.replace(/while\s*\(([^)]*)\)/g,'while(__g()&&($1))');
+  return c;
+}
+function once(code,n,lim,t,ctx){
+  let steps=0,g=0;
+  const check=i=>{steps++;ctx.steps=steps;if(steps>lim)throw new Error('Слишком много шагов: лимит '+lim);
+    const s=t===i?0:(t>i?1:-1);ctx.log.push([i,s]);return s;};
+  const __g=()=>{if(++g>100000)throw new Error('Цикл никогда не заканчивается');return true;};
+  const f=new Function('check','__g',code+'\nreturn find('+n+');');
+  return f(check,__g);
+}
+function load(i){
+  cur=i;const L=LV[i];
+  $('tabs').innerHTML=LV.map((_,k)=>`<button class="sec ${k===i?'on':''}" onclick="loadLv(${k})">Уровень ${k+1}</button>`).join('');
+  $('title').textContent=L.title;$('task').innerHTML=L.task;$('src').value=L.start;
+  $('hbox').textContent='';$('out').textContent='';$('log').innerHTML='';buildRow(L.n);
+}
+function buildRow(n){
+  const r=$('row');r.innerHTML='';
+  if(n>100){r.innerHTML='<span class="mut">Домиков слишком много, чтобы нарисовать. Следи за журналом шагов </span>';return;}
+  for(let i=1;i<=n;i++){const c=document.createElement('div');c.className='cell';c.id='c'+i;c.textContent=i;r.appendChild(c);}
+}
+async function animate(log,t,n,found){
+  buildRow(n);$('log').innerHTML='';
+  for(let k=0;k<log.length;k++){
+    const [i,s]=log[k],c=$('c'+i);
+    $('log').innerHTML+=`Шаг ${k+1}: check(${i}) → ${s===0?'нашёл! ':s===1?'правее ':'левее '}<br>`;
+    $('log').scrollTop=1e5;
+    if(c){c.className='cell cur';c.textContent='🧒';await sleep(n>10?450:300);
+      if(s===0&&found){c.className='cell win';c.textContent='💰';}else{c.className='cell vis';c.textContent=i;}}
+    else await sleep(150);
+  }
+}
+async function run(){
+  if(busy)return;busy=true;$('run').disabled=true;
+  const L=LV[cur],n=L.n;let code;
+  const out=$('out');out.className='res';out.textContent='';
+  try{code=tr($('src').value);new Function('check','__g',code+'\nreturn find(1);');}
+  catch(e){out.className='res bad';out.textContent='Ошибка в коде: '+e.message;busy=false;$('run').disabled=false;return;}
+  const ts=[];
+  if(n<=10)for(let i=1;i<=n;i++)ts.push(i);
+  else{ts.push(1,n,Math.ceil(n/2));for(let k=0;k<6;k++)ts.push(1+Math.floor(Math.random()*n));}
+  let worst=0,fail=null,failCtx=null;
+  for(const t of ts){
+    const ctx={log:[],steps:0};
+    try{const r=once(code,n,L.lim,t,ctx);
+      if(r!==t){fail=`Клад был в доме ${t}, а твоя функция вернула ${r}.`;failCtx={ctx,t};break;}
+      worst=Math.max(worst,ctx.steps);
+    }catch(e){fail=e.message+` (клад был в доме ${t}).`;failCtx={ctx,t};break;}
+  }
+  if(fail){
+    await animate(failCtx.ctx.log,failCtx.t,n,false);
+    out.className='res bad';out.textContent=' '+fail+' Попробуй ещё!';
+  }else{
+    const t=ts[ts.length-1],ctx={log:[],steps:0};once(code,n,L.lim,t,ctx);
+    await animate(ctx.log,t,n,true);
+    const kind=worst>=n*0.7?'O(n)':'O(log n)';
+    out.className='res ok';
+    out.innerHTML=` Все ${ts.length} проверок пройдены! Больше всего шагов: <b>${worst}</b> из ${n} домиков. Твоя сложность: <b>${kind}</b>.`+
+      (cur<LV.length-1?` <button onclick="loadLv(${cur+1})">Дальше </button>`:'  Ты прошёл все уровни!');
+  }
+  busy=false;$('run').disabled=false;
+}
+$('run').onclick=run;
+$('hint').onclick=()=>$('hbox').textContent=' '+LV[cur].hint;
+$('rst').onclick=()=>$('src').value=LV[cur].start;
+$('src').addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();const s=e.target,p=s.selectionStart;s.setRangeText('    ',p,s.selectionEnd,'end');}});
+load(0);
+
+window.loadLv=load;
+})();
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id),sleep=ms=>new Promise(r=>setTimeout(r,ms)),rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const times=n=>n+' '+((n%10>=2&&n%10<=4&&(n%100<10||n%100>=20))?'раза':'раз');
+const shuf=a=>a.slice().sort(()=>Math.random()-.5);
+/* ---- range demo */
+const lane=$('pyLane');
+for(let i=0;i<30;i++){const c=document.createElement('div');c.className='cell';c.id='pl'+i;c.textContent=i;lane.appendChild(c);}
+function rcode(){const a=+$('rs').value,b=+$('re').value,c=+$('rp').value;
+  $('rsv').textContent=a;$('rev').textContent=b;$('rpv').textContent=c;
+  $('rcode').textContent='for i in range('+a+', '+b+', '+c+'):\n    print(i)';}
+['rs','re','rp'].forEach(i=>$(i).oninput=rcode);rcode();
+let rbusy=false;
+$('rrun').onclick=async()=>{
+  if(rbusy)return;rbusy=true;$('rrun').disabled=true;
+  const a=+$('rs').value,b=+$('re').value,c=+$('rp').value,out=[];
+  for(let i=0;i<30;i++){const e=$('pl'+i);e.className='cell';e.textContent=i;}
+  $('rout').textContent='';$('rnote').textContent='';
+  for(let i=a;i<b;i+=c){const e=$('pl'+i);e.className='cell cur';e.textContent='🐸';await sleep(260);
+    e.className='cell vis';e.textContent=i;out.push(i);$('rout').textContent=out.join(' ');}
+  $('rnote').textContent=out.length?'Цикл сделал '+times(out.length)+'. Число '+b+' не попало в список, потому что stop не берётся.':'Цикл не сделал ни одного шага: start уже не меньше stop.';
+  rbusy=false;$('rrun').disabled=false;
+};
+/* ---- predict game */
+let q,qs=0;
+function qnew(){const a=rnd(0,5),c=rnd(1,4),b=a+rnd(3,18),seq=[];for(let i=a;i<b;i+=c)seq.push(i);
+  q={seq};$('qcode').textContent='for i in range('+a+', '+b+', '+c+'):\n    print(i)';
+  $('qans').value='';$('qmsg').textContent='';$('qmsg').className='res';}
+$('qchk').onclick=()=>{const v=$('qans').value.trim();if(v==='')return;const last=q.seq[q.seq.length-1],m=$('qmsg');
+  if(+v===last){qs++;m.className='res ok';m.textContent='Верно. Последнее число: '+last+'.';}
+  else{qs=0;m.className='res bad';m.textContent='Не так. Цикл напечатает: '+q.seq.join(' ')+'. Последнее число: '+last+'.';}
+  $('qscore').textContent='Верных ответов подряд: '+qs;};
+$('qnext').onclick=qnew;qnew();
+/* ---- while demo */
+function wcode(){const g=+$('wg').value,d=+$('wd').value,f=$('wf').checked;
+  $('wgv').textContent=g;$('wdv').textContent=d;
+  $('wcode').textContent='money = 0\ndays = 0\nwhile money < '+g+':\n'+(f?'':'    money += '+d+'\n')+'    days += 1\nprint(days)';}
+['wg','wd','wf'].forEach(i=>$(i).oninput=wcode);wcode();
+let wbusy=false;
+$('wrun').onclick=async()=>{
+  if(wbusy)return;wbusy=true;$('wrun').disabled=true;
+  const g=+$('wg').value,d=+$('wd').value,f=$('wf').checked;let money=0,days=0,log='';
+  const fill=$('pyFill');fill.style.width='0%';$('wlog').textContent='';$('wnote').textContent='';
+  const delay=Math.min(350,3000/Math.ceil(g/d));
+  const upd=()=>{log+='день '+days+': в копилке '+money+'\n';$('wlog').textContent=log;fill.style.width=Math.min(100,money/g*100)+'%';};
+  if(!f){while(money<g){money+=d;days++;upd();await sleep(delay);}
+    $('wnote').textContent='Цель достигнута за '+days+' дней. print(days) выведет '+days+'.';}
+  else{for(let k=0;k<8;k++){days++;upd();await sleep(300);}
+    $('wnote').textContent='Деньги не растут, условие money < '+g+' всегда верно. Такой цикл никогда не закончится. Мы остановили показ сами.';}
+  wbusy=false;$('wrun').disabled=false;
+};
+/* ---- code puzzle */
+const PZ=[
+{lines:['n = 1','while n <= 3:','    print(n)','    n += 1'],out:'1 2 3'},
+{lines:['total = 0','for i in range(1, 5):','    total += i','print(total)'],out:'10'},
+{lines:['word = "ура"','for i in range(3):','    print(word)'],out:'ура ура ура'},
+{lines:['x = 10','while x > 0:','    x -= 4','print(x)'],out:'-2'}];
+let pi=-1,pool=[],ans=[];
+function prender(){
+  const mk=(arr,id)=>{const box=$(id);box.innerHTML='';arr.forEach((o,k)=>{const b=document.createElement('button');b.className='sec pz';b.textContent=o.t;
+    b.onclick=()=>{if(id==='pzPool')ans.push(pool.splice(k,1)[0]);else pool.push(ans.splice(k,1)[0]);prender();};box.appendChild(b);});};
+  mk(pool,'pzPool');mk(ans,'pzAns');}
+function pnew(){pi=(pi+1)%PZ.length;pool=PZ[pi].lines.map((t,i)=>({t,i}));
+  do{pool=shuf(pool);}while(pool.every((x,k)=>x.i===k));
+  ans=[];$('pzMsg').textContent='';$('pzMsg').className='res';prender();}
+$('pzChk').onclick=()=>{const p=PZ[pi],m=$('pzMsg');
+  if(pool.length){m.className='res bad';m.textContent='Сначала поставь все строки.';return;}
+  if(ans.map(o=>o.t).join('\n')===p.lines.join('\n')){m.className='res ok';m.textContent='Верно. Программа напечатает: '+p.out;}
+  else{m.className='res bad';m.textContent='Не получилось. Проверь порядок строк и отступы.';}};
+$('pzNext').onclick=pnew;pnew();
+
+/* ---- backpack */
+let bag=['меч','щит','карта'];const hist=[];
+const rep=a=>'['+a.map(x=>'"'+x+'"').join(', ')+']';
+function cmd(c){hist.push(c);if(hist.length>6)hist.shift();$('blog').textContent=hist.join('\n');}
+function bdraw(f){const box=$('bag');box.innerHTML='';
+  bag.forEach((t,i)=>{const d=document.createElement('div');d.className='item click'+(i===f?' flash':'');
+    const a=document.createElement('span');a.className='ix';a.textContent=i;
+    const b=document.createElement('span');b.textContent=t;d.append(a,b);d.title='нажми, чтобы убрать';
+    d.onclick=()=>{cmd('bag.remove("'+t+'")');bag.splice(bag.indexOf(t),1);$('bmsg').textContent='';bdraw();};box.appendChild(d);});
+  if(!bag.length)box.innerHTML='<span class="mut">[] список пуст</span>';
+  $('brepr').textContent='bag = '+rep(bag)+'\nlen(bag) = '+bag.length;}
+const bname=()=>$('bi').value.trim()||'предмет';
+function full(){if(bag.length>=10){$('bmsg').textContent='В рюкзаке нет места: максимум 10 предметов.';return true;}$('bmsg').textContent='';return false;}
+$('badd').onclick=()=>{if(full())return;const n=bname();cmd('bag.append("'+n+'")');bag.push(n);bdraw(bag.length-1);};
+$('bins').onclick=()=>{if(full())return;const n=bname();cmd('bag.insert(0, "'+n+'")');bag.unshift(n);bdraw(0);};
+$('bpop').onclick=()=>{if(!bag.length){cmd('bag.pop()   # ошибка');$('bmsg').textContent='IndexError: pop from empty list. Из пустого списка нечего доставать.';return;}
+  $('bmsg').textContent='';const x=bag.pop();cmd('bag.pop()   # вернул "'+x+'"');bdraw();};
+$('bclr').onclick=()=>{$('bmsg').textContent='';cmd('bag.clear()');bag=[];bdraw();};
+bdraw();
+/* ---- index game */
+const POOL=['кот','пёс','лиса','ёж','сова','заяц','волк','мышь','утка','лось'];
+let ig,lock=false,good=0,tries=0;
+function inew(){lock=false;const w=shuf(POOL).slice(0,5),k=rnd(-5,4);ig={w,k,a:(k+5)%5};
+  $('icode').textContent='animals = ['+w.map(x=>'"'+x+'"').join(', ')+']\nprint(animals['+k+'])';
+  const box=$('ibox');box.innerHTML='';
+  w.forEach((t,i)=>{const d=document.createElement('div');d.className='item click';d.id='ib'+i;
+    const x=document.createElement('span');x.className='ix';x.textContent=i;
+    const y=document.createElement('span');y.textContent=t;
+    const z=document.createElement('span');z.className='ng';z.textContent=i-5;
+    d.append(x,y,z);d.onclick=()=>ipick(i);box.appendChild(d);});
+  $('imsg').textContent='';$('imsg').className='res';}
+function ipick(i){if(lock)return;lock=true;tries++;const m=$('imsg'),w=ig.w[ig.a];
+  $('ib'+ig.a).classList.add('cur');
+  if(i===ig.a){good++;m.className='res ok';m.textContent='Верно. animals['+ig.k+'] это "'+w+'".';}
+  else{m.className='res bad';m.textContent='Нет. animals['+ig.k+'] это "'+w+'", он стоит под номером '+ig.a+'.';}
+  $('iscore').textContent='Верных ответов: '+good+' из '+tries;}
+$('inext').onclick=inew;inew();
+/* ---- for over list */
+const OPS={
+sum:{n:'total',code:l=>'total = 0\nfor x in '+l+':\n    total += x\nprint(total)',init:a=>0,step:(s,x)=>s+x},
+max:{n:'best',code:l=>'best = '+l+'[0]\nfor x in '+l+':\n    if x > best:\n        best = x\nprint(best)',init:a=>a[0],step:(s,x)=>x>s?x:s},
+even:{n:'count',code:l=>'count = 0\nfor x in '+l+':\n    if x % 2 == 0:\n        count += 1\nprint(count)',init:a=>0,step:(s,x)=>x%2===0?s+1:s}};
+const nums=()=>$('lin').value.split(',').map(s=>s.trim()).filter(s=>s!=='').map(Number).filter(Number.isFinite).slice(0,8);
+function ldraw(a,cur){const box=$('lbox');box.innerHTML='';
+  a.forEach((v,k)=>{const d=document.createElement('div');d.className='item'+(k===cur?' cur':'');
+    const x=document.createElement('span');x.className='ix';x.textContent=k;
+    const y=document.createElement('span');y.textContent=v;d.append(x,y);box.appendChild(d);});}
+function lupd(){const a=nums();ldraw(a);$('lcode').textContent='numbers = ['+a.join(', ')+']\n'+OPS[$('lop').value].code('numbers');
+  $('lstate').textContent='';$('lres').textContent='';}
+$('lin').oninput=lupd;$('lop').onchange=lupd;lupd();
+let lbusy=false;
+$('lrun').onclick=async()=>{
+  const a=nums();if(lbusy)return;
+  if(!a.length){$('lres').className='res bad';$('lres').textContent='Впиши хотя бы одно число.';return;}
+  lbusy=true;$('lrun').disabled=true;const op=OPS[$('lop').value];let st=op.init(a);$('lres').textContent='';
+  for(let k=0;k<a.length;k++){ldraw(a,k);st=op.step(st,a[k]);$('lstate').textContent='x = '+a[k]+',   '+op.n+' = '+st;await sleep(650);}
+  ldraw(a);$('lres').className='res ok';$('lres').textContent='print выведет: '+st;
+  lbusy=false;$('lrun').disabled=false;
+};
+})();
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id),sleep=ms=>new Promise(r=>setTimeout(r,ms)),rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),shuf=a=>a.slice().sort(()=>Math.random()-.5);
+const fmt=a=>'['+a.join(', ')+']';
+const CODE={
+bubble:`void bubbleSort(int a[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - 1 - i; j++) {
+            if (a[j] > a[j + 1]) {
+                swap(a[j], a[j + 1]);
+            }
+        }
+    }
+}`,
+selection:`void selectionSort(int a[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        int mn = i;
+        for (int j = i + 1; j < n; j++) {
+            if (a[j] < a[mn]) mn = j;
+        }
+        swap(a[i], a[mn]);
+    }
+}`,
+insertion:`void insertionSort(int a[], int n) {
+    for (int i = 1; i < n; i++) {
+        int key = a[i];
+        int j = i - 1;
+        while (j >= 0 && a[j] > key) {
+            a[j + 1] = a[j];
+            j--;
+        }
+        a[j + 1] = key;
+    }
+}`,
+quick:`void quickSort(int a[], int l, int r) {
+    if (l >= r) return;
+    int pivot = a[r];
+    int i = l;
+    for (int j = l; j < r; j++) {
+        if (a[j] < pivot) {
+            swap(a[i], a[j]);
+            i++;
+        }
+    }
+    swap(a[i], a[r]);
+    quickSort(a, l, i - 1);
+    quickSort(a, i + 1, r);
+}`};
+document.querySelectorAll('[data-code]').forEach(p=>p.textContent=CODE[p.dataset.code]);
+
+/* ---- visualizer */
+function* gBubble(a){for(let i=0;i<a.length-1;i++)for(let j=0;j<a.length-1-i;j++){yield ['c',j,j+1];if(a[j]>a[j+1]){[a[j],a[j+1]]=[a[j+1],a[j]];yield ['m',j,j+1];}}}
+function* gSelection(a){for(let i=0;i<a.length-1;i++){let mn=i;for(let j=i+1;j<a.length;j++){yield ['c',j,mn];if(a[j]<a[mn])mn=j;}if(mn!==i){[a[i],a[mn]]=[a[mn],a[i]];yield ['m',i,mn];}}}
+function* gInsertion(a){for(let i=1;i<a.length;i++){const k=a[i];let j=i-1;
+  while(j>=0){yield ['c',j,j+1];if(a[j]>k){a[j+1]=a[j];yield ['m',j,j+1];j--;}else break;}
+  a[j+1]=k;yield ['p',j+1];}}
+function* gQuick(a,l,r){if(l>=r)return;const p=a[r];let i=l;
+  for(let j=l;j<r;j++){yield ['c',j,r];if(a[j]<p){if(i!==j){[a[i],a[j]]=[a[j],a[i]];yield ['m',i,j];}i++;}}
+  if(i!==r){[a[i],a[r]]=[a[r],a[i]];yield ['m',i,r];}
+  yield* gQuick(a,l,i-1);yield* gQuick(a,i+1,r);}
+const NAMES={bubble:'Пузырьком',selection:'Выбором',insertion:'Вставками',quick:'Быстрая'};
+const mkGen=(k,a)=>k==='bubble'?gBubble(a):k==='selection'?gSelection(a):k==='insertion'?gInsertion(a):gQuick(a,0,a.length-1);
+let alg='bubble',base=[],arr=[],vbusy=false;
+function vbars(hi,cls){const n=arr.length;
+  $('vbars').innerHTML=arr.map((v,i)=>'<div class="bar '+(hi&&hi.includes(i)?cls:'')+'" style="height:'+(v/n*100)+'%">'+(n<=16?v:'')+'</div>').join('');}
+function vsel(){document.querySelectorAll('#vtabs button').forEach(b=>b.className=b.dataset.a===alg?'on':'sec');$('vcode').textContent=CODE[alg];}
+document.querySelectorAll('#vtabs button').forEach(b=>b.onclick=()=>{if(vbusy)return;alg=b.dataset.a;vsel();});
+function vnew(){const n=+$('vn').value;$('vnv').textContent=n;$('vsv').textContent=$('vs').value;
+  base=shuf(Array.from({length:n},(_,i)=>i+1));arr=base.slice();vbars();$('vc').textContent=0;$('vm').textContent=0;$('vstep').textContent='';}
+$('vn').oninput=()=>{if(!vbusy)vnew();};$('vs').oninput=()=>{$('vsv').textContent=$('vs').value;};$('vnew').onclick=()=>{if(!vbusy)vnew();};
+function lock(b){vbusy=b;['vrun','vall','vnew','vn'].forEach(i=>$(i).disabled=b);}
+async function vrun(k,fast){
+  arr=base.slice();let c=0,m=0;vbars();
+  for(const e of mkGen(k,arr)){
+    if(e[0]==='c')c++;else if(e[0]==='m')m++;
+    $('vc').textContent=c;$('vm').textContent=m;
+    if(e[0]==='c'){vbars([e[1],e[2]],'hi');$('vstep').textContent='Сравниваем '+arr[e[1]]+' и '+arr[e[2]];}
+    else if(e[0]==='m'){vbars([e[1],e[2]],'mv');$('vstep').textContent='Переставляем элементы на местах '+e[1]+' и '+e[2];}
+    else{vbars([e[1]],'mv');$('vstep').textContent='Ставим элемент на своё место';}
+    await sleep(fast?6:+$('vs').value);
+  }
+  vbars(arr.map((_,i)=>i),'fin');$('vstep').textContent='Готово.';
+  const t=$('vhist'),r=t.insertRow(1);r.innerHTML='<td>'+NAMES[k]+'</td><td>'+arr.length+'</td><td>'+c+'</td><td>'+m+'</td>';
+  while(t.rows.length>9)t.deleteRow(t.rows.length-1);
+}
+$('vrun').onclick=async()=>{if(vbusy)return;lock(true);await vrun(alg,false);lock(false);};
+$('vall').onclick=async()=>{if(vbusy)return;lock(true);for(const k of ['bubble','selection','insertion','quick'])await vrun(k,true);
+  $('vstep').textContent='Все четыре готовы. Сравни цифры в таблице.';lock(false);};
+vsel();vnew();
+
+/* ---- manual sorting game */
+let ma=[],msel=-1,mmoves=0,mdone=false,mbest=0;
+function mnew(){const n=7;ma=shuf(Array.from({length:n},(_,i)=>i+1));msel=-1;mmoves=0;mdone=false;
+  const t=ma.slice();mbest=0;for(let i=0;i<n-1;i++){let mn=i;for(let j=i+1;j<n;j++)if(t[j]<t[mn])mn=j;if(mn!==i){[t[i],t[mn]]=[t[mn],t[i]];mbest++;}}
+  $('mmsg').textContent='';$('mmsg').className='res';mdraw();}
+function mdraw(){const box=$('mbars');box.innerHTML='';
+  ma.forEach((v,i)=>{const d=document.createElement('div');d.className='bar'+(i===msel?' sel':'');d.style.height=(v/ma.length*100)+'%';d.textContent=v;d.onclick=()=>mclick(i);box.appendChild(d);});
+  $('mcount').textContent=mmoves;}
+function mclick(i){if(mdone)return;
+  if(msel<0)msel=i;else if(msel===i)msel=-1;
+  else{[ma[msel],ma[i]]=[ma[i],ma[msel]];mmoves++;msel=-1;
+    if(ma.every((v,k)=>v===k+1)){mdone=true;const m=$('mmsg');m.className='res ok';
+      m.textContent='Готово за '+mmoves+' обменов. Сортировка выбором сделала бы '+mbest+'. '+(mmoves<mbest?'Ты справился лучше алгоритма.':mmoves===mbest?'Столько же, сколько алгоритм.':'Алгоритм справился бы быстрее. Попробуй ещё раз.');}}
+  mdraw();}
+$('mnewb').onclick=mnew;mnew();
+
+/* ---- predict the state */
+function passState(al,a,k){const t=a.slice(),n=t.length;
+  if(al==='bubble'){for(let p=0;p<k;p++)for(let j=0;j<n-1-p;j++)if(t[j]>t[j+1])[t[j],t[j+1]]=[t[j+1],t[j]];}
+  else if(al==='selection'){for(let i=0;i<k;i++){let mn=i;for(let j=i+1;j<n;j++)if(t[j]<t[mn])mn=j;[t[i],t[mn]]=[t[mn],t[i]];}}
+  else{for(let i=1;i<=k;i++){const key=t[i];let j=i-1;while(j>=0&&t[j]>key){t[j+1]=t[j];j--;}t[j+1]=key;}}
+  return t;}
+const PEX={bubble:'Пузырёк за проход сравнивает соседей и выносит самое большое число в конец.',
+ selection:'Выбором на первое место ставится самое маленькое число, на второе самое маленькое из оставшихся, и так далее.',
+ insertion:'Вставками на каждом шаге берётся следующий элемент и вставляется на своё место среди уже отсортированных слева. Правая часть пока не тронута.'};
+const PNAME={bubble:'пузырьком',selection:'выбором',insertion:'вставками'};
+let pg,pgood=0,ptries=0,plock=false;
+function pnew(){plock=false;const al=['bubble','selection','insertion'][rnd(0,2)],k=rnd(1,2),a=shuf([1,2,3,4,5,6,7,8,9]).slice(0,6);
+  const right=passState(al,a,k),set=[fmt(right)];
+  for(const o of ['bubble','selection','insertion'])if(o!==al){const x=fmt(passState(o,a,k));if(!set.includes(x))set.push(x);}
+  let g=0;while(set.length<3&&g++<50){const t=a.slice(),i=rnd(0,5),j=rnd(0,5);[t[i],t[j]]=[t[j],t[i]];const x=fmt(t);if(!set.includes(x))set.push(x);}
+  if(set.length>3)set.length=3;
+  pg={al,right:fmt(right)};
+  $('pq').textContent='Массив: '+fmt(a)+'\nСортировка '+PNAME[al]+'\nВопрос: каким станет массив после '+(k===1?'первого':'второго')+' шага внешнего цикла?';
+  const box=$('popts');box.innerHTML='';
+  shuf(set).slice(0,3).forEach(x=>{const b=document.createElement('button');b.className='sec pz opt';b.textContent=x;b.onclick=()=>ppick(b,x);box.appendChild(b);});
+  $('pmsg').textContent='';$('pmsg').className='res';}
+function ppick(b,x){if(plock)return;plock=true;ptries++;const m=$('pmsg');
+  document.querySelectorAll('#popts button').forEach(o=>{if(o.textContent===pg.right)o.classList.add('good');});
+  if(x===pg.right){pgood++;m.className='res ok';m.textContent='Верно. '+PEX[pg.al];}
+  else{b.classList.add('wrong');m.className='res bad';m.textContent='Не так. Правильный ответ подсвечен. '+PEX[pg.al];}
+  $('pscore').textContent='Верных ответов: '+pgood+' из '+ptries;}
+$('pnext').onclick=pnew;pnew();
+
+/* ---- choose the code */
+const QZ=[
+{q:'Нужно поменять местами a[i] и a[j]. Какой код правильный?',o:['a[i] = a[j];\na[j] = a[i];','int t = a[i];\na[i] = a[j];\na[j] = t;','a[i] = a[j];\nint t = a[i];\na[j] = t;'],ok:1,
+ ex:'Старое значение a[i] надо сохранить в t до того, как оно затрётся. В остальных вариантах оно теряется, и оба элемента становятся одинаковыми.'},
+{q:'Пузырёк. Какое условие нужно, чтобы сортировать по возрастанию?',o:['if (a[j] > a[j + 1]) swap(a[j], a[j + 1]);','if (a[j] < a[j + 1]) swap(a[j], a[j + 1]);','if (a[j] == a[j + 1]) swap(a[j], a[j + 1]);'],ok:0,
+ ex:'Если левый больше правого, они стоят неправильно, и их надо поменять. Со знаком «меньше» получится сортировка по убыванию.'},
+{q:'Сортировка выбором. Как искать место минимума?',o:['if (a[j] < mn) mn = j;','if (a[j] > a[mn]) mn = j;','if (a[j] < a[mn]) mn = j;'],ok:2,
+ ex:'В mn лежит номер, поэтому сравнивать надо a[j] с a[mn]. В первом варианте значение сравнивается с номером, а во втором ищется максимум.'},
+{q:'Сортировка вставками. Какое условие у while?',o:['while (a[j] > key)','while (j > 0 && a[j] > key)','while (j >= 0 && a[j] > key)'],ok:2,
+ ex:'Нужно проверять и границу, и сравнение. Без j >= 0 мы выйдем за начало массива. С j > 0 нулевой элемент никогда не сдвинется.'}];
+let qi=-1,cgood=0,ctries=0,clock=false;
+function cnew(){qi=(qi+1)%QZ.length;clock=false;const Q=QZ[qi];$('cq').textContent=Q.q;
+  const box=$('copts');box.innerHTML='';
+  shuf(Q.o.map((t,i)=>({t,i}))).forEach(o=>{const b=document.createElement('button');b.className='sec pz';b.textContent=o.t;
+    b.onclick=()=>{if(clock)return;clock=true;ctries++;const m=$('cmsg');
+      [...box.children].forEach((x,k)=>{});
+      if(o.i===Q.ok){cgood++;b.classList.add('good');m.className='res ok';m.textContent='Верно. '+Q.ex;}
+      else{b.classList.add('wrong');[...box.children].forEach(x=>{if(x.textContent===Q.o[Q.ok])x.classList.add('good');});m.className='res bad';m.textContent='Не так. '+Q.ex;}
+      $('cscore').textContent='Верных ответов: '+cgood+' из '+ctries;};box.appendChild(b);});
+  $('cmsg').textContent='';$('cmsg').className='res';}
+$('cnext').onclick=cnew;cnew();
+
+/* ---- write the code */
+const rarr=n=>Array.from({length:n},()=>rnd(1,20));
+const sortG=[()=>rarr(6),()=>rarr(9),()=>[1,2,3,4,5],()=>[5,4,3,2,1],()=>[3,1,3,1,2],()=>[7]];
+function sortT(g){const o=g();return{label:fmt(o),args:()=>{const a=o.slice();return [a,a.length];},
+  check:(r,ar)=>{const e=o.slice().sort((x,y)=>x-y);return ar[0].join()===e.join()?'':'для массива '+fmt(o)+' получилось '+fmt(ar[0])+', а должно быть '+fmt(e);}};}
+function swapT(i,j){const o=rarr(6);i=i===undefined?rnd(0,5):i;j=j===undefined?rnd(0,5):j;const e=o.slice();[e[i],e[j]]=[e[j],e[i]];
+  return{label:fmt(o)+', i='+i+', j='+j,args:()=>{const a=o.slice();return [a,i,j];},check:(r,ar)=>ar[0].join()===e.join()?'':'для '+fmt(o)+' и i='+i+', j='+j+' получилось '+fmt(ar[0])+', а должно быть '+fmt(e)};}
+function minT(){const o=rarr(7),mn=Math.min(...o);return{label:fmt(o),args:()=>[o.slice(),o.length],
+  check:r=>(typeof r==='number'&&o[r]===mn)?'':'для '+fmt(o)+' функция вернула '+r+', а минимум стоит на месте '+o.indexOf(mn)};}
+const TASKS=[
+{d:'<b>Задача 1. Обмен.</b> Напиши функцию swapTwo, которая меняет местами элементы a[i] и a[j]. Ничего возвращать не нужно.',fn:'swapTwo',
+ start:'void swapTwo(int a[], int i, int j) {\n    // твой код\n}',hint:'Сохрани a[i] во временную переменную t. Потом запиши в a[i] значение a[j]. Потом запиши в a[j] значение t.',
+ tests:[()=>swapT(),()=>swapT(),()=>swapT(0,5),()=>swapT(2,2)]},
+{d:'<b>Задача 2. Минимум.</b> Напиши функцию minIndex, которая возвращает номер самого маленького элемента массива. Это главный кусок сортировки выбором.',fn:'minIndex',
+ start:'int minIndex(int a[], int n) {\n    // твой код\n}',hint:'Заведи переменную mn = 0. Пройди по массиву и если a[j] меньше a[mn], запомни mn = j. В конце верни mn.',
+ tests:[minT,minT,minT]},
+{d:'<b>Задача 3. Пузырёк.</b> Напиши bubbleSort, которая сортирует массив по возрастанию.',fn:'bubbleSort',
+ start:'void bubbleSort(int a[], int n) {\n    // твой код\n}',hint:'Два цикла друг в друге. Во внутреннем сравнивай a[j] и a[j + 1] и меняй их, если левый больше. Внутренний цикл можно делать до n - 1 - i.',
+ tests:sortG.map(g=>()=>sortT(g))},
+{d:'<b>Задача 4. Вставки.</b> Напиши insertionSort, которая сортирует массив по возрастанию.',fn:'insertionSort',
+ start:'void insertionSort(int a[], int n) {\n    // твой код\n}',hint:'Внешний цикл идёт с i = 1. Запомни key = a[i], возьми j = i - 1. Пока j >= 0 и a[j] > key, сдвигай a[j] на место j + 1 и уменьшай j. В конце запиши key в a[j + 1].',
+ tests:sortG.map(g=>()=>sortT(g))}];
+function tr(src){let c=src.replace(/\/\/.*$/gm,'');
+  c=c.replace(/\b(?:void|int)\s+(\w+)\s*\(([^)]*)\)\s*\{/,(m,n,p)=>'function '+n+'('+p.split(',').map(x=>x.replace(/\bint\b|\[\s*\]|&/g,'').trim()).filter(Boolean).join(',')+'){');
+  c=c.replace(/\bswap\s*\(\s*(\w+)\[([^\]]+)\]\s*,\s*(\w+)\[([^\]]+)\]\s*\)/g,'__sw($1,$2,$3,$4)');
+  c=c.replace(/\b(\w+)\s*=\s*([^;=]*\/[^;=]*);/g,'$1 = Math.trunc($2);');
+  c=c.replace(/for\s*\(([^;]*);([^;]*);([^)]*)\)/g,(m,a,b,d)=>'for('+a+';__g()&&('+(b.trim()||'true')+');'+d+')');
+  c=c.replace(/\b(int|long|bool|auto)\s+/g,'let ');
+  c=c.replace(/while\s*\(([^)]*)\)/g,'while(__g()&&($1))');
+  return c;}
+let wt=0;
+function wload(i){wt=i;const T=TASKS[i],tb=$('cwtabs');tb.innerHTML='';
+  TASKS.forEach((x,k)=>{const b=document.createElement('button');b.className=k===i?'on':'sec';b.textContent='Задача '+(k+1);b.onclick=()=>wload(k);tb.appendChild(b);});
+  $('cwdesc').innerHTML=T.d;$('cwsrc').value=T.start;$('cwhint').textContent='';$('cwres').textContent='';$('cwres').className='res';}
+$('cwrst').onclick=()=>{$('cwsrc').value=TASKS[wt].start;};
+$('cwhintb').onclick=()=>{$('cwhint').textContent='Подсказка: '+TASKS[wt].hint;};
+$('cwrun').onclick=()=>{
+  const T=TASKS[wt],res=$('cwres');res.className='res bad';
+  let code;try{code=tr($('cwsrc').value);new Function('__g','__sw',code+'\nreturn '+T.fn+';');}
+  catch(e){res.textContent=e instanceof ReferenceError?'Не нашёл функцию '+T.fn+'. Проверь название.':'Ошибка в коде: '+e.message;return;}
+  let g=0;const __g=()=>{if(++g>200000)throw new Error('цикл никогда не заканчивается');return true;};
+  const __sw=(A,i,B,j)=>{const t=A[i];A[i]=B[j];B[j]=t;};
+  let n=0;
+  for(const mk of T.tests){const t=mk();g=0;const ar=t.args();
+    try{const f=new Function('__g','__sw',code+'\nreturn '+T.fn+';')(__g,__sw);const r=f(...ar);const err=t.check(r,ar);
+      if(err){res.textContent='Тест не пройден: '+err+'.';return;}n++;}
+    catch(e){res.textContent='Ошибка при запуске на '+t.label+': '+e.message;return;}}
+  res.className='res ok';res.textContent='Все тесты пройдены: '+n+' из '+n+'.'+(wt<TASKS.length-1?' Можно переходить к следующей задаче.':' Это была последняя задача.');};
+$('cwsrc').addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();const t=e.target;t.setRangeText('    ',t.selectionStart,t.selectionEnd,'end');}});
+wload(0);
+})();
+</script>
+<script>
+/* ================= PYTHON 03: ФУНКЦИИ ================= */
+(function(){
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const shuf=a=>a.slice().sort(()=>Math.random()-.5);
+
+/* --- соковыжималка --- */
 const FRUITS=[
-  {n:'яблоко',c:'#ff6b6b'},{n:'апельсин',c:'#ffa94d'},{n:'банан',c:'#ffd43b'},
-  {n:'киви',c:'#69db7c'},{n:'виноград',c:'#b197fc'}
+  {n:'яблоко',c:'#f85149'},
+  {n:'апельсин',c:'#ffa657'},
+  {n:'банан',c:'#dcdcaa'},
+  {n:'киви',c:'#7ee787'},
+  {n:'виноград',c:'#a371f7'}
 ];
-let curFruit=FRUITS[0];
+let curF=FRUITS[0];
+
 function drawFruits(){
-  const row=el('fnFruitRow');row.innerHTML='';
+  const box=$('fFruits');box.innerHTML='';
   FRUITS.forEach(f=>{
     const b=document.createElement('button');
-    b.className='fruit-btn'+(f===curFruit?' active':'');
-    b.innerHTML='<span class="fdot" style="--fc:'+f.c+'"></span>'+f.n;
-    b.onclick=()=>{curFruit=f;drawFruits();updateJuiceCode()};
-    row.appendChild(b);
+    b.className=f===curF?'on':'sec';
+    b.innerHTML='<span class="fdot" style="background:'+f.c+'"></span>'+f.n;
+    b.onclick=()=>{curF=f;drawFruits();fCode();};
+    box.appendChild(b);
   });
 }
-function updateJuiceCode(){
-  const c=el('fnCount').value;
-  el('fnCountLabel').textContent=c;
-  el('fnCode').textContent=
-'def make_juice(fruit, count):\n'+
-'    print(f"Выжимаю {fruit}...")\n'+
-'    return count\n\n'+
-'cups = make_juice("'+curFruit.n+'", '+c+')\n'+
-'print(f"Получилось {cups} стакана сока!")';
-}
-function runJuice(){
-  const c=parseInt(el('fnCount').value,10);
-  const log=el('fnLog'),cups=el('fnCups'),fruit=curFruit;
-  log.textContent='';cups.innerHTML='';
-  el('fnRun').disabled=true;
-  setTimeout(()=>{log.textContent='Выжимаю '+fruit.n+'...\n'},200);
-  for(let i=0;i<c;i++){
-    setTimeout(()=>{
-      const s=document.createElement('span');
-      s.className='cup';s.style.setProperty('--fc',fruit.c);
-      cups.appendChild(s);
-    },500+i*350);
-  }
-  setTimeout(()=>{log.textContent+='Получилось '+c+' стакана сока!';el('fnRun').disabled=false;},650+c*350);
-}
-el('fnRun').onclick=runJuice;
-el('fnCount').oninput=updateJuiceCode;
-el('fnDemoSay').onclick=()=>{el('fnDemoLog').textContent='На экране: «привет»\nНо в x попал None — функция ничего не вернула';};
-el('fnDemoGive').onclick=()=>{el('fnDemoLog').textContent='На экране: ничего не мелькнуло...\nЗато в y лежит «привет» — его можно использовать дальше';};
 
-/* викторина функций */
+function fCode(){
+  const c=+$('fc').value;
+  $('fcV').textContent=c;
+  $('fCode').textContent=
+    'def make_juice(fruit, count):\n'+
+    '    print(f"Выжимаю {fruit}...")\n'+
+    '    return count\n\n'+
+    'cups = make_juice("'+curF.n+'", '+c+')\n'+
+    'print(f"Получилось {cups} стакана сока!")';
+}
+
+$('fc').oninput=fCode;
+
+$('fRun').onclick=async()=>{
+  if($('fRun').disabled)return;
+  const c=+$('fc').value;
+  $('fRun').disabled=true;
+  $('fLog').textContent='';
+  const cups=$('fCups');cups.innerHTML='';
+  await sleep(200);
+  $('fLog').textContent='>>> Выжимаю '+curF.n+'...\n';
+  for(let i=0;i<c;i++){
+    await sleep(350);
+    const d=document.createElement('div');
+    d.className='glass';
+    d.style.setProperty('--c',curF.c);
+    d.title='стакан №'+(i+1);
+    cups.appendChild(d);
+  }
+  await sleep(300);
+  $('fLog').textContent='>>> Выжимаю '+curF.n+'...\n>>> Получилось '+c+' стакана сока!\n>>> cups = '+c;
+  $('fRun').disabled=false;
+};
+
+/* --- demo: print vs return --- */
+$('fDemoSay').onclick=()=>{
+  $('fDemoLog').textContent=
+    '>>> x = say_hi()\n'+
+    'привет\n'+
+    '>>> print(x)\n'+
+    'None\n'+
+    '# print показал слово на экране, но в x попал None';
+};
+$('fDemoGive').onclick=()=>{
+  $('fDemoLog').textContent=
+    '>>> y = give_hi()\n'+
+    '>>> print(y)\n'+
+    'привет\n'+
+    '# На экране при вызове пусто, но y = "привет" — можно использовать';
+};
+
+/* --- викторина --- */
 const QUIZ=[
-  ()=>{const k=rnd(2,9),a=rnd(2,9);return{code:'def mul(x):\n    return x * '+k+'\n\nprint(mul('+a+'))',answer:String(a*k),wrongs:[String(a+k),String(a*k+k),String(a*k-1)]}},
-  ()=>{const a=rnd(2,9),b=rnd(2,9);return{code:'def add(a, b):\n    return a + b\n\nprint(add('+a+', '+b+'))',answer:String(a+b),wrongs:[String(a*b),String(a+b+1),String(Math.abs(a-b))]}},
-  ()=>{const c=rnd(1,5),n=rnd(1,9);return{code:'def plus(x):\n    return x + '+c+'\n\nprint(plus(plus('+n+')))',answer:String(n+2*c),wrongs:[String(n+c),String(n+3*c),String(n+c*c)]}},
-  ()=>{const w=shuffle(['привет','ура','питон','сок'])[0];return{code:'def shout(word):\n    print(word)\n\nresult = shout("'+w+'")\nprint(result)',answer:'None',wrongs:['«'+w+'»','0','Вывода не будет']}},
-  ()=>{const a=rnd(2,6);return{code:'def tricky(x):\n    return x * 2\n    print("меня не видно")\n\nprint(tricky('+a+'))',answer:String(a*2),wrongs:['«меня не видно»',String(a),String(a*2)+' и «меня не видно»']}},
-  ()=>({code:'def hello(name="друг"):\n    return "Привет, " + name\n\nprint(hello())',answer:'«Привет, друг»',wrongs:['«Привет, name»','Ошибка — аргумент не передали','«Привет, »']}),
-  ()=>({code:'def double(x):\n    return x * 2\n\ndef plus_one(x):\n    return x + 1\n\nprint(double(plus_one(4)))',answer:'10',wrongs:['9','8','11']}),
-  ()=>({code:'x = 5\n\ndef change():\n    x = 10\n    return x\n\nprint(change())\nprint(x)',answer:'10, потом 5',wrongs:['10, потом 10','5, потом 10','Ошибка']}),
-  ()=>{const n=rnd(2,12);const even=n%2===0;return{code:'def is_even(n):\n    return n % 2 == 0\n\nprint(is_even('+n+'))',answer:even?'True':'False',wrongs:even?['False','None','1']:['True','None','0']}},
-  ()=>{const w=shuffle(['ха','о','бац'])[0],t=rnd(2,4);const rep=w.repeat(t);return{code:'def repeat(word, times):\n    return word * times\n\nprint(repeat("'+w+'", '+t+'))',answer:'«'+rep+'»',wrongs:['«'+w+t+'»','«'+w.repeat(t-1)+'»','«'+w+'»']}}
+  ()=>{const k=rnd(2,9),a=rnd(2,9);return{code:'def mul(x):\n    return x * '+k+'\n\nprint(mul('+a+'))',ans:String(a*k),wrong:[String(a+k),String(a*k+k),String(a*k-1)]}},
+  ()=>{const a=rnd(2,9),b=rnd(2,9);return{code:'def add(a, b):\n    return a + b\n\nprint(add('+a+', '+b+'))',ans:String(a+b),wrong:[String(a*b),String(a+b+1),String(Math.abs(a-b))]}},
+  ()=>{const c=rnd(1,5),n=rnd(1,9);return{code:'def plus(x):\n    return x + '+c+'\n\nprint(plus(plus('+n+')))',ans:String(n+2*c),wrong:[String(n+c),String(n+3*c),String(n+c*c)]}},
+  ()=>{const w=shuf(['привет','ура','питон','сок'])[0];return{code:'def shout(word):\n    print(word)\n\nresult = shout("'+w+'")\nprint(result)',ans:'None',wrong:['"'+w+'"','0','Вывода не будет']}},
+  ()=>{const a=rnd(2,6);return{code:'def tricky(x):\n    return x * 2\n    print("меня не видно")\n\nprint(tricky('+a+'))',ans:String(a*2),wrong:['"меня не видно"',String(a),String(a*2)+' и "меня не видно"']}},
+  ()=>({code:'def hello(name="друг"):\n    return "Привет, " + name\n\nprint(hello())',ans:'"Привет, друг"',wrong:['"Привет, name"','Ошибка — аргумент не передали','"Привет, "']}),
+  ()=>({code:'def double(x):\n    return x * 2\n\ndef plus_one(x):\n    return x + 1\n\nprint(double(plus_one(4)))',ans:'10',wrong:['9','8','11']}),
+  ()=>({code:'x = 5\n\ndef change():\n    x = 10\n    return x\n\nprint(change())\nprint(x)',ans:'10, потом 5',wrong:['10, потом 10','5, потом 10','Ошибка']}),
+  ()=>{const n=rnd(2,12);const even=n%2===0;return{code:'def is_even(n):\n    return n % 2 == 0\n\nprint(is_even('+n+'))',ans:even?'True':'False',wrong:even?['False','None','1']:['True','None','0']}},
+  ()=>{const w=shuf(['ха','о','бац'])[0],t=rnd(2,4);const rep=w.repeat(t);return{code:'def repeat(word, times):\n    return word * times\n\nprint(repeat("'+w+'", '+t+'))',ans:'"'+rep+'"',wrong:['"'+w+t+'"','"'+w.repeat(t-1)+'"','"'+w+'"']}}
 ];
-let fnStreak=0,fnAnswered=false,fnAnswer='';
-function fnQuizNew(){
-  fnAnswered=false;
-  el('fnQuizMsg').textContent='';el('fnQuizMsg').className='msg';
+let qstreak=0,qans='',qdone=false;
+function uniqOpts(correct,wrongs){
+  const set=[correct];
+  for(const w of wrongs){if(!set.includes(w))set.push(w);}
+  let guard=0;
+  while(set.length<4&&guard<80){const v=String(rnd(1,99));if(!set.includes(v))set.push(v);guard++;}
+  return shuf(set);
+}
+function qnew(){
+  qdone=false;
+  $('fQMsg').textContent='';$('fQMsg').className='res';
   const g=QUIZ[rnd(0,QUIZ.length-1)]();
-  fnAnswer=g.answer;
-  el('fnQuizCode').textContent=g.code;
-  const box=el('fnQuizOpts');box.innerHTML='';
-  uniqOptions(g.answer,g.wrongs).forEach(o=>{
+  qans=g.ans;
+  $('fQCode').textContent=g.code;
+  const box=$('fQOpts');box.innerHTML='';
+  uniqOpts(g.ans,g.wrong).forEach(o=>{
     const b=document.createElement('button');
-    b.className='opt';b.textContent=o;
+    b.className='sec pz opt';b.textContent=o;
     b.onclick=()=>{
-      if(fnAnswered)return;
-      fnAnswered=true;
-      document.querySelectorAll('#fnQuizOpts .opt').forEach(x=>{x.disabled=true;if(x.textContent===fnAnswer)x.classList.add('ok');});
-      if(o===fnAnswer){fnStreak++;el('fnQuizMsg').textContent='Верно!';el('fnQuizMsg').className='msg good';}
-      else{fnStreak=0;b.classList.add('bad');el('fnQuizMsg').textContent='Не-а. Правильный ответ подсвечен зелёным.';el('fnQuizMsg').className='msg bad';}
-      el('fnQuizStreak').textContent=fnStreak;
+      if(qdone)return;
+      qdone=true;
+      document.querySelectorAll('#fQOpts button').forEach(x=>{x.disabled=true;if(x.textContent===qans)x.classList.add('good');});
+      if(o===qans){qstreak++;$('fQMsg').textContent='Верно.';$('fQMsg').className='res ok';}
+      else{qstreak=0;b.classList.add('wrong');$('fQMsg').textContent='Не-а. Правильный ответ подсвечен.';$('fQMsg').className='res bad';}
+      $('fQScore').textContent='Верных ответов подряд: '+qstreak;
     };
     box.appendChild(b);
   });
 }
-el('fnQuizNext').onclick=fnQuizNew;
+$('fQNext').onclick=qnew;
 
-/* чёрный ящик */
+/* --- чёрный ящик --- */
 const BOXES=[
-  {f:x=>x*2,text:'x * 2'},{f:x=>x+10,text:'x + 10'},{f:x=>x*x,text:'x * x'},
-  {f:x=>x*3-1,text:'x * 3 - 1'},{f:x=>100-x,text:'100 - x'},{f:x=>Math.floor(x/2),text:'x // 2'},
-  {f:x=>((x%10)+10)%10,text:'последняя цифра x'},{f:x=>x*x+1,text:'x * x + 1'}
+  {f:x=>x*2,text:'x * 2'},
+  {f:x=>x+10,text:'x + 10'},
+  {f:x=>x*x,text:'x * x'},
+  {f:x=>x*3-1,text:'x * 3 - 1'},
+  {f:x=>100-x,text:'100 - x'},
+  {f:x=>Math.floor(x/2),text:'x // 2'},
+  {f:x=>((x%10)+10)%10,text:'последняя цифра x'},
+  {f:x=>x*x+1,text:'x * x + 1'}
 ];
-let boxTarget=null,boxSolved=0,boxLocked=false;
-function newBox(){
-  boxLocked=false;
-  const pool=shuffle(BOXES);
-  boxTarget=pool[0];
-  const box=el('fnBoxOpts');box.innerHTML='';
+let bTarget=null,bSolved=0,bLocked=false,bHist=[];
+function bnew(){
+  bLocked=false;bHist=[];
+  const pool=shuf(BOXES);
+  bTarget=pool[0];
+  const box=$('fBoxOpts');box.innerHTML='';
   pool.slice(0,4).forEach(o=>{
     const b=document.createElement('button');
-    b.className='opt';b.textContent=o.text;
+    b.className='sec pz opt';b.textContent=o.text;
     b.onclick=()=>{
-      if(boxLocked)return;
-      if(o===boxTarget){
-        boxLocked=true;boxSolved++;
-        el('fnBoxSolved').textContent=boxSolved;
-        b.classList.add('ok');
-        document.querySelectorAll('#fnBoxOpts .opt').forEach(x=>x.disabled=true);
-        el('fnBoxMsg').className='msg good';
-        el('fnBoxMsg').textContent='Разгадано! Вот что сидело в коробке:';
-        el('fnBoxCode').textContent='def mystery(x):\n    return '+boxTarget.text;
-        el('fnBoxCode').style.display='block';
-        el('fnBoxNext').style.display='inline-block';
+      if(bLocked)return;
+      if(o===bTarget){
+        bLocked=true;bSolved++;
+        $('fBoxScore').textContent='Разгадано: '+bSolved;
+        b.classList.add('good');
+        document.querySelectorAll('#fBoxOpts button').forEach(x=>x.disabled=true);
+        $('fBoxMsg').textContent='Разгадано! Вот что сидело в коробке:';
+        $('fBoxMsg').className='res ok';
+        $('fBoxCode').textContent='def mystery(x):\n    return '+bTarget.text;
+        $('fBoxCode').style.display='block';
       }else{
-        b.classList.add('bad','shake');
-        setTimeout(()=>b.classList.remove('shake'),350);
-        el('fnBoxMsg').className='msg bad';
-        el('fnBoxMsg').textContent='Не то правило. Поэкспериментируй с другими числами!';
+        b.classList.add('wrong');
+        $('fBoxMsg').textContent='Не то правило. Поэкспериментируй с другими числами.';
+        $('fBoxMsg').className='res bad';
       }
     };
     box.appendChild(b);
   });
-  const t=el('fnBoxTries');
-  t.innerHTML='<div style="color:#98a1b8;border:0">Пока пусто. Отправь число в коробку!</div>';
-  t.dataset.empty='1';
-  el('fnBoxMsg').textContent='';el('fnBoxMsg').className='msg';
-  el('fnBoxCode').style.display='none';
-  el('fnBoxNext').style.display='none';
-  el('fnBoxIn').value='';
+  $('fBoxLog').textContent='Пока пусто. Отправь число в коробку.';
+  $('fBoxMsg').textContent='';$('fBoxMsg').className='res';
+  $('fBoxCode').style.display='none';
+  $('fBoxIn').value='';
 }
-function sendBox(){
-  if(boxLocked)return;
-  let x=parseInt(el('fnBoxIn').value,10);
+$('fBoxSend').onclick=()=>{
+  if(bLocked)return;
+  let x=parseInt($('fBoxIn').value,10);
   if(isNaN(x))x=rnd(1,9);
   x=Math.max(-99,Math.min(99,x));
-  const t=el('fnBoxTries');
-  if(t.dataset.empty==='1'){t.innerHTML='';t.dataset.empty='0';}
-  const row=document.createElement('div');
-  row.textContent=x+'  →  '+boxTarget.f(x);
-  t.appendChild(row);
-  t.scrollTop=t.scrollHeight;
-  el('fnBoxIn').value='';el('fnBoxIn').focus();
-}
-el('fnBoxSend').onclick=sendBox;
-el('fnBoxIn').addEventListener('keydown',e=>{if(e.key==='Enter')sendBox()});
-el('fnBoxNext').onclick=newBox;
-
-/* собери функцию */
-const fnBuilder=makeBuilder({
-  bank:el('fnBuildBank'),prog:el('fnBuildProg'),msg:el('fnBuildMsg'),result:el('fnBuildResult'),title:el('fnBuildTitle'),
-  tasks:[
-    {title:'функция считает сумму чисел от 1 до n. Вызов: sum_to(5)',result:'15',lines:[
-      'def sum_to(n):','    total = 0','    for i in range(1, n + 1):','        total = total + i','    return total','print(sum_to(5))']},
-    {title:'функция ищет самое большое число в списке',result:'9',lines:[
-      'def find_max(numbers):','    best = numbers[0]','    for x in numbers:','        if x > best:','            best = x','    return best','print(find_max([3, 9, 1, 7]))']},
-    {title:'функция считает, сколько в списке чётных чисел',result:'2',lines:[
-      'def count_even(nums):','    count = 0','    for x in nums:','        if x % 2 == 0:','            count = count + 1','    return count','print(count_even([4, 7, 2, 9]))']}
-  ]
-});
-el('fnBuildCheck').onclick=fnBuilder.check;
-el('fnBuildNext').onclick=fnBuilder.next;
-el('fnBuildReset').onclick=fnBuilder.reset;
-
-/* ================= C++ 1: BIG O ================= */
-/* забег алгоритмов */
-let boN=16,boTarget=0,boAlgo='lin',boRunning=false,boSteps=0;
-const BO_CODE={
-  tele:'// Телепорт: открываем сразу нужный дом — O(1)\nоткрыть(дом_с_кладом);   // 1 шаг',
-  lin:'// По очереди: идём от первого дома к последнему — O(n)\nfor (int i = 0; i < n; i++) {\n    открыть(i);          // шаг за шагом\n}',
-  bin:'// Пополам: каждый раз отбрасываем половину — O(log n)\nint lo = 0, hi = n - 1;\nwhile (lo <= hi) {\n    int mid = (lo + hi) / 2;\n    открыть(mid);\n    if (клад правее) lo = mid + 1;\n    else             hi = mid - 1;\n}'
+  const y=bTarget.f(x);
+  bHist.push(x+' -> '+y);
+  if(bHist.length>8)bHist.shift();
+  $('fBoxLog').textContent=bHist.join('\n');
+  $('fBoxIn').value='';$('fBoxIn').focus();
 };
-function boMake(){
-  boN=+el('boHousesSel').value;
-  boTarget=rnd(0,boN-1);
-  boSteps=0;el('boSteps').textContent='0';
-  const track=el('boTrack');track.innerHTML='';
-  for(let i=0;i<boN;i++){const d=document.createElement('div');d.className='house';d.textContent=i;track.appendChild(d);}
-  el('boTableBody').innerHTML='';
-  el('boHintLine').textContent='Выбери алгоритм и смотри, как идёт герой';
+$('fBoxIn').addEventListener('keydown',e=>{if(e.key==='Enter')$('fBoxSend').click();});
+$('fBoxNext').onclick=bnew;
+
+/* --- собери функцию --- */
+const FPZ=[
+  {lines:['def sum_to(n):','    total = 0','    for i in range(1, n + 1):','        total = total + i','    return total','print(sum_to(5))'],out:'15'},
+  {lines:['def find_max(numbers):','    best = numbers[0]','    for x in numbers:','        if x > best:','            best = x','    return best','print(find_max([3, 9, 1, 7]))'],out:'9'},
+  {lines:['def count_even(nums):','    count = 0','    for x in nums:','        if x % 2 == 0:','            count = count + 1','    return count','print(count_even([4, 7, 2, 9]))'],out:'2'}
+];
+let fpi=-1,fpool=[],fans=[];
+function fpRender(){
+  const mk=(arr,id)=>{const box=$(id);box.innerHTML='';arr.forEach((o,k)=>{const b=document.createElement('button');b.className='sec pz';b.textContent=o.t;
+    b.onclick=()=>{if(id==='fPzPool')fans.push(fpool.splice(k,1)[0]);else fpool.push(fans.splice(k,1)[0]);fpRender();};box.appendChild(b);});};
+  mk(fpool,'fPzPool');mk(fans,'fPzAns');
 }
-async function boRun(){
-  if(boRunning)return;
-  boRunning=true;
-  const houses=[...el('boTrack').children];
-  houses.forEach(h=>h.className='house');
-  boSteps=0;el('boSteps').textContent='0';
-  el('boCode').textContent=BO_CODE[boAlgo];
-  const d=Math.max(30,Math.min(220,1400/boN));
-  const step=async i=>{boSteps++;el('boSteps').textContent=boSteps;houses[i].classList.add('cur');await sleep(d);houses[i].classList.remove('cur');};
-  if(boAlgo==='tele'){await step(boTarget);houses[boTarget].classList.add('found');}
-  else if(boAlgo==='lin'){
-    for(let i=0;i<boN;i++){
-      boSteps++;el('boSteps').textContent=boSteps;
-      houses[i].classList.add('cur');await sleep(d);
-      houses[i].classList.remove('cur');houses[i].classList.add('visited');
-      if(i===boTarget){houses[i].classList.add('found');break;}
-    }
+function fpNew(){
+  fpi=(fpi+1)%FPZ.length;
+  fpool=FPZ[fpi].lines.map((t,i)=>({t,i}));
+  do{fpool=shuf(fpool);}while(fpool.every((x,k)=>x.i===k));
+  fans=[];$('fPzMsg').textContent='';$('fPzMsg').className='res';fpRender();
+}
+$('fPzChk').onclick=()=>{
+  const p=FPZ[fpi],m=$('fPzMsg');
+  if(fpool.length){m.className='res bad';m.textContent='Сначала поставь все строки.';return;}
+  if(fans.map(o=>o.t).join('\n')===p.lines.join('\n')){
+    m.className='res ok';m.textContent='Верно. Программа выведет: '+p.out;
   }else{
-    let lo=0,hi=boN-1;
-    while(lo<=hi){
-      const mid=(lo+hi)>>1;
-      boSteps++;el('boSteps').textContent=boSteps;
-      houses[mid].classList.add('cur');await sleep(d*1.6);houses[mid].classList.remove('cur');
-      if(mid===boTarget){houses[mid].classList.add('found');break;}
-      if(mid<boTarget){for(let k=lo;k<=mid;k++)houses[k].classList.add('dead');lo=mid+1;}
-      else{for(let k=mid;k<=hi;k++)houses[k].classList.add('dead');hi=mid-1;}
-    }
-  }
-  const names={tele:'Телепорт',lin:'По очереди',bin:'Пополам'};
-  el('boHintLine').textContent=names[boAlgo]+': клад найден за '+boSteps+' шагов.';
-  const tr=document.createElement('tr');
-  tr.innerHTML='<td>'+names[boAlgo]+'</td><td>'+boN+'</td><td>'+boSteps+'</td>';
-  el('boTableBody').appendChild(tr);
-  boRunning=false;
-}
-el('boHousesSel').onchange=boMake;
-el('boHide').onclick=boMake;
-el('boTele').onclick=()=>{boAlgo='tele';setBoTog();boRun();};
-el('boLin').onclick=()=>{boAlgo='lin';setBoTog();boRun();};
-el('boBin').onclick=()=>{boAlgo='bin';setBoTog();boRun();};
-function setBoTog(){
-  [['boTele','tele'],['boLin','lin'],['boBin','bin']].forEach(([id,a])=>{
-    el(id).classList.toggle('active',boAlgo===a);
-  });
-}
-
-/* игра: ты против алгоритма */
-let bgTarget=0,bgTry=0,bgDone=false;
-function bgNew(){
-  bgTarget=rnd(0,31);bgTry=0;bgDone=false;
-  el('bgTry').textContent='0';
-  el('bgMsg').textContent='';el('bgMsg').className='msg';
-  const grid=el('bgGrid');grid.innerHTML='';
-  for(let i=0;i<32;i++){
-    const b=document.createElement('button');
-    b.className='house';b.textContent=i;
-    b.onclick=()=>{
-      if(bgDone||b.dataset.used)return;
-      b.dataset.used='1';bgTry++;el('bgTry').textContent=bgTry;
-      if(i===bgTarget){b.classList.add('found');bgDone=true;
-        el('bgMsg').textContent=bgTry<=5?'Нашёл за '+bgTry+' попыток — уровень бинарного поиска!':'Нашёл за '+bgTry+' попыток. Секрет — всегда выбирать середину.';
-        el('bgMsg').className='msg good';}
-      else if(i<bgTarget){b.classList.add('less');el('bgMsg').textContent='Клад в доме с БОЛЬШИМ номером.';el('bgMsg').className='msg bad';}
-      else{b.classList.add('more');el('bgMsg').textContent='Клад в доме с МЕНЬШИМ номером.';el('bgMsg').className='msg bad';}
-    };
-    grid.appendChild(b);
-  }
-}
-el('bgNew').onclick=bgNew;
-
-/* сортировка: пузырёк против слияния */
-let bsArr=[],bsBars=[],bsBusy=false,bsComp=0;
-function bsMake(){
-  const n=+el('bsN').value;
-  el('bsNVal').textContent=n;
-  bsArr=Array.from({length:n},()=>rnd(8,99));
-  bsComp=0;el('bsComp').textContent='0';
-  bsRender(true);
-}
-function bsRender(rebuild){
-  const box=el('bsBars');
-  if(rebuild){
-    box.innerHTML='';
-    bsBars=bsArr.map(()=>{const d=document.createElement('div');d.className='bar';const s=document.createElement('span');s.className='bar-n';d.appendChild(s);box.appendChild(d);return d;});
-  }
-  const max=Math.max(...bsArr);
-  bsArr.forEach((v,i)=>{bsBars[i].style.height=(20+v/max*150)+'px';bsBars[i].firstChild.textContent=v;});
-}
-const bsMark=(i,c)=>bsBars[i].classList.add(c);
-const bsClear=i=>bsBars[i].classList.remove('cmp','swap');
-async function bsBubble(){
-  el('bsCode').textContent='for (int i = 0; i < n - 1; i++)\n    for (int j = 0; j < n - i - 1; j++)\n        if (a[j] > a[j + 1])\n            swap(a[j], a[j + 1]);';
-  const n=bsArr.length;
-  for(let i=0;i<n-1;i++){
-    for(let j=0;j<n-1-i;j++){
-      bsComp++;el('bsComp').textContent=bsComp;
-      bsMark(j,'cmp');bsMark(j+1,'cmp');await sleep(70);
-      if(bsArr[j]>bsArr[j+1]){
-        bsMark(j,'swap');bsMark(j+1,'swap');
-        [bsArr[j],bsArr[j+1]]=[bsArr[j+1],bsArr[j]];
-        bsRender(false);await sleep(70);
-      }
-      bsClear(j);bsClear(j+1);
-    }
-    bsBars[n-1-i].classList.add('done');
-  }
-  bsBars[0].classList.add('done');
-}
-async function bsMerge(){
-  el('bsCode').textContent='делим массив пополам, пока кучки не станут по 1 элементу,\nпотом сливаем соседние кучки, выбирая меньший элемент';
-  const n=bsArr.length;
-  for(let w=1;w<n;w*=2){
-    for(let lo=0;lo<n;lo+=2*w){
-      const mid=Math.min(lo+w,n),hi=Math.min(lo+2*w,n);
-      if(mid>=hi)continue;
-      const tmp=[];let i=lo,j=mid;
-      while(i<mid&&j<hi){
-        bsComp++;el('bsComp').textContent=bsComp;
-        bsMark(i,'cmp');bsMark(j,'cmp');await sleep(80);
-        if(bsArr[i]<=bsArr[j])tmp.push(bsArr[i++]);else tmp.push(bsArr[j++]);
-        bsClear(i-1>=lo?i-1:i);bsClear(j-1>=mid?j-1:j);
-      }
-      while(i<mid)tmp.push(bsArr[i++]);
-      while(j<hi)tmp.push(bsArr[j++]);
-      for(let k=0;k<tmp.length;k++){
-        bsArr[lo+k]=tmp[k];
-        bsMark(lo+k,'swap');bsRender(false);await sleep(60);bsClear(lo+k);
-      }
-    }
-  }
-  bsBars.forEach(b=>b.classList.add('done'));
-}
-el('bsN').oninput=()=>{el('bsNVal').textContent=el('bsN').value;if(!bsBusy)bsMake();};
-el('bsShuffle').onclick=()=>{if(!bsBusy)bsMake();};
-el('bsBubble').onclick=async()=>{
-  if(bsBusy)return;bsBusy=true;
-  bsBars.forEach(b=>b.className='bar');
-  await bsBubble();
-  const tr=document.createElement('tr');
-  tr.innerHTML='<td>Пузырьком</td><td>'+bsArr.length+'</td><td>'+bsComp+'</td>';
-  el('bsTableBody').appendChild(tr);
-  bsBusy=false;
-};
-el('bsMerge').onclick=async()=>{
-  if(bsBusy)return;bsBusy=true;
-  bsBars.forEach(b=>b.className='bar');
-  bsComp=0;el('bsComp').textContent='0';
-  await bsMerge();
-  const tr=document.createElement('tr');
-  tr.innerHTML='<td>Слиянием</td><td>'+bsArr.length+'</td><td>'+bsComp+'</td>';
-  el('bsTableBody').appendChild(tr);
-  bsBusy=false;
-};
-
-/* ползунок Big O */
-function boCalc(){
-  const n=+el('boNSlider').value;
-  el('boNVal').textContent=n;
-  const fmt=x=>Math.round(x).toLocaleString('ru-RU');
-  el('boTLog').textContent=fmt(Math.ceil(Math.log2(n)));
-  el('boTLin').textContent=fmt(n);
-  el('boTNLog').textContent=fmt(n*Math.log2(n));
-  el('boTQuad').textContent=fmt(n*n);
-}
-el('boNSlider').oninput=boCalc;
-
-/* редактор алгоритма поиска (упрощённый C++) */
-const BE_HINT='int lo = 0;\nint hi = n - 1;\nwhile (lo <= hi) {\n    int mid = (lo + hi) / 2;\n    int r = check(mid);\n    if (r == 0) {\n        break;\n    }\n    if (r == 1) {\n        lo = mid + 1;\n    } else {\n        hi = mid - 1;\n    }\n}';
-const BE_STARTER='// напиши алгоритм поиска здесь\n// пример:\n// int r = check(50);\n';
-function beRun(){
-  const N=100;
-  const target=rnd(0,N-1);
-  let steps=0,found=false;
-  const out=el('beOut');
-  try{
-    const ast=cppParse(cppTokenize(stripComments(el('beCode').value)));
-    const env={arr:[],vars:{n:N},fns:{check(args){
-      const i=args[0];steps++;
-      if(steps>200)throw 'check вызван больше 200 раз — так дело не пойдёт';
-      if(!Number.isInteger(i)||i<0||i>=N)throw 'check(i): i должно быть целым от 0 до n-1';
-      if(i===target){found=true;return 0;}
-      return i<target?1:-1;
-    }}};
-    cppRun(ast,env);
-    if(found){
-      let grade=steps<=10?'Это уровень O(log n)!':steps<=N?'Это уровень O(n).':'Шагов больше, чем n — подумай, как сократить.';
-      out.textContent='Клад найден! Шагов: '+steps+' при n = '+N+'. '+grade;
-    }else{
-      out.textContent='Код отработал, но клад так и не найден. Проверь логику.';
-    }
-  }catch(e){out.textContent='Ошибка: '+(e.msg||e);}
-}
-el('beRun').onclick=beRun;
-el('beHint').onclick=()=>{el('beCode').value=BE_HINT};
-el('beReset').onclick=()=>{el('beCode').value=BE_STARTER;el('beOut').textContent='Нажми «Запустить», чтобы проверить код.';};
-
-/* ================= C++ 2: СОРТИРОВКА ================= */
-/* счётчики без анимации */
-function cntBubble(a){let c=0,s=0;for(let i=0;i<a.length-1;i++)for(let j=0;j<a.length-1-i;j++){c++;if(a[j]>a[j+1]){[a[j],a[j+1]]=[a[j+1],a[j]];s++;}}return{c,s};}
-function cntSelection(a){let c=0,s=0;for(let i=0;i<a.length-1;i++){let m=i;for(let j=i+1;j<a.length;j++){c++;if(a[j]<a[m])m=j;}if(m!==i){[a[i],a[m]]=[a[m],a[i]];s++;}}return{c,s};}
-function cntInsertion(a){let c=0,s=0;for(let i=1;i<a.length;i++){const k=a[i];let j=i-1;while(j>=0){c++;if(a[j]>k){a[j+1]=a[j];s++;j--;}else break;}a[j+1]=k;}return{c,s};}
-function cntQuick(a){let c=0,s=0;(function q(lo,hi){if(lo>=hi)return;const p=a[hi];let i=lo-1;for(let j=lo;j<hi;j++){c++;if(a[j]<p){i++;if(i!==j){[a[i],a[j]]=[a[j],a[i]];s++;}}}[a[i+1],a[hi]]=[a[hi],a[i+1]];s++;q(lo,i);q(i+2,hi);})(0,a.length-1);return{c,s};}
-
-/* главный визуализатор */
-let svArr=[],svBars=[],svBusy=false,svComp=0,svSwap=0,svAlgo='bubble';
-function svMake(){
-  const n=+el('svN').value;
-  svArr=Array.from({length:n},()=>rnd(8,99));
-  svComp=0;svSwap=0;
-  el('svComp').textContent='0';el('svSwap').textContent='0';
-  svRender(true);
-}
-function svRender(rebuild){
-  const box=el('svBars');
-  if(rebuild){
-    box.innerHTML='';
-    svBars=svArr.map(()=>{const d=document.createElement('div');d.className='bar';const s=document.createElement('span');s.className='bar-n';d.appendChild(s);box.appendChild(d);return d;});
-  }
-  const max=Math.max(...svArr);
-  svArr.forEach((v,i)=>{svBars[i].style.height=(20+v/max*150)+'px';svBars[i].firstChild.textContent=v;});
-}
-function svCounters(){el('svComp').textContent=svComp;el('svSwap').textContent=svSwap;}
-const svMark=(i,c)=>svBars[i].classList.add(c);
-const svClear=i=>svBars[i].classList.remove('cmp','swap');
-function svDoneAll(){svBars.forEach(b=>{b.className='bar';b.classList.add('done');});}
-async function svAnimBubble(p){
-  const n=svArr.length;
-  for(let i=0;i<n-1;i++){
-    for(let j=0;j<n-1-i;j++){
-      svComp++;svCounters();
-      svMark(j,'cmp');svMark(j+1,'cmp');await sleep(p);
-      if(svArr[j]>svArr[j+1]){
-        svMark(j,'swap');svMark(j+1,'swap');
-        svSwap++;svCounters();
-        [svArr[j],svArr[j+1]]=[svArr[j+1],svArr[j]];
-        svRender(false);await sleep(p);
-      }
-      svClear(j);svClear(j+1);
-    }
-    svBars[n-1-i].classList.add('done');
-  }
-  svBars[0].classList.add('done');
-}
-async function svAnimSelection(p){
-  const n=svArr.length;
-  for(let i=0;i<n-1;i++){
-    let m=i;svMark(m,'cmp');
-    for(let j=i+1;j<n;j++){
-      svComp++;svCounters();
-      svMark(j,'cmp');await sleep(p);
-      if(svArr[j]<svArr[m]){svClear(m);m=j;svMark(m,'cmp');}
-      else svClear(j);
-    }
-    if(m!==i){
-      svSwap++;svCounters();
-      svMark(i,'swap');svMark(m,'swap');
-      [svArr[i],svArr[m]]=[svArr[m],svArr[i]];
-      svRender(false);await sleep(p);
-      svClear(m);
-    }
-    svClear(i);svBars[i].classList.add('done');
-  }
-  svBars[n-1].classList.add('done');
-}
-async function svAnimInsertion(p){
-  const n=svArr.length;
-  for(let i=1;i<n;i++){
-    const key=svArr[i];let j=i-1;
-    svMark(i,'cmp');await sleep(p);
-    while(j>=0){
-      svComp++;svCounters();
-      if(svArr[j]>key){
-        svMark(j,'swap');
-        svArr[j+1]=svArr[j];svSwap++;svCounters();
-        svRender(false);await sleep(p);
-        svClear(j+1);svClear(j);
-        j--;
-      }else break;
-    }
-    svArr[j+1]=key;svRender(false);await sleep(p);
-  }
-  svDoneAll();
-}
-async function svAnimQuick(p){
-  async function q(lo,hi){
-    if(lo>hi)return;
-    if(lo===hi){svBars[lo].classList.add('done');return;}
-    const pivot=svArr[hi];svMark(hi,'cmp');
-    let i=lo-1;
-    for(let j=lo;j<hi;j++){
-      svComp++;svCounters();
-      svMark(j,'cmp');await sleep(p);
-      if(svArr[j]<pivot){
-        i++;
-        if(i!==j){
-          svSwap++;svCounters();
-          svMark(i,'swap');svMark(j,'swap');
-          [svArr[i],svArr[j]]=[svArr[j],svArr[i]];
-          svRender(false);await sleep(p);
-          svClear(i);
-        }
-      }
-      svClear(j);
-    }
-    svSwap++;svCounters();
-    [svArr[i+1],svArr[hi]]=[svArr[hi],svArr[i+1]];
-    svRender(false);await sleep(p);
-    svClear(hi);
-    svBars[i+1].classList.add('done');
-    await q(lo,i);await q(i+2,hi);
-  }
-  await q(0,svArr.length-1);
-}
-el('svN').oninput=()=>{el('svNVal').textContent=el('svN').value;if(!svBusy)svMake();};
-el('svPause').oninput=()=>{el('svPauseVal').textContent=el('svPause').value};
-el('svShuffle').onclick=()=>{if(!svBusy)svMake();};
-[['svBubble','bubble'],['svSelection','selection'],['svInsertion','insertion'],['svQuick','quick']].forEach(([id,a])=>{
-  el(id).onclick=()=>{svAlgo=a;document.querySelectorAll('#view-cpp-sorting .tog').forEach(b=>b.classList.remove('active'));el(id).classList.add('active');};
-});
-el('svRun').onclick=async()=>{
-  if(svBusy)return;
-  svBusy=true;el('svRun').disabled=true;
-  svBars.forEach(b=>b.className='bar');
-  svComp=0;svSwap=0;svCounters();
-  const p=+el('svPause').value;
-  if(svAlgo==='bubble')await svAnimBubble(p);
-  if(svAlgo==='selection')await svAnimSelection(p);
-  if(svAlgo==='insertion')await svAnimInsertion(p);
-  if(svAlgo==='quick')await svAnimQuick(p);
-  svBusy=false;el('svRun').disabled=false;
-};
-el('svAll').onclick=()=>{
-  const base=[...svArr];
-  const names={bubble:'Пузырьком',selection:'Выбором',insertion:'Вставками',quick:'Быстрая'};
-  const fns={bubble:cntBubble,selection:cntSelection,insertion:cntInsertion,quick:cntQuick};
-  const tb=el('svTableBody');tb.innerHTML='';
-  for(const k of ['bubble','selection','insertion','quick']){
-    const r=fns[k]([...base]);
-    const tr=document.createElement('tr');
-    tr.innerHTML='<td>'+names[k]+'</td><td>'+base.length+'</td><td>'+r.c.toLocaleString('ru-RU')+'</td><td>'+r.s.toLocaleString('ru-RU')+'</td>';
-    tb.appendChild(tr);
+    m.className='res bad';m.textContent='Не получилось. Проверь порядок строк и отступы.';
   }
 };
+$('fPzNext').onclick=fpNew;
 
-/* игра: отсортируй сам */
-let sgArr=[],sgSel=-1,sgSwaps=0,sgInit=[],sgDone=false,sgBars=[];
-function sgNew(){
-  sgArr=Array.from({length:8},()=>rnd(10,90));
-  sgInit=[...sgArr];sgSel=-1;sgSwaps=0;sgDone=false;
-  el('sgSwaps').textContent='0';
-  el('sgMsg').textContent='';el('sgMsg').className='msg';
-  sgRender();
-}
-function sgRender(){
-  const box=el('sgBars');box.innerHTML='';
-  const max=Math.max(...sgArr);
-  sgBars=sgArr.map((v,i)=>{
-    const d=document.createElement('div');
-    d.className='bar'+(i===sgSel?' sel':'');
-    d.style.height=(20+v/max*150)+'px';
-    const s=document.createElement('span');s.className='bar-n';s.textContent=v;
-    d.appendChild(s);
-    d.onclick=()=>sgClick(i);
-    box.appendChild(d);
-    return d;
-  });
-}
-function sgClick(i){
-  if(sgDone)return;
-  if(sgSel===-1){sgSel=i;sgRender();return;}
-  if(sgSel===i){sgSel=-1;sgRender();return;}
-  [sgArr[sgSel],sgArr[i]]=[sgArr[i],sgArr[sgSel]];
-  sgSel=-1;sgSwaps++;
-  el('sgSwaps').textContent=sgSwaps;
-  sgRender();
-  if(sgArr.every((v,k)=>k===0||sgArr[k-1]<=v)){
-    sgDone=true;
-    const selSwaps=cntSelection([...sgInit]).s;
-    el('sgMsg').textContent='Готово за '+sgSwaps+' обменов! Сортировка выбором сделала бы '+selSwaps+(sgSwaps<=selSwaps?' — ты не хуже алгоритма.':' — попробуй ещё раз, можно меньше.');
-    el('sgMsg').className='msg good';
-    sgBars.forEach(b=>b.classList.add('done'));
-  }
-}
-el('sgNew').onclick=sgNew;
-
-/* игра: что будет после прохода */
-let pqOk=0,pqTotal=0,pqAnswer='';
-function bubbleOnePass(a){a=[...a];for(let j=0;j<a.length-1;j++)if(a[j]>a[j+1])[a[j],a[j+1]]=[a[j+1],a[j]];return a}
-function selectionFirst(a){a=[...a];let m=0;for(let j=1;j<a.length;j++)if(a[j]<a[m])m=j;if(m!==0)[a[0],a[m]]=[a[m],a[0]];return a}
-function insertionFirst(a){a=[...a];if(a[0]>a[1])[a[0],a[1]]=[a[1],a[0]];return a}
-const fmtArr=a=>'['+a.join(', ')+']';
-function pqNew(){
-  const n=rnd(6,7);
-  const base=shuffle(Array.from({length:98},(_,i)=>i+2)).slice(0,n);
-  const kind=shuffle(['bubble','selection','insertion'])[0];
-  const texts={
-    bubble:'Что будет после ОДНОГО прохода пузырьковой сортировки?',
-    selection:'Что будет после ПЕРВОГО обмена сортировки выбором?',
-    insertion:'Что будет после первой вставки (сортировка вставками обработала элемент с номером 1)?'
-  };
-  const correct=kind==='bubble'?bubbleOnePass(base):kind==='selection'?selectionFirst(base):insertionFirst(base);
-  pqAnswer=fmtArr(correct);
-  const sorted=[...base].sort((x,y)=>x-y);
-  const rev=[...sorted].reverse();
-  const sw2=[...base];[sw2[0],sw2[1]]=[sw2[1],sw2[0]];
-  const set=new Set([pqAnswer]);
-  const opts=[pqAnswer];
-  for(const cand of [fmtArr(sorted),fmtArr(rev),fmtArr(sw2),fmtArr(base)]){
-    if(opts.length>=4)break;
-    if(!set.has(cand)){set.add(cand);opts.push(cand);}
-  }
-  el('pqQ').textContent='Массив: '+fmtArr(base)+'\n'+texts[kind];
-  const box=el('pqOpts');box.innerHTML='';
-  el('pqMsg').textContent='';el('pqMsg').className='msg';
-  shuffle(opts).forEach(o=>{
-    const b=document.createElement('button');
-    b.className='opt';b.textContent=o;
-    b.onclick=()=>{
-      if(b.dataset.done)return;
-      b.dataset.done='1';pqTotal++;
-      document.querySelectorAll('#pqOpts .opt').forEach(x=>{if(x.textContent===pqAnswer)x.classList.add('ok');});
-      if(o===pqAnswer){pqOk++;el('pqMsg').textContent='Верно!';el('pqMsg').className='msg good';}
-      else{b.classList.add('bad');el('pqMsg').textContent='Не-а. Правильный вариант подсвечен зелёным.';el('pqMsg').className='msg bad';}
-      el('pqScore').textContent=pqOk+' из '+pqTotal;
-      document.querySelectorAll('#pqOpts .opt').forEach(x=>x.dataset.done='1');
-    };
-    box.appendChild(b);
-  });
-}
-el('pqNext').onclick=pqNew;
-
-/* выбери правильный код */
-const CQ=[
-  {q:'Какой код правильно сортирует массив ПУЗЫРЬКОМ?',opts:[
-    {ok:true,code:'for (int i = 0; i < n - 1; i++)\n    for (int j = 0; j < n - i - 1; j++)\n        if (a[j] > a[j + 1])\n            swap(a[j], a[j + 1]);'},
-    {ok:false,code:'for (int i = 0; i < n - 1; i++)\n    for (int j = 0; j < n - i - 1; j++)\n        if (a[j] > a[i])\n            swap(a[j], a[i]);'},
-    {ok:false,code:'for (int i = 0; i < n - 1; i++)\n    for (int j = 0; j < n; j++)\n        if (a[j] > a[j + 1])\n            swap(a[j], a[j + 1]);'}]},
-  {q:'Какой код правильно сортирует массив ВЫБОРОМ?',opts:[
-    {ok:false,code:'for (int i = 0; i < n - 1; i++)\n    for (int j = i + 1; j < n; j++)\n        if (a[j] < a[i])\n            swap(a[j], a[i]);'},
-    {ok:true,code:'for (int i = 0; i < n - 1; i++) {\n    int m = i;\n    for (int j = i + 1; j < n; j++)\n        if (a[j] < a[m])\n            m = j;\n    swap(a[i], a[m]);\n}'},
-    {ok:false,code:'for (int i = 0; i < n - 1; i++) {\n    int m = i;\n    for (int j = i + 1; j < n; j++)\n        if (a[j] > a[m])\n            m = j;\n    swap(a[i], a[m]);\n}'}]},
-  {q:'Какой код правильно сортирует массив ВСТАВКАМИ?',opts:[
-    {ok:false,code:'for (int i = 1; i < n; i++) {\n    int key = a[i];\n    int j = i - 1;\n    while (j >= 0 && a[j] < key) {\n        a[j + 1] = a[j];\n        j = j - 1;\n    }\n    a[j + 1] = key;\n}'},
-    {ok:false,code:'for (int i = 0; i < n; i++) {\n    int key = a[i];\n    int j = i;\n    while (j >= 0 && a[j] > key) {\n        a[j + 1] = a[j];\n        j = j - 1;\n    }\n    a[j] = key;\n}'},
-    {ok:true,code:'for (int i = 1; i < n; i++) {\n    int key = a[i];\n    int j = i - 1;\n    while (j >= 0 && a[j] > key) {\n        a[j + 1] = a[j];\n        j = j - 1;\n    }\n    a[j + 1] = key;\n}'}]},
-  {q:'Какой код правильно делает РАЗБИЕНИЕ быстрой сортировки (опорный — последний)?',opts:[
-    {ok:true,code:'int pivot = a[hi];\nint i = lo - 1;\nfor (int j = lo; j < hi; j++)\n    if (a[j] < pivot) {\n        i = i + 1;\n        swap(a[i], a[j]);\n    }\nswap(a[i + 1], a[hi]);'},
-    {ok:false,code:'int pivot = a[hi];\nint i = lo - 1;\nfor (int j = lo; j < hi; j++)\n    if (a[j] > pivot) {\n        i = i + 1;\n        swap(a[i], a[j]);\n    }\nswap(a[i + 1], a[hi]);'},
-    {ok:false,code:'int pivot = a[lo];\nint i = lo;\nfor (int j = lo; j < hi; j++)\n    if (a[j] < pivot) {\n        swap(a[i], a[j]);\n    }\nswap(a[i], a[hi]);'}]}
-];
-let cqIdx=0,cqOk=0,cqTotal=0;
-function cqNew(){
-  const q=CQ[cqIdx%CQ.length];
-  el('cqQ').textContent=q.q;
-  el('cqMsg').textContent='';el('cqMsg').className='msg';
-  const box=el('cqOpts');box.innerHTML='';
-  shuffle(q.opts).forEach(o=>{
-    const b=document.createElement('button');
-    b.className='opt';b.style.display='block';b.style.width='100%';b.style.marginBottom='8px';
-    b.textContent=o.code;
-    b.onclick=()=>{
-      if(b.dataset.done)return;
-      cqTotal++;
-      document.querySelectorAll('#cqOpts .opt').forEach(x=>{x.dataset.done='1';x.disabled=true;});
-      document.querySelectorAll('#cqOpts .opt').forEach(x=>{
-        if(x.textContent===q.opts.find(z=>z.ok).code)x.classList.add('ok');
-      });
-      if(o.ok){cqOk++;el('cqMsg').textContent='Верно!';el('cqMsg').className='msg good';}
-      else{b.classList.add('bad');el('cqMsg').textContent='Не-а. Правильный код подсвечен зелёным.';el('cqMsg').className='msg bad';}
-      el('cqScore').textContent=cqOk+' из '+cqTotal;
-    };
-    box.appendChild(b);
-  });
-}
-el('cqNext').onclick=()=>{cqIdx++;cqNew();};
-
-/* ================= мини-интерпретатор C++ ================= */
-function cppTokenize(src){
-  const T=[];let i=0;
-  while(i<src.length){
-    const c=src[i];
-    if(/\s/.test(c)){i++;continue;}
-    if(/[0-9]/.test(c)){let j=i;while(j<src.length&&/[0-9]/.test(src[j]))j++;T.push({t:'num',v:parseInt(src.slice(i,j),10)});i=j;continue;}
-    if(/[a-zA-Z_]/.test(c)){let j=i;while(j<src.length&&/[a-zA-Z_0-9]/.test(src[j]))j++;T.push({t:'id',v:src.slice(i,j)});i=j;continue;}
-    const two=src.substr(i,2);
-    if(['<=','>=','==','!=','&&','||','++','--','+=','-='].includes(two)){T.push({t:'op',v:two});i+=2;continue;}
-    if('+-*/%<>!=(){}[];,'.includes(c)){T.push({t:'op',v:c});i++;continue;}
-    throw 'Непонятный символ: «'+c+'»';
-  }
-  return T;
-}
-function cppParse(T){
-  let p=0;
-  const peek=()=>T[p];
-  const eat=v=>{if(!T[p]||T[p].v!==v)throw 'Ждал «'+v+'», а получил «'+(T[p]?T[p].v:'конец кода')+'»';return T[p++];};
-  function expr(){return assign();}
-  function assign(){
-    const left=or();
-    if(peek()&&peek().v==='='&&left.lval){p++;return {type:'assign',left,right:assign()};}
-    if(peek()&&(peek().v==='+='||peek().v==='-=')){
-      const opk=T[p++].v;
-      if(!left.lval)throw 'Нельзя применять '+opk;
-      return {type:'assign',left,right:{type:'op',op:opk[0],a:left,b:assign()}};
-    }
-    return left;
-  }
-  function or(){let a=and();while(peek()&&peek().v==='||'){p++;a={type:'op',op:'||',a,b:and()};}return a;}
-  function and(){let a=eq();while(peek()&&peek().v==='&&'){p++;a={type:'op',op:'&&',a,b:eq()};}return a;}
-  function eq(){let a=rel();while(peek()&&(peek().v==='=='||peek().v==='!=')){p++;a={type:'op',op:T[p-1].v,a,b:rel()};}return a;}
-  function rel(){let a=add();while(peek()&&['<','>','<=','>='].includes(peek().v)){p++;a={type:'op',op:T[p-1].v,a,b:add()};}return a;}
-  function add(){let a=mul();while(peek()&&(peek().v==='+'||peek().v==='-')){p++;a={type:'op',op:T[p-1].v,a,b:mul()};}return a;}
-  function mul(){let a=unary();while(peek()&&(peek().v==='*'||peek().v==='/'||peek().v==='%')){p++;a={type:'op',op:T[p-1].v,a,b:unary()};}return a;}
-  function unary(){
-    if(peek()&&(peek().v==='!'||peek().v==='-')){const op=T[p++].v;return {type:'un',op,a:unary()};}
-    return postfix();
-  }
-  function postfix(){
-    let a=primary();
-    while(peek()&&(peek().v==='++'||peek().v==='--')){a={type:'post',op:T[p++].v,a};}
-    return a;
-  }
-  function primary(){
-    const tk=peek();
-    if(!tk)throw 'Неожиданный конец кода';
-    if(tk.t==='num'){p++;return {type:'num',v:tk.v,lval:false};}
-    if(tk.v==='('){p++;const e=expr();eat(')');return e;}
-    if(tk.t==='id'){
-      p++;
-      if(peek()&&peek().v==='('){
-        p++;const args=[];
-        if(peek()&&peek().v!==')'){args.push(expr());while(peek()&&peek().v===','){p++;args.push(expr());}}
-        eat(')');
-        return {type:'call',name:tk.v,args,lval:false};
-      }
-      if(peek()&&peek().v==='['){
-        p++;const idx=expr();eat(']');
-        return {type:'index',name:tk.v,idx,lval:true};
-      }
-      return {type:'id',name:tk.v,lval:true};
-    }
-    throw 'Не понимаю: «'+tk.v+'»';
-  }
-  function stmt(){
-    const tk=peek();
-    if(!tk)throw 'Неожиданный конец кода';
-    if(tk.v==='{'){p++;const body=[];while(peek()&&peek().v!=='}')body.push(stmt());eat('}');return {type:'block',body};}
-    if(tk.v==='int'){
-      p++;
-      const nm=T[p++];if(!nm||nm.t!=='id')throw 'После int должно быть имя переменной';
-      let init=null;
-      if(peek()&&peek().v==='='){p++;init=expr();}
-      eat(';');
-      return {type:'var',name:nm.v,init};
-    }
-    if(tk.v==='if'){
-      p++;eat('(');const cond=expr();eat(')');const then=stmt();let els=null;
-      if(peek()&&peek().v==='else'){p++;els=stmt();}
-      return {type:'if',cond,then,els};
-    }
-    if(tk.v==='while'){p++;eat('(');const cond=expr();eat(')');const body=stmt();return {type:'while',cond,body};}
-    if(tk.v==='for'){
-      p++;eat('(');
-      let init=null;
-      if(peek().v==='int'){
-        p++;const nm=T[p++];if(!nm||nm.t!=='id')throw 'После int нужно имя';
-        let ini=null;if(peek().v==='='){p++;ini=expr();}
-        init={type:'var',name:nm.v,init:ini};
-      }else if(peek().v!==';'){init={type:'expr',e:assign()};}
-      eat(';');
-      let cond=null;if(peek().v!==';')cond=expr();
-      eat(';');
-      let inc=null;if(peek().v!==')')inc=expr();
-      eat(')');
-      const body=stmt();
-      return {type:'for',init,cond,inc,body};
-    }
-    if(tk.v==='break'){p++;eat(';');return {type:'break'};}
-    if(tk.v==='continue'){p++;eat(';');return {type:'continue'};}
-    if(tk.v==='return'){p++;let e=null;if(peek()&&peek().v!==';')e=expr();eat(';');return {type:'ret',e};}
-    const e=expr();eat(';');
-    return {type:'expr',e};
-  }
-  const body=[];
-  while(p<T.length)body.push(stmt());
-  return {type:'block',body};
-}
-function cppRun(ast,env){
-  const limit=300000;
-  let steps=0;
-  const BRK={brk:1},CONT={cont:1};
-  const bool=v=>v!==0;
-  function lvRef(n){
-    if(n.type==='id')return {get:()=>env.vars[n.name],set:v=>{env.vars[n.name]=v;}};
-    if(n.type==='index'){
-      const i=valOf(n.idx);
-      if(i<0||i>=env.arr.length)throw 'Выход за границы массива: a['+i+']';
-      return {get:()=>env.arr[i],set:v=>{env.arr[i]=v;}};
-    }
-    throw 'Сюда нельзя записать значение';
-  }
-  function callFn(n){
-    if(n.name==='swap'){
-      if(n.args.length!==2)throw 'swap ждёт два аргумента';
-      const r1=lvRef(n.args[0]),r2=lvRef(n.args[1]);
-      const t=r1.get();r1.set(r2.get());r2.set(t);
-      return 0;
-    }
-    if(env.fns&&env.fns[n.name])return env.fns[n.name](n.args.map(valOf));
-    throw 'Функция «'+n.name+'» не поддерживается';
-  }
-  function valOf(n){
-    steps++;if(steps>limit)throw 'Слишком много шагов — похоже на бесконечный цикл';
-    switch(n.type){
-      case 'num':return n.v;
-      case 'id':
-        if(!(n.name in env.vars))throw 'Переменная «'+n.name+'» не найдена';
-        return env.vars[n.name];
-      case 'index':{
-        const i=valOf(n.idx);
-        if(i<0||i>=env.arr.length)throw 'Выход за границы массива: a['+i+']';
-        return env.arr[i];
-      }
-      case 'un':{const v=valOf(n.a);return n.op==='!'?(v?0:1):-v;}
-      case 'op':{
-        const a=valOf(n.a);
-        if(n.op==='&&')return a?(valOf(n.b)?1:0):0;
-        if(n.op==='||')return a?1:(valOf(n.b)?1:0);
-        const b=valOf(n.b);
-        switch(n.op){
-          case '+':return a+b;case '-':return a-b;case '*':return a*b;
-          case '/':if(b===0)throw 'Деление на ноль';return Math.trunc(a/b);
-          case '%':if(b===0)throw 'Деление на ноль';return a%b;
-          case '<':return a<b?1:0;case '>':return a>b?1:0;
-          case '<=':return a<=b?1:0;case '>=':return a>=b?1:0;
-          case '==':return a===b?1:0;case '!=':return a!==b?1:0;
-        }
-        throw 'Не знаю оператор '+n.op;
-      }
-      case 'post':{const r=lvRef(n.a);const old=r.get();r.set(n.op==='++'?old+1:old-1);return old;}
-      case 'assign':{const r=lvRef(n.left);const v=valOf(n.right);r.set(v);return v;}
-      case 'call':return callFn(n);
-    }
-    throw 'Не умею выполнять: '+n.type;
-  }
-  function exec(s){
-    steps++;if(steps>limit)throw 'Слишком много шагов — похоже на бесконечный цикл';
-    switch(s.type){
-      case 'block':{for(const x of s.body){const r=exec(x);if(r)return r;}return null;}
-      case 'var':env.vars[s.name]=s.init?valOf(s.init):0;return null;
-      case 'expr':valOf(s.e);return null;
-      case 'if':return bool(valOf(s.cond))?exec(s.then):(s.els?exec(s.els):null);
-      case 'while':{
-        while(bool(valOf(s.cond))){
-          const r=exec(s.body);
-          if(r===BRK)break;
-          if(r&&r!==CONT)return r;
-        }
-        return null;
-      }
-      case 'for':{
-        if(s.init)exec(s.init);
-        while(s.cond?bool(valOf(s.cond)):true){
-          const r=exec(s.body);
-          if(r===BRK)break;
-          if(s.inc)valOf(s.inc);
-          if(r&&r!==CONT)return r;
-        }
-        return null;
-      }
-      case 'break':return BRK;
-      case 'continue':return CONT;
-      case 'ret':return {ret:s.e?valOf(s.e):0};
-    }
-    throw 'Не умею выполнять: '+s.type;
-  }
-  const r=exec(ast);
-  return (r&&r.ret!==undefined)?r.ret:0;
-}
-function extractBody(src){
-  const i=src.indexOf('{');
-  if(i<0)throw 'Не вижу тело функции в фигурных скобках';
-  let d=0;
-  for(let j=i;j<src.length;j++){
-    if(src[j]==='{')d++;
-    else if(src[j]==='}'){d--;if(d===0)return src.slice(i+1,j);}
-  }
-  throw 'Не хватает закрывающей скобки }';
-}
-
-/* напиши код: тесты сортировки */
-const SC_STARTER='void sort(int a[], int n) {\n    // напиши сортировку здесь\n}\n';
-const SC_HINT='void sort(int a[], int n) {\n    for (int i = 0; i < n - 1; i++) {\n        for (int j = 0; j < n - i - 1; j++) {\n            if (a[j] > a[j + 1]) {\n                swap(a[j], a[j + 1]);\n            }\n        }\n    }\n}\n';
-const SC_TESTS=[
-  {name:'случайный',a:[5,2,9,1,7]},
-  {name:'уже отсортирован',a:[1,2,3,4,5]},
-  {name:'перевёрнут',a:[9,7,5,3,1]},
-  {name:'с повторами',a:[3,3,1,2,2]},
-  {name:'почти готов',a:[1,3,2,4,5]}
-];
-function scRun(){
-  const out=el('scOut');
-  const lines=[];
-  let ast=null;
-  try{
-    const src=stripComments(el('scCode').value);
-    const body=extractBody(src);
-    ast=cppParse(cppTokenize(body));
-  }catch(e){out.textContent='Ошибка: '+(e.msg||e);return;}
-  let allOk=true;
-  SC_TESTS.forEach((t,k)=>{
-    const arr=[...t.a];
-    const env={arr,vars:{n:arr.length},fns:{}};
-    try{
-      cppRun(ast,env);
-      const ok=arr.every((v,i)=>i===0||arr[i-1]<=v);
-      if(ok)lines.push('Тест '+(k+1)+' ('+t.name+'): готово, вышло ['+arr.join(', ')+']');
-      else{allOk=false;lines.push('Тест '+(k+1)+' ('+t.name+'): массив остался ['+arr.join(', ')+'] — не отсортирован');}
-    }catch(e){allOk=false;lines.push('Тест '+(k+1)+' ('+t.name+'): ошибка — '+(e.msg||e));}
-  });
-  lines.push(allOk?'Все тесты пройдены!':'Есть ошибки — смотри, какой тест не прошёл.');
-  out.textContent=lines.join('\n');
-}
-el('scRun').onclick=scRun;
-el('scHint').onclick=()=>{el('scCode').value=SC_HINT};
-el('scReset').onclick=()=>{el('scCode').value=SC_STARTER;el('scOut').textContent='Нажми «Запустить тесты», чтобы проверить код.';};
-
-/* ================= запуск ================= */
-lpQuizNew();
-lsRender();
-lsGameNew();
+/* --- запуск --- */
 drawFruits();
-updateJuiceCode();
-fnQuizNew();
-newBox();
-boMake();
-bgNew();
-bsMake();
-boCalc();
-svMake();
-sgNew();
-pqNew();
-cqNew();
-route();
+fCode();
+qnew();
+bnew();
+fpNew();
+})();
+</script>
+<script>
+(function(){
+  const V={home:'v-home',cpp:'v-cpp',python:'v-python',bigo:'v-bigo',loops:'v-loops',lists:'v-lists',sorting:'v-sorting',functions:'v-functions'};
+  const H={home:'',bigo:'cpp/bigo',loops:'python/loops',lists:'python/lists',sorting:'cpp/sorting',functions:'python/functions'};
+  const R={'cpp/bigo':'bigo','python/loops':'loops','python/lists':'lists','cpp/sorting':'sorting','python/functions':'functions'};
+  function show(n){
+    const id=V[n]||V.home;
+    document.querySelectorAll('.view').forEach(v=>v.hidden=v.id!==id);
+    window.scrollTo(0,0);
+  }
+  window.navTo=function(n){try{location.hash='#/'+(n in H?H[n]:n);}catch(e){}show(n);};
+  function fromHash(){
+    const h=location.hash.replace(/^#\/?/,'');
+    show(R[h]||h||'home');
+  }
+  addEventListener('hashchange',fromHash);
+  fromHash();
+})();
 </script>
 </body>
 </html>
